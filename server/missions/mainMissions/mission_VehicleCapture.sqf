@@ -5,17 +5,11 @@
 //	@file Name: mission_VehicleCapture.sqf
 //	@file Author: [404] Deadbeat, [404] Costlyy, JoSchaap, AgentRev
 //	@file Created: 08/12/2012 15:19
-//
-// Update: Motavar@judgement.net
-// Port: A3Wasteland 
-// Updated For Vehicle Radar
-// Date: 4/5/15
-// 
 
 if (!isServer) exitwith {};
 #include "mainMissionDefines.sqf";
 
-private ["_vehicle", "_vehicleName", "_vehDeterminer", "_isRadarVehicle", "_loadout"];
+private ["_vehicle", "_vehicleName", "_vehDeterminer"];
 
 // setupVars must be defined in the top mission file
 
@@ -26,15 +20,8 @@ _setupObjects =
 	// Class, Position, Fuel, Ammo, Damage, Special
 	_vehicle = [_vehicleClass, _missionPos] call createMissionVehicle;
 
-	switch (true) do
+	/*switch (true) do
 	{
-
-		// RADAR VEHICLE
-		case (_vehicle isKindOf "rhs_typhoon_vdv"):
-		{
-		     _vehicle setVariable["isRadarVeh", true, true];
-		};
-
 		// GMG MRAPs
 		/*case ({ _vehicle isKindOf _x } count ["MRAP_01_gmg_base_F","MRAP_02_gmg_base_F","MRAP_03_gmg_base_F"] > 0):
 		{
@@ -43,7 +30,7 @@ _setupObjects =
 			// Reduce grenades to 50
 			_vehicle removeMagazines "96Rnd_40mm_G_belt";
 			_vehicle addMagazine ["96Rnd_40mm_G_belt", 50];
-		};*/
+		};//
 
 		// AMV-7 Marshall
 		case (_vehicle isKindOf "B_APC_Wheeled_01_cannon_F"):
@@ -176,11 +163,10 @@ _setupObjects =
 		_vehicle addMagazineTurret ["120Rnd_CMFlare_Chaff_Magazine", [-1]];
 	};
 
-	reload _vehicle;
+	reload _vehicle;*/
 
 	_aiGroup = createGroup CIVILIAN;
-	_loadout = aiLoadoutsBasic call BIS_fnc_selectRandom;
-	[_aiGroup, _missionPos, _loadout, _nbUnits] call createRandomGroup;
+	[_aiGroup, _missionPos, _nbUnits] call createCustomGroup;
 
 	_missionPicture = getText (configFile >> "CfgVehicles" >> _vehicleClass >> "picture");
 	_vehicleName = getText (configFile >> "CfgVehicles" >> _vehicleClass >> "displayName");
@@ -202,21 +188,10 @@ _failedExec =
 
 _successExec =
 {
-
-	//RADAR VEHICLE 
-	_isRadarVehicle = _vehicle getVariable ["isRadarVeh", false];
-
 	// Mission completed
-	_vehicle lock 1;
-
-	if (_isRadarVehicle) then {
-		_vehicle setVariable ["R3F_LOG_disabled", true, true];
-	} else {
-		_vehicle setVariable ["R3F_LOG_disabled", false, true];
-	};
+	[_vehicle, 1] call A3W_fnc_setLockState; // Unlock
 
 	_successHintMessage = format ["The %1 has been captured, well done.", _vehicleName];
 };
-
 
 _this call mainMissionProcessor;

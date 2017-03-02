@@ -6,40 +6,39 @@
 
 [
 	// Class, Position, Direction, Init (optional)
-	["Land_LampShabby_F", [-0.298828, 9.40234, 0.00143814], 188.089],
-	["Land_LampShabby_F", [-0.188477, 9.95068, -0.0161819], 1.90371],
-	["Land_CncBarrierMedium4_F", [-0.232666, 10.4307, 0.153743], 359.72],
-	["Land_BagBunker_Small_F", [-5.16577, 6.29346, 0.0585103], 180.219],
-	["Land_BagFence_Long_F", [-0.163574, 1.57666, -0.0357904], 1.34008],
-	["Land_BagBunker_Small_F", [4.52393, 6.37305, 0.0791397], 179.5],
-	["rhs_weapons_crate_ak_standard", [-1.04126, 0.24707, 0], 286.415, {
-		[_this, randomMissionSpecialCargo, 1] call randomCargoFill;
-	}],
-	["Land_CncWall4_F", [-6.46558, 2.6377, 0.0582647], 90.8417],
-	["Land_LampShabby_F", [0, 0, -0.00534153], 0.243539],
-	["Land_LampShabby_F", [-0.117188, -0.513672, -0.0352049], 186.35],
-	["rhs_weapons_crate_ak_ammo_545x39_standard", [0.470947, -0.591309, 0], 85.8074, {
-		[_this, randomMissionExplosiveCargo, 1] call randomCargoFill;
-	}],
-	["Land_HBarrier_5_F", [-7.76196, 2.66602, 0.0108471], 270.574],
-	["Land_CncWall4_F", [5.80786, 2.78027, 0.100734], 269.176],
-	["Land_BagFence_Long_F", [-0.246338, -1.82959, -0.0460205], 359.373],
-	//["Land_CncBarrierMedium4_F", [-8.74731, 1.74219, -0.422749], 271.489],
-	["Land_HBarrier_5_F", [7.11743, 3.08105, 0.0197954], 269.531],
-	//["Land_CncBarrierMedium4_F", [8.08252, 2.17871, -0.377454], 269.773],
-	["Land_CncWall4_F", [-6.46436, -2.58936, 0.0695257], 89.8022],
-	//["Land_CncBarrierMedium4_F", [-8.71606, -1.99805, -0.405235], 269.972],
-	["Land_CncWall4_F", [5.92725, -2.4458, 0.0815554], 269.256],
-	["Land_HBarrier_5_F", [-7.75244, -2.91895, -0.0287189], 269.564],
-	["Land_HBarrier_5_F", [7.14795, -2.55615, 0.016717], 269.598],
-	//["Land_CncBarrierMedium4_F", [8.08228, -1.7876, -0.361892], 90.9182],
-	["Land_BagBunker_Small_F", [-5.20874, -6.12061, 0.0614038], 359.567],
-	["Land_BagBunker_Small_F", [4.69092, -6.15381, 0.0623822], 0.837728],
-	["Land_LampShabby_F", [-0.244873, -9.31641, -0.042263], 353.13],
-	["Land_LampShabby_F", [-0.268066, -9.83643, -0.123346], 179.672],
-	["Land_CncBarrierMedium4_F", [-0.29248, -10.4473, 0.116841], 1.21038],
-	["I_HMG_01_high_F", [4.2, 6.6, 0], 0, { if (random 1 < 0.5) exitWith { deleteVehicle _this }; [_this] call vehicleSetup }],
-	["I_HMG_01_high_F", [-4.5, 6.6, 0], 0, { if (random 1 < 0.5) exitWith { deleteVehicle _this }; [_this] call vehicleSetup }],
-	["I_HMG_01_high_F", [-4.9, -6.5, 0], 180, { if (random 1 < 0.5) exitWith { deleteVehicle _this }; [_this] call vehicleSetup }],
-	["I_HMG_01_high_F", [4.1, -6.5, 0], 180, { if (random 1 < 0.5) exitWith { deleteVehicle _this }; [_this] call vehicleSetup }]
+	["Land_LampShabby_F", [3.50317, 2.47949, 0], 325],
+	["Land_LampShabby_F", [-4.50623, 2.23486, 0], 35],
+	["Land_BagFence_Long_F", [3.52722, 4.10938, 0], 90],
+	["Land_BarGate_F", [0.08623, 5.86182, 0], 180],
+	["Land_LampShabby_F", [3.95813, -4.55029, 0], 210],
+	["Land_LampShabby_F", [-3.84167, -4.69043, 0], 150],
+	["Land_BagFence_Long_F", [-4.8949, 3.82715, 0], 90],
+	["Land_BagFence_Long_F", [4.29211, -6.27881, 0], 90],
+	["Land_BagFence_Long_F", [-4.06665, -6.43359, 0], 90],
+	["Land_BarGate_F", [0.25195, -7.94873, 0], 180],
+	["Land_BagBunker_Small_F", [5.96436, 7.86963, 0], 180],
+	["Box_IND_WpsSpecial_F", [-6.24817, 8.69141, 0], 180, { [_this, ["mission_USSpecial", "mission_Main_A3snipers"] call BIS_fnc_selectRandom] call fn_refillbox }],
+	["Land_BagBunker_Small_F", [-6.35974, 7.86914, 0], 180],
+	["Land_BagBunker_Small_F", [-6.06433, -10.0005, 0], 0],
+	["Land_BagBunker_Small_F", [6.27478, -9.8975, 0], 0],
+	["Box_East_WpsSpecial_F", [6.26294, -10.02422, 0], 180, { [_this, "mission_USLaunchers"] call fn_refillbox }],
+	["Land_HBarrierBig_F", [-11.583, -5.92871, 0], 45],
+	["Land_HBarrierBig_F", [-12.4873, 5.40869, 0], 315],
+	["Land_HBarrierBig_F", [10.9138, 4.86182, 0], 45],
+	["Land_HBarrierBig_F", [11.8104, -6.33154, 0], 315],
+	["Land_BagBunker_Small_F", [14.4102, -1.2915, 0], 270],
+	["Land_BagBunker_Small_F", [-15.6963, -0.902344, 0], 90],
+	["Land_LampShabby_F", [14.8219, 1.71777, 0], 85],
+	["Land_LampShabby_F", [-15.5142, -4.27295, 0], 275],
+	["CUP_I_DSHKM_NAPA", [6.15, 8.8, 0], 0, { if (random 1 < 0.5) exitWith { deleteVehicle _this }; [_this] call vehicleSetup }],
+	["CUP_I_DSHKM_NAPA", [-6.25, -9.8, 0], 180, { if (random 1 < 0.5) exitWith { deleteVehicle _this }; [_this] call vehicleSetup }],
+	["CUP_I_DSHKM_NAPA", [14.7, -0.95, 0], 90, { if (random 1 < 0.5) exitWith { deleteVehicle _this }; [_this] call vehicleSetup }],
+	["CUP_I_DSHKM_NAPA", [-16, -0.15, 0], 270, { if (random 1 < 0.5) exitWith { deleteVehicle _this }; [_this] call vehicleSetup }]
 ]
+
+// ******************************************************************************************
+// * This project is licensed under the GNU Affero GPL v3. Copyright © 2014 A3Wasteland.com *
+// ******************************************************************************************
+//	@file Name: Outpost1.sqf
+//	@file Author: JoSchaap, AgentRev
+

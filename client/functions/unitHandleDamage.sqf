@@ -10,7 +10,7 @@ _unit = _this select 0;
 
 if (_unit getVariable ["playerSpawning", false]) exitWith {0};
 
-_selection = _this select 1;
+_selection = toLower (_this select 1);
 _damage = _this select 2;
 
 if (_selection != "?") then
@@ -19,7 +19,7 @@ if (_selection != "?") then
 	_ammo = _this select 4;
 
 	// Reduce impact damage (from vehicle collisions and falling)
-	if (_ammo == "" && (isNull _source || _source == player)) then
+	if (_ammo == "" && (isNull _source || _source == _unit)) then
 	{
 		_oldDamage = if (_selection == "") then { damage _unit } else { _unit getHit _selection };
 

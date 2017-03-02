@@ -49,7 +49,7 @@ class ScoreGUI : IGUIBack
 		class PListTopBG : IGUIBack
 		{
 			idc = -1;
-			colorBackground[] = {0.25, 0.51, 0.96, 0.8};
+			colorBackground[] = {A3W_UICOLOR_R, A3W_UICOLOR_G, A3W_UICOLOR_B, 0.8};
 
 			#define PListTopBG_H (0.05 * Y_SCALE)
 
@@ -195,11 +195,11 @@ class ScoreGUI : IGUIBack
 		#define PListEntryText2_Y PListEntry_Name_Y
 
 		#define PListEntry_TColor_W (0.01 * X_SCALE)
-		#define PListEntry_PKills_W (0.04 * X_SCALE)
-		#define PListEntry_AIKills_W (0.04 * X_SCALE)
-		#define PListEntry_Deaths_W (0.04 * X_SCALE)
-		#define PListEntry_Revives_W (0.04 * X_SCALE)
-		#define PListEntry_Captures_W (0.04 * X_SCALE)
+		#define PListEntry_PKills_W (0.06 * X_SCALE)
+		#define PListEntry_AIKills_W (0.06 * X_SCALE)
+		#define PListEntry_Deaths_W (0.06 * X_SCALE)
+		#define PListEntry_Revives_W (0.06 * X_SCALE)
+		#define PListEntry_Captures_W (0.06 * X_SCALE)
 
 		#define TListEntryControls_X safezoneX
 
@@ -394,7 +394,7 @@ class ScoreGUI : IGUIBack
 		class TListTopBG : IGUIBack
 		{
 			idc = -1;
-			colorBackground[] = {0.25, 0.51, 0.96, 0.8};
+			colorBackground[] = {A3W_UICOLOR_R, A3W_UICOLOR_G, A3W_UICOLOR_B, 0.8};
 
 			#define TListTopBG_H (0.05 * Y_SCALE)
 

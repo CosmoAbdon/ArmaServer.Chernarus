@@ -14,8 +14,8 @@
 #define ERR_IN_VEHICLE "Repairing Failed! You can't do that in a vehicle"
 #define ERR_FULL_HEALTH "Repairing Failed! The vehicle is already repaired"
 #define ERR_DESTROYED "The vehicle is too damaged to repair"
-#define ERR_TOO_FAR_AWAY "Repairing Failed! You moved too far away from the vehicle"
-#define ERR_CANCELLED "Repairing Cancelled!"
+#define ERR_TOO_FAR_AWAY "Repairing failed! You moved too far away from the vehicle"
+#define ERR_CANCELLED "Repairing cancelled!"
 
 private ["_vehicle", "_hitPoints", "_checks", "_success"];
 _vehicle = call mf_repair_nearest_vehicle;
@@ -31,8 +31,8 @@ _checks = {
 		case (!alive player): {}; // player is dead, no need for a notification
 		case (vehicle player != player): {_text = ERR_IN_VEHICLE};
 		case (player distance _vehicle > (sizeOf typeOf _vehicle / 3) max 2): {_text = ERR_TOO_FAR_AWAY};
-		case (!alive _vehicle): {_error = ERR_DESTROYED};
-		case (damage _vehicle < 0.05 && {{_vehicle getHitPointDamage (configName _x) > 0.05} count _hitPoints == 0}): {_error = ERR_FULL_HEALTH}; // 0.2 is the threshold at which wheel damage causes slower movement
+		case (!alive _vehicle): {_text = ERR_DESTROYED};
+		case (damage _vehicle < 0.05 && {{_vehicle getHitPointDamage (configName _x) > 0.05} count _hitPoints == 0}): {_text = ERR_FULL_HEALTH}; // 0.2 is the threshold at which wheel damage causes slower movement
 		case (doCancelAction): {_text = ERR_CANCELLED; doCancelAction = false;};
 		default {
 			_text = format["Repairing %1%2 Complete", round(100 * _progress), "%"];
@@ -45,7 +45,7 @@ _checks = {
 _success = [DURATION, ANIMATION, _checks, [_vehicle]] call a3w_actions_start;
 
 if (_success) then {
-	[[netId _vehicle], "mf_remote_repair", _vehicle] call A3W_fnc_MP;
+	[netId _vehicle] remoteExec ["mf_remote_repair", _vehicle];
 	["Repairing complete!", 5] call mf_notify_client;
 };
 _success;

@@ -104,15 +104,15 @@ else
 
 {
 	_weaponClass = _x select 1;
-	_gunlistIndex = _gunlist lbAdd format ["%1", _x select 0];
-	_gunlist lbSetData [_gunlistIndex, _weaponClass];
 
-	switch (true) do
+	_parentCfg = switch (true) do
 	{
-		case (isClass (configFile >> "CfgVehicles" >> _weaponClass)):  { _parentCfg = configFile >> "CfgVehicles" };
-		case (isClass (configFile >> "CfgWeapons" >> _weaponClass)):   { _parentCfg = configFile >> "CfgWeapons" };
-		case (isClass (configFile >> "CfgMagazines" >> _weaponClass)): { _parentCfg = configFile >> "CfgMagazines" };
-		case (isClass (configFile >> "CfgGlasses" >> _weaponClass)):   { _parentCfg = configFile >> "CfgGlasses" };
+		case ("HIDDEN" in (_x select [3,999])):                        { nil };
+		case (isClass (configFile >> "CfgVehicles" >> _weaponClass)):  { configFile >> "CfgVehicles" };
+		case (isClass (configFile >> "CfgWeapons" >> _weaponClass)):   { configFile >> "CfgWeapons" };
+		case (isClass (configFile >> "CfgMagazines" >> _weaponClass)): { configFile >> "CfgMagazines" };
+		case (isClass (configFile >> "CfgGlasses" >> _weaponClass)):   { configFile >> "CfgGlasses" };
+		default { nil };
 	};
 
 	if (!isNil "_parentCfg") then
@@ -120,16 +120,18 @@ else
 		_weapon = _parentCfg >> _weaponClass;
 		_picture = getText (_weapon >> "picture");
 
+		_gunlistIndex = _gunlist lbAdd format ["%1", [_x select 0, getText (_weapon >> "displayName")] select (_x select 0 == "")];
+		_gunlist lbSetData [_gunlistIndex, _weaponClass];
+	
 		// Show scope on sniper rifle pictures
-		if (["_SOS_F", _weaponClass] call fn_findString != -1) then
+		if ([["_SOS_F", "_LRPS_F"], _weaponClass] call fn_findString != -1) then
 		{
-			private ["_picArr", "_picLen"];
 			_picArr = toArray _picture;
-			_picLen = count _picArr;
+			_picLen = count _picture;
 
-			if (toString [_picArr select (_picLen - 8)] == "X") then
+			if (_picture find "\icon_" == -1 && _picture select [_picLen - 9, 2] == "_X") then
 			{
-				_picArr set [(_picLen - 8), (toArray "T") select 0];
+				_picArr set [_picLen - 8, (toArray "T") select 0];
 				_picture = toString _picArr;
 			};
 		};
@@ -138,5 +140,7 @@ else
 		{
 			_gunlist lbSetPicture [_gunlistIndex, _picture];
 		};
+
+		[_x, _parentCfg, _gunlist, _gunlistIndex] call fn_checkStoreItemDLC;
 	};
 } forEach _itemsArray;

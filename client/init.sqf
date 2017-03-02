@@ -22,18 +22,14 @@ showPlayerIcons = true;
 mutexScriptInProgress = false;
 respawnDialogActive = false;
 groupManagmentActive = false;
-pvar_PlayerTeamKiller = objNull;
+pvar_PlayerTeamKiller = [];
 doCancelAction = false;
-
-//AJ Beacondetector
-BeaconScanInProgress = false;
 
 //Initialization Variables
 playerCompiledScripts = false;
 playerSetupComplete = false;
 
-waitUntil {!isNull player};
-waitUntil {time > 0.1};
+waitUntil {!isNull player && time > 0};
 
 removeAllWeapons player;
 player switchMove "";
@@ -55,11 +51,13 @@ if !(playerSide in [BLUFOR,OPFOR,INDEPENDENT]) exitWith
 //Setup player events.
 if (!isNil "client_initEH") then { player removeEventHandler ["Respawn", client_initEH] };
 player addEventHandler ["Respawn", { _this spawn onRespawn }];
-player addEventHandler ["Killed", { _this spawn onKilled }];
+player addEventHandler ["Killed", onKilled];
+
+call compile preprocessFileLineNumbers "addons\far_revive\FAR_revive_init.sqf";
 
 A3W_scriptThreads pushBack execVM "client\functions\evalManagedActions.sqf";
 
-pvar_playerRespawn = player;
+pvar_playerRespawn = [player, objNull];
 publicVariableServer "pvar_playerRespawn";
 
 //Player setup
@@ -74,7 +72,6 @@ if (["A3W_playerSaving"] call isConfigOn) then
 {
 	call compile preprocessFileLineNumbers "persistence\client\players\setupPlayerDB.sqf";
 	call fn_requestPlayerData;
-	9999 cutText ["Received Player Info", "BLACK", 0.01];
 
 	waitUntil {!isNil "playerData_loaded"};
 
@@ -90,7 +87,6 @@ if (["A3W_playerSaving"] call isConfigOn) then
 		};
 	});
 };
-
 
 if (isNil "playerData_alive") then
 {
@@ -113,36 +109,65 @@ if (count (["config_territory_markers", []] call getPublicVar) > 0) then
 //Setup player menu scroll action.
 //[] execVM "client\clientEvents\onMouseWheel.sqf";
 
+// Load custom keys from profile
+call compile preprocessFileLineNumbers "client\clientEvents\customKeys.sqf";
+
 //Setup Key Handler
 waitUntil {!isNull findDisplay 46};
 (findDisplay 46) displayAddEventHandler ["KeyDown", onKeyPress];
 (findDisplay 46) displayAddEventHandler ["KeyUp", onKeyRelease];
 
+_mouseButtonToKey = "params ['_disp','_btn']; ([_disp, _btn + 65536 + ([0,128] select (_btn isEqualTo 1))] + (_this select [4,999])) call "; // actionKeys mouse bitflag + RMB fix
+
+(findDisplay 46) displayAddEventHandler ["MouseButtonDown", _mouseButtonToKey + "onKeyPress"];
+(findDisplay 46) displayAddEventHandler ["MouseButtonUp", _mouseButtonToKey + "onKeyRelease"];
+
 call compile preprocessFileLineNumbers "client\functions\setupClientPVars.sqf";
 
 //client Executes
 A3W_scriptThreads pushBack execVM "client\systems\hud\playerHud.sqf";
-[] execVM "client\functions\initSurvival.sqf";
+
+if (["A3W_survivalSystem"] call isConfigOn) then
+{
+	execVM "client\functions\initSurvival.sqf";
+};
 
 [] spawn
 {
 	[] execVM "client\functions\createGunStoreMarkers.sqf";
+
+	if (["A3W_privateParking"] call isConfigOn) then
+	{
+		waitUntil {!isNil "parking_functions_defined"};
+	};
+
+	if (["A3W_privateStorage"] call isConfigOn) then
+	{
+		waitUntil {!isNil "storage_functions_defined"};
+	};
+
 	[] execVM "client\functions\createGeneralStoreMarkers.sqf";
 	[] execVM "client\functions\createVehicleStoreMarkers.sqf";
+	[] execVM "client\functions\createLegendMarkers.sqf";
 };
 
+A3W_clientSetupComplete = compileFinal "true";
+
 [] spawn playerSpawn;
-[] spawn playerCustomUniform;
 
 A3W_scriptThreads pushBack execVM "addons\fpsFix\vehicleManager.sqf";
 A3W_scriptThreads pushBack execVM "addons\Lootspawner\LSclientScan.sqf";
 [] execVM "client\functions\drawPlayerIcons.sqf";
-[] execVM "addons\far_revive\FAR_revive_init.sqf";
 [] execVM "addons\camera\functions.sqf";
 [] execVM "addons\UAV_Control\functions.sqf";
 
+
 call compile preprocessFileLineNumbers "client\functions\generateAtmArray.sqf";
 [] execVM "client\functions\drawPlayerMarkers.sqf";
+
+inGameUISetEventHandler ["Action", "_this call A3W_fnc_inGameUIActionEvent"];
+
+{ [_x] call fn_remotePlayerSetup } forEach allPlayers;
 
 // update player's spawn beaoon
 {
@@ -152,20 +177,4 @@ call compile preprocessFileLineNumbers "client\functions\generateAtmArray.sqf";
 		_x setVariable ["side", playerSide, true];
 	};
 } forEach pvar_spawn_beacons;
-
-{ _x call A3W_fnc_setupAntiExplode } forEach allMissionObjects "Air";
-{ _x call A3W_fnc_setupAntiExplode } forEach allMissionObjects "UGV_01_base_F";
-
-{
-	{
-		if (!isPlayer _x) then
-		{
-			_x setName ["AI","",""];
-		};
-	} forEach crew _x;
-} forEach allUnitsUAV;
-
-if (["A3W_disableArtilleryComputer"] call isConfigOn) then
-{
-  enableEngineArtillery false;
-};
+if(hasInterface) then{[] execVM "addons\statusBar\statusbar.sqf"}; 

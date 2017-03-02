@@ -15,8 +15,3 @@ if (_column == "reviveCount") then
 {
 	[_player, _column, _score] call fn_addScore;
 };
-
-if (_column == "gutCount") then
-{
-	[_player, _column, _score] call fn_addScore;
-};

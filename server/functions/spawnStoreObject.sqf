@@ -12,10 +12,10 @@ if (!isServer) exitWith {};
 scopeName "spawnStoreObject";
 private ["_player", "_class", "_marker", "_key", "_isGenStore", "_isGunStore", "_isVehStore", "_timeoutKey", "_objectID", "_playerSide", "_objectsArray", "_itemEntry", "_itemPrice", "_safePos", "_object"];
 
-_player = [_this, 0, objNull, [objNull]] call BIS_fnc_param;
-_class = [_this, 1, "", [""]] call BIS_fnc_param;
-_marker = [_this, 2, "", [""]] call BIS_fnc_param;
-_key = [_this, 3, "", [""]] call BIS_fnc_param;
+_player = param [0, objNull, [objNull]];
+_class = param [1, "", [""]];
+_marker = param [2, "", [""]];
+_key = param [3, "", [""]];
 
 _isGenStore = ["GenStore", _marker] call fn_startsWith;
 _isGunStore = ["GunStore", _marker] call fn_startsWith;
@@ -25,7 +25,8 @@ if (_key != "" && isPlayer _player && {_isGenStore || _isGunStore || _isVehStore
 {
 	_timeoutKey = _key + "_timeout";
 	_objectID = "";
-	_playerSide = side group _player;
+	private _playerGroup = group _player;
+	_playerSide = side _playerGroup;
 
 	if (_isGenStore || _isGunStore) then
 	{
@@ -98,9 +99,10 @@ if (_key != "" && isPlayer _player && {_isGenStore || _isGunStore || _isVehStore
 		};
 	};
 
-	if (!isNil "_itemEntry" && {{_x == _marker} count allMapMarkers > 0}) then
+	if (!isNil "_itemEntry" && markerShape _marker != "") then
 	{
 		_itemPrice = _itemEntry select 2;
+		_skipSave = "SKIPSAVE" in (_itemEntry select [3,999]);
 
 		/*if (_class isKindOf "Box_NATO_Ammo_F") then
 		{
@@ -129,175 +131,128 @@ if (_key != "" && isPlayer _player && {_isGenStore || _isGunStore || _isVehStore
 			_objectID = netId _object;
 			_object setVariable ["A3W_purchasedStoreObject", true];
 			_object setVariable ["ownerUID", getPlayerUID _player, true];
-//			_object lock 2; //Vehicle Locking
+			_object setVariable ["ownerName", name _player, true];
 
-			if (getNumber (configFile >> "CfgVehicles" >> _class >> "isUav") > 0) then
+			private _isUAV = (round getNumber (configFile >> "CfgVehicles" >> _class >> "isUav") > 0);
+
+			if (_isUAV) then
 			{
-				//assign AI to the vehicle so it can actually be used
 				createVehicleCrew _object;
 
-				[_object, _playerSide] spawn
+				//assign AI to the vehicle so it can actually be used
+				[_object, _playerSide, _playerGroup] spawn
 				{
-					_veh = _this select 0;
-					_side = _this select 1;
+					params ["_uav", "_playerSide", "_playerGroup"];
 
-					waitUntil {!isNull driver _veh};
+					_grp = [_uav, _playerSide, true] call fn_createCrewUAV;
 
-					//assign AI to player's side to allow terminal connection
-					(crew _veh) joinSilent createGroup _side;
-
+					if (isNull (_uav getVariable ["ownerGroupUAV", grpNull])) then
 					{
-						[[_x, ["AI","",""]], "A3W_fnc_setName", true] call A3W_fnc_MP;
-					} forEach crew _veh;
+						_uav setVariable ["ownerGroupUAV", _playerGroup, true]; // not currently used
+					};
 				};
 			};
 
-			if (_player getVariable [_timeoutKey, true]) then // Timeout
+			if (isPlayer _player && !(_player getVariable [_timeoutKey, true])) then
 			{
-				deleteVehicle _object;
+				_player setVariable [_key, _objectID, true];
+			}
+			else // Timeout
+			{
+				if (!isNil "_object") then { deleteVehicle _object };
 				breakOut "spawnStoreObject";
 			};
 
-			// Spawn remaining calls to speed up delivery confirmation
-			[_object, _safePos, _marker] spawn
+			if (_object isKindOf "AllVehicles" && !(_object isKindOf "StaticWeapon")) then
 			{
-				_object = _this select 0;
-				_safePos = _this select 1;
-				_marker = _this select 2;
+				_object setPosATL [_safePos select 0, _safePos select 1, 0.05];
+				_object setVelocity [0,0,0.01];
+				// _object spawn cleanVehicleWreck;
+				_object setVariable ["A3W_purchasedVehicle", true, true];
 
-				_isDamageable = !(_object isKindOf "ReammoBox_F"); // ({_object isKindOf _x} count ["AllVehicles", "Lamps_base_F", "Cargo_Patrol_base_F", "Cargo_Tower_base_F"] > 0);
-
-				[_object, false] call vehicleSetup;
-				_object allowDamage _isDamageable;
-				_object setVariable ["allowDamage", _isDamageable];
-
-				if (_object isKindOf "AllVehicles" && !(_object isKindOf "StaticWeapon")) then
+				if (["A3W_vehicleLocking"] call isConfigOn && !_isUAV) then
 				{
-					_object setPosATL [_safePos select 0, _safePos select 1, 0.05];
-					_object setVelocity [0,0,0.01];
-					// _object spawn cleanVehicleWreck;
-					_object setVariable ["A3W_purchasedVehicle", true, true];
+					[_object, 2] call A3W_fnc_setLockState; // Lock
+				};
+			};
+
+			_object setDir (if (_object isKindOf "Plane") then { markerDir _marker } else { random 360 });
+
+			_isDamageable = !(_object isKindOf "ReammoBox_F"); // ({_object isKindOf _x} count ["AllVehicles", "Lamps_base_F", "Cargo_Patrol_base_F", "Cargo_Tower_base_F"] > 0);
+
+			[_object] call vehicleSetup;
+			_object allowDamage _isDamageable;
+			_object setVariable ["allowDamage", _isDamageable, true];
+
+			clearBackpackCargoGlobal _object;
+
+			// don't need this anymore at all
+			/*switch (true) do
+			{
+				case ({_object isKindOf _x} count ["Box_NATO_AmmoVeh_F", "Box_East_AmmoVeh_F", "Box_IND_AmmoVeh_F"] > 0):
+				{
+					_object setAmmoCargo 5;
 				};
 
-				if (_object isKindOf "Plane") then
+				case (_object isKindOf "O_Heli_Transport_04_ammo_F"):
 				{
-					_object setDir markerDir _marker;
-
-		//A10: set/remove weapon systems
-					if (typeOf _object == "rhs_a10") then {
-						//AIM-9 Sidewinder
-						_object removeWeaponGlobal "rhs_weap_sidewinderlauncher";
-						
-						//AGM-65 Maverick
-						_object removeWeaponGlobal "rhs_weap_agm65";
-
-						//LAU-61 pod
-						_object removeWeaponGlobal "rhs_weap_ffarlauncher";
-
-						//GBU-12 Paveway II
-						_object removeWeaponGlobal "rhs_weap_gbu12";
-
-						//Flare Launcher
-						_object setAmmo ["cmflareLauncher", 96];
-					};
-	
-
-		//Su-25: set/remove weapon systems
-					if (typeOf _object == "RHS_Su25SM_vvs" || typeOf _object == "RHS_Su25SM_vvsc") then {
-						//R73 AA
-						_object removeWeaponGlobal "rhs_weap_r73_Launcher";
-						_object addMagazineGlobal "rhs_mag_gsh30_bt_250";
-
-						//S-8 Pod
-						_object removeWeaponGlobal "rhs_weap_s8";
-
-						//FAB 250
-						_object removeWeaponGlobal "rhs_weap_fab250";
-
-						//Flare Launcher
-						//_object removeWeaponGlobal "CMFlareLauncher";
-						_object setAmmo ["CMFlareLauncher", 96];
-
-					};
-
-				}
-				else
-				{
-					_object setDir random 360;
+					_object setAmmoCargo 10;
 				};
 
-				switch (true) do
+				case ({_object isKindOf _x} count ["B_Truck_01_ammo_F", "O_Truck_02_Ammo_F", "O_Truck_03_ammo_F", "I_Truck_02_ammo_F"] > 0):
 				{
-					case ({_object isKindOf _x} count ["Box_NATO_AmmoVeh_F", "Box_East_AmmoVeh_F", "Box_IND_AmmoVeh_F"] > 0):
-					{
-						_object setAmmoCargo 5;
-					};
-
-					case (_object isKindOf "O_Heli_Transport_04_ammo_F"):
-					{
-						_object setAmmoCargo 10;
-					};
-
-					case ({_object isKindOf _x} count ["B_Truck_01_ammo_F", "O_Truck_02_Ammo_F", "O_Truck_03_ammo_F", "I_Truck_02_ammo_F"] > 0):
-					{
-						_object setAmmoCargo 25;
-					};
-
-					case ({_object isKindOf _x} count ["C_Van_01_fuel_F", "I_G_Van_01_fuel_F", "O_Heli_Transport_04_fuel_F"] > 0):
-					{
-						_object setFuelCargo 10;
-					};
-
-					case ({_object isKindOf _x} count ["B_Truck_01_fuel_F", "O_Truck_02_fuel_F", "O_Truck_03_fuel_F", "I_Truck_02_fuel_F"] > 0):
-					{
-						_object setFuelCargo 25;
-					};
-
-					case (_object isKindOf "Offroad_01_repair_base_F"):
-					{
-						_object setRepairCargo 5;
-					};
-
-					case (_object isKindOf "O_Heli_Transport_04_repair_F"):
-					{
-						_object setRepairCargo 10;
-					};
-
-					case ({_object isKindOf _x} count ["B_Truck_01_Repair_F", "O_Truck_02_box_F", "O_Truck_03_repair_F", "I_Truck_02_box_F"] > 0):
-					{
-						_object setRepairCargo 25;
-					};
-					
-					case ({_object isKindOf _x} count ["Land_Pod_Heli_Transport_04_ammo_F"] > 0):
-					{
-						_object setVariable ["A3W_resupplyTruck", true, true];
-						_object addAction ["<img image='client\icons\repair.paa'/> Resupply", "client\functions\fn_resupplytruck.sqf", [], 51, true, true, "", "vehicle _this != _this && _this distance _target <= 20"];
-					};
-					
+					_object setAmmoCargo 25;
 				};
 
+				case ({_object isKindOf _x} count ["C_Van_01_fuel_F", "I_G_Van_01_fuel_F", "O_Heli_Transport_04_fuel_F"] > 0):
+				{
+					_object setFuelCargo 10;
+				};
+
+				case ({_object isKindOf _x} count ["B_Truck_01_fuel_F", "O_Truck_02_fuel_F", "O_Truck_03_fuel_F", "I_Truck_02_fuel_F"] > 0):
+				{
+					_object setFuelCargo 25;
+				};
+
+				case (_object isKindOf "Offroad_01_repair_base_F"):
+				{
+					_object setRepairCargo 5;
+				};
+
+				case (_object isKindOf "O_Heli_Transport_04_repair_F"):
+				{
+					_object setRepairCargo 10;
+				};
+
+				case ({_object isKindOf _x} count ["B_Truck_01_Repair_F", "O_Truck_02_box_F", "O_Truck_03_repair_F", "I_Truck_02_box_F"] > 0):
+				{
+					_object setRepairCargo 25;
+				};
+			};*/
+
+			if (_skipSave) then
+			{
+				_object setVariable ["A3W_skipAutoSave", true, true];
+			}
+			else
+			{
 				if (_object getVariable ["A3W_purchasedVehicle", false] && !isNil "fn_manualVehicleSave") then
 				{
 					_object call fn_manualVehicleSave;
 				};
 			};
+
+			if (_object isKindOf "AllVehicles") then
+			{
+				if (isNull group _object) then
+				{
+					_object setOwner owner _player; // tentative workaround for exploding vehicles
+				}
+				else
+				{
+					(group _object) setGroupOwner owner _player;
+				};
+			};
 		};
-	};
-
-	// [compile format ["%1 = '%2'", _key, _objectID], "BIS_fnc_spawn", _player, false] call A3W_fnc_MP;
-
-	if (_player getVariable [_timeoutKey, true]) then // Timeout
-	{
-		if (!isNil "_object") then { deleteVehicle _object };
-		breakOut "spawnStoreObject";
-	};
-
-	if (isPlayer _player) then
-	{
-		_player setVariable [_key, _objectID, true];
-	}
-	else
-	{
-		if (!isNil "_object") then { deleteVehicle _object };
 	};
 };

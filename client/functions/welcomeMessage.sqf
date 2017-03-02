@@ -23,12 +23,7 @@ switch (playerSide) do {
 		_teamicon = "client\icons\igui_side_opfor_ca.paa";
 		_teamcol = "#ff1111";
 	};
-	case INDEPENDENT: {
-		_teamrules = "STR_WL_YouAreInFFA";
-		_teamicon = "client\icons\igui_side_indep_ca.paa";
-		_teamcol = "#00ff00";
-	};
-	case sideEnemy: {
+	default {
 		_teamrules = "STR_WL_YouAreInFFA";
 		_teamicon = "client\icons\igui_side_indep_ca.paa";
 		_teamcol = "#00ff00";
@@ -48,7 +43,6 @@ _message = format ["<t shadow=""1"">%1<br/>%2<br/>%3<br/></t>",
 
 _control ctrlSetStructuredText (parseText _message);
 
-
 sleep 20;
 
 _control ctrlSetFade 1;
@@ -58,5 +52,3 @@ waitUntil {ctrlCommitted _control};
 
 _control ctrlShow false;
 _control ctrlCommit 0;
-
-uiNamespace setVariable ["BIS_fnc_guiMessage_status", false];

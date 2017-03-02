@@ -64,6 +64,12 @@ switch(_switch) do
 			_excludedItems pushBack "energydrink";
 		};
 
+		if !(["A3W_survivalSystem"] call isConfigOn) then
+		{
+			_excludedItems pushBack "water";
+			_excludedItems pushBack "cannedfood";
+		};
+
 		if (count _excludedItems > 0) then
 		{
 			_itemsArray = [_itemsArray, { !((_x select 1) in _excludedItems) }] call BIS_fnc_conditionalSelect;
@@ -91,15 +97,16 @@ _playerSideNum = switch (playerSide) do
 {
 	_weaponClass = _x select 1;
 
-	switch (true) do
+	_parentCfg = switch (true) do
 	{
-		case (isClass (configFile >> "CfgVehicles" >> _weaponClass)):  { _parentCfg = configFile >> "CfgVehicles" };
-		case (isClass (configFile >> "CfgWeapons" >> _weaponClass)):   { _parentCfg = configFile >> "CfgWeapons" };
-		case (isClass (configFile >> "CfgMagazines" >> _weaponClass)): { _parentCfg = configFile >> "CfgMagazines" };
-		case (isClass (configFile >> "CfgGlasses" >> _weaponClass)):   { _parentCfg = configFile >> "CfgGlasses" };
+		case (isClass (configFile >> "CfgVehicles" >> _weaponClass)):  { configFile >> "CfgVehicles" };
+		case (isClass (configFile >> "CfgWeapons" >> _weaponClass)):   { configFile >> "CfgWeapons" };
+		case (isClass (configFile >> "CfgMagazines" >> _weaponClass)): { configFile >> "CfgMagazines" };
+		case (isClass (configFile >> "CfgGlasses" >> _weaponClass)):   { configFile >> "CfgGlasses" };
+		default { nil };
 	};
 
-	_showItem = true;
+	_showItem = !("HIDDEN" in (_x select [3,999]));
 
 	// Side-based filtering
 	if (!isNil "_parentCfg") then
@@ -108,17 +115,26 @@ _playerSideNum = switch (playerSide) do
 		{
 			case "CfgVehicles":
 			{
-				_sideCfg = _parentCfg >> _weaponClass >> "side";
+				if ({_weaponClass isKindOf _x} count ["B_Static_Designator_01_weapon_F","O_Static_Designator_02_weapon_F"] > 0) exitWith {}; // allow everyone to buy all static designators
 
-				if (isNumber _sideCfg) then
 				{
-					_side = getNumber _sideCfg;
+					_sideCfg = call _x;
 
-					if (_side in [0,1,2] && {_side != _playerSideNum}) then
+					if (isNumber _sideCfg) then
 					{
-						_showItem = false;
+						_side = getNumber _sideCfg;
+
+						if (_side in [0,1,2] && {_side != _playerSideNum}) then
+						{
+							_showItem = false;
+						};
 					};
-				};
+				}
+				forEach
+				[
+					{ _parentCfg >> _weaponClass >> "side" },
+					{ configFile >> "CfgVehicles" >> getText (_parentCfg >> _weaponClass >> "assembleInfo" >> "assembleTo") >> "side" }
+				];
 			};
 			case "CfgWeapons":
 			{
@@ -129,9 +145,10 @@ _playerSideNum = switch (playerSide) do
 				{
 					case (_isUniform):
 					{
-						if !(player isUniformAllowed _weaponClass) then
+						if !(player isUniformAllowed _weaponClass || // indie exception for NATO jungle ghillie & thermal suit due to BIS not giving a damn
+						     (playerSide == INDEPENDENT && {{_weaponClass == _x} count ["U_B_CTRG_Soldier_F","U_B_T_FullGhillie_tna_F"] > 0})) then
 						{
-							_showItem = false;
+							_showItem = true;
 						};
 					};
 					case (isNumber _sideCfg):
@@ -148,9 +165,18 @@ _playerSideNum = switch (playerSide) do
 		};
 	};
 
+	_side = _x param [4, ""];
+
+	if !(_side isEqualType "") then { _side = "" };
+
+	if (!(_side in [str playerSide, ""]) && _side in ["WEST","EAST","GUER","CIV"]) then
+	{
+		_showItem = false;
+	};
+
 	if (_showItem) then
 	{
-		_listIndex = _itemlist lbAdd format ["%1", _x select 0];
+		_listIndex = _itemlist lbAdd format ["%1", if (!isNil "_parentCfg" && _x select 0 == "") then { getText (_parentCfg >> _weaponClass >> "displayName") } else { _x select 0 }];
 
 		if (isNil "_parentCfg") then
 		{
@@ -174,6 +200,8 @@ _playerSideNum = switch (playerSide) do
 			{
 				_itemlist lbSetPicture [_listIndex, _picture];
 			};
+
+			[_x, _parentCfg, _itemlist, _listIndex] call fn_checkStoreItemDLC;
 		};
 
 		_itemlist lbSetData [_listIndex, _weaponClass];

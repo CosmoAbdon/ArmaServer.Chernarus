@@ -3,14 +3,12 @@
 // ******************************************************************************************
 //	@file Name: getInVehicle.sqf
 //	@file Author: AgentRev
-//
-// Update: Motavar@judgement.net
-// Port: A3Wasteland 
-// Date: 4/5/15
-// 
 
-private ["_veh", "_deployStatus", "_radarStation", "_isRadarVehicle"];
+scopeName "getInVehicle";
+private "_veh";
 _veh = _this select 0;
+
+player setAnimSpeedCoef 1;
 
 if (isNil {_veh getVariable "A3W_hitPointSelections"}) then
 {
@@ -36,15 +34,6 @@ if (isNil {_veh getVariable "A3W_engineEH"}) then
 	_veh setVariable ["A3W_engineEH", _veh addEventHandler ["Engine", vehicleEngineEvent]];
 };
 
-if (_veh isKindOf "Offroad_01_repair_base_F" && isNil {_veh getVariable "A3W_serviceBeaconActions"}) then
-{
-	_veh setVariable ["A3W_serviceBeaconActions",
-	[
-		_veh addAction ["Beacons on", { (_this select 0) animate ["BeaconsServicesStart", 1] }, [], 1.5, false, true, "", "driver _target == player && _target animationPhase 'BeaconsServicesStart' < 1"],
-		_veh addAction ["Beacons off", { (_this select 0) animate ["BeaconsServicesStart", 0] }, [], 1.5, false, true, "", "driver _target == player && _target animationPhase 'BeaconsServicesStart' >= 1"]
-	]];
-};
-
 // Eject Independents of vehicle if it is already used by another group
 if !(playerSide in [BLUFOR,OPFOR]) then
 {
@@ -53,28 +42,21 @@ if !(playerSide in [BLUFOR,OPFOR]) then
 		{
 			moveOut player;
 			["You can't enter vehicles being used by enemy groups.", 5] call mf_notify_client;
+			breakOut "getInVehicle";
 		};
 	} forEach crew _veh;
 };
 
+if (_veh isKindOf "Offroad_01_repair_base_F" && isNil {_veh getVariable "A3W_serviceBeaconActions"}) then
+{
+	_veh setVariable ["A3W_serviceBeaconActions",
+	[
+		_veh addAction [localize "STR_A3_CfgVehicles_beacons_on", { (_this select 0) animate ["BeaconsServicesStart", 1] }, [], 1.5, false, true, "", "driver _target == player && _target animationPhase 'BeaconsServicesStart' < 1"],
+		_veh addAction [localize "STR_A3_CfgVehicles_beacons_off", { (_this select 0) animate ["BeaconsServicesStart", 0] }, [], 1.5, false, true, "", "driver _target == player && _target animationPhase 'BeaconsServicesStart' >= 1"]
+	]];
+};
 
+player setVariable ["lastVehicleRidden", netId _veh];
 
-//# DETECT IF RADAR VEHICLE. IF SO, DO NOT ALLOW THE CLIENT TO ENTER IF THE RADAR IS ONLINE *(because they would drive away while online)
-//===================================================================================================
-	_radarStation = (nearestobjects [getpos player, ["rhs_typhoon_vdv"],  10] select 0);
-
-	//Error Check
-	if (isNil "_radarStation") exitwith {};
-
-	_isRadarVehicle = _radarStation getVariable "isRadarVeh";
-	_deployStatus = _radarStation getVariable "deployed";
-
-	if (_isRadarVehicle) then {
-		if (_radarStation getVariable "deployed" == 1 ) exitWith { 
-				moveOut player;
-				["You can't enter vehicles with Radar enabled.", 5] call mf_notify_client;
-		};
-	};
-//===================================================================================================
-
-
+// FAR injured unit vehicle loading
+[_veh] call FAR_Drag_Load_Vehicle;

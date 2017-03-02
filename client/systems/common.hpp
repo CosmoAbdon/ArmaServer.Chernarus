@@ -341,9 +341,9 @@ class w_RscButton
 	text = "";
 	colorText[] = {1,1,1,.9};
 	colorDisabled[] = {0,0,0,1};
-	colorBackground[] = {0.2,0.41,0.78,1}; // normal
-	colorFocused[] = {0.14,0.25,0.49,1}; // pulse
-	colorBackgroundActive[] = {0.25,0.51,0.96,1}; // hover
+	colorBackground[] = {A3W_UICOLOR_R * 0.8, A3W_UICOLOR_G * 0.8, A3W_UICOLOR_B * 0.8, 1}; // normal
+	colorFocused[] = {A3W_UICOLOR_R * 0.55, A3W_UICOLOR_G * 0.55, A3W_UICOLOR_B * 0.55, 1}; // pulse
+	colorBackgroundActive[] = {A3W_UICOLOR_R, A3W_UICOLOR_G, A3W_UICOLOR_B, 1}; // hover
 	colorBackgroundDisabled[] = {0.3,0.3,0.3,1};
 	colorShadow[] = {0,0,0,1};
 	colorBorder[] = {0,0,0,1};
@@ -390,7 +390,7 @@ class w_RscCombo {
 	colorText[] = {0, 0, 0, 1};
 	colorBackground[] = {1, 1, 1, 1};
 	colorSelect[] = {1, 0, 0, 1};
-	colorSelectBackground[] = {0.25,0.51,0.96,0.5};
+	colorSelectBackground[] = {A3W_UICOLOR_R, A3W_UICOLOR_G, A3W_UICOLOR_B, 0.5};
 	soundSelect[] = {"", 0.000000, 1};
 	soundExpand[] = {"", 0.000000, 1};
 	soundCollapse[] = {"", 0.000000, 1};
@@ -539,7 +539,9 @@ class w_RscMapControl
 	maxSatelliteAlpha = 0.85;
 	alphaFadeStartScale = 2;
 	alphaFadeEndScale = 2;
-	fontLabel = "PuristaMedium";
+	colorTrails[] = {0.84, 0.76, 0.65, 0.15};
+	colorTrailsFill[] = {0.84, 0.76, 0.65, 0.65};
+	fontLabel = "RobotoCondensed";
 	sizeExLabel = "(((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 0.8)";
 	fontGrid = "TahomaB";
 	sizeExGrid = 0.02;
@@ -547,7 +549,7 @@ class w_RscMapControl
 	sizeExUnits = "(((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 0.8)";
 	fontNames = "EtelkaNarrowMediumPro";
 	sizeExNames = "(((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 0.8) * 2";
-	fontInfo = "PuristaMedium";
+	fontInfo = "RobotoCondensed";
 	sizeExInfo = "(((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 0.8)";
 	fontLevel = "TahomaB";
 	sizeExLevel = 0.02;
@@ -560,7 +562,7 @@ class w_RscMapControl
 		y = "SafeZoneY + safezoneH - 4.5 * ((((safezoneW / safezoneH) min 1.2) / 1.2) / 25)";
 		w = "10 * (((safezoneW / safezoneH) min 1.2) / 40)";
 		h = "3.5 * ((((safezoneW / safezoneH) min 1.2) / 1.2) / 25)";
-		font = "PuristaMedium";
+		font = "RobotoCondensed";
 		sizeEx = "(((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 0.8)";
 	};
 	class ActiveMarker {
@@ -576,6 +578,12 @@ class w_RscMapControl
 		coefMax = 1;
 	};
 	class Task {
+		taskNone = "#(argb,8,8,3)color(0,0,0,0)";
+		taskCreated = "#(argb,8,8,3)color(0,0,0,1)";
+		taskAssigned = "#(argb,8,8,3)color(1,1,1,1)";
+		taskSucceeded = "#(argb,8,8,3)color(0,1,0,1)";
+		taskFailed = "#(argb,8,8,3)color(1,0,0,1)";
+		taskCanceled = "#(argb,8,8,3)color(1,0.5,0,1)";
 		colorCreated[] = {1, 1, 1, 1};
 		colorCanceled[] = {0.7, 0.7, 0.7, 1};
 		colorDone[] = {0.7, 1, 0.3, 1};
@@ -592,9 +600,9 @@ class w_RscMapControl
 		coefMax = 1;
 	};
 	class CustomMark {
-		color[] = {0, 0, 0, 1};
+		color[] = {1, 1, 1, 1};
 		icon = "\A3\ui_f\data\map\mapcontrol\custommark_ca.paa";
-		size = 24;
+		size = 18;
 		importance = 1;
 		coefMin = 1;
 		coefMax = 1;
@@ -727,6 +735,13 @@ class w_RscMapControl
 		coefMin = 0.85;
 		coefMax = 1;
 	};
+	class LineMarker {
+		textureComboBoxColor = "#(argb,8,8,3)color(1,1,1,1)";
+		lineWidthThin = 0.008;
+		lineWidthThick = 0.014;
+		lineDistanceMin = 3e-005;
+		lineLengthMin = 5;
+	};
 	class Transmitter {
 		color[] = {1, 1, 1, 1};
 		icon = "\A3\ui_f\data\map\mapcontrol\transmitter_CA.paa";
@@ -768,20 +783,20 @@ class w_RscMapControl
 		coefMax = 1;
 	};
 	class Waypoint {
-		color[] = {0, 0, 0, 1};
-		size = 24;
+		color[] = {1, 1, 1, 1};
 		importance = 1;
 		coefMin = 1;
 		coefMax = 1;
 		icon = "\A3\ui_f\data\map\mapcontrol\waypoint_ca.paa";
+		size = 18;
 	};
 	class WaypointCompleted {
-		color[] = {0, 0, 0, 1};
-		size = 24;
+		color[] = {1, 1, 1, 1};
 		importance = 1;
 		coefMin = 1;
 		coefMax = 1;
-		icon = "\A3\ui_f\data\map\mapcontrol\waypointCompleted_ca.paa";
+		icon = "\A3\ui_f\data\map\mapcontrol\waypointcompleted_ca.paa";
+		size = 18;
 	};
 	class power {
 		icon = "\A3\ui_f\data\map\mapcontrol\power_CA.paa";

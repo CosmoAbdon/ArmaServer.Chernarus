@@ -14,61 +14,56 @@ private ["_vehicleClass", "_nbUnits"];
 _setupVars =
 {
 	_vehicleClass =
-	[
-	"RHS_BM21_MSV_01",
-	"RHS_BM21_VDV_01",
-	"RHS_BM21_VMF_01",
-	"RHS_BM21_VV_01",
-	"rhs_bmd1",
-	"rhs_bmd1k",
-	"rhs_bmd1p",
-	"rhs_bmd1pk",
-	"rhs_bmd1r",	
-	"rhs_bmd2",
-	"rhs_bmd2k",
-	"rhs_bmd2m",
-	"rhs_bmd4_vdv",
-	"rhs_bmd4m_vdv",
-	"rhs_bmd4ma_vdv",
-	"rhs_brm1k_msv",
-	"rhs_brm1k_tv",
-	"rhs_brm1k_vdv",
-	"rhs_brm1k_vv",
-	"rhs_btr60_msv",
-	"rhs_btr60_vdv",
-	"rhs_btr60_vmf",
-	"rhs_btr60_vv",
-	"rhs_btr70_msv",
-	"rhs_btr70_vdv",
-	"rhs_btr70_vmf",
-	"rhs_btr70_vv",
-	"rhs_btr80_msv",
-	"rhs_btr80_vdv",
-	"rhs_btr80_vmf",
-	"rhs_btr80_vv",
-	"rhs_btr80a_msv",
-	"rhs_btr80a_vdv",
-	"rhs_btr80a_vmf",
-	"rhs_btr80a_vv",
-	"rhsusf_m113_usarmy",
-	"rhsusf_m113d_usarmy",
-	"RHS_M2A2_wd",
-	"RHS_M2A2",
-	"RHS_M2A2_BUSKI_wd",
-	"RHS_M2A2_BUSKI",
-	"RHS_M2A3",
-	"RHS_M2A3",
-	"RHS_M2A3_BUSKI_wd",
-	"RHS_M2A3_BUSKI",
-	"RHS_M2A3_BUSKIII_wd",
-	"RHS_M2A3_BUSKIII"
+	[	
+		"CUP_O_BMP2_RU",
+		"CUP_O_BMP2_CHDKZ",
+		"CUP_O_BMP3_RU",
+		"CUP_B_M1128_MGS_Woodland",
+		"CUP_B_M1128_MGS_Desert",
+		"CUP_B_M2Bradley_USA_D",
+		"CUP_B_M2Bradley_USA_W",
+		"CUP_B_M2A3Bradley_USA_D",
+		"CUP_B_M2A3Bradley_USA_W",
+		"CUP_B_FV432_Bulldog_GB_D",
+		"CUP_B_FV432_Bulldog_GB_W",
+		"CUP_B_FV432_Bulldog_GB_D_RWS",
+		"CUP_B_FV432_Bulldog_GB_W_RWS",
+		"CUP_B_FV510_GB_D",
+		"CUP_B_FV510_GB_W",
+		"CUP_B_FV510_GB_D_SLAT",
+		"CUP_B_M163_USA",
+		"CUP_O_ZSU23_TK",
+		"CUP_O_2S6M_RU",
+		"CUP_B_M6LineBacker_USA_D",
+		"CUP_B_M6LineBacker_USA_W"
+
+
+		/*
+		"B_APC_Wheeled_01_cannon_F",
+		"O_APC_Wheeled_02_rcws_F",
+		"I_APC_Wheeled_03_cannon_F",
+		"B_APC_Tracked_01_rcws_F",
+		"O_APC_Tracked_02_cannon_F",
+		"I_APC_tracked_03_cannon_F",
+		"B_APC_Tracked_01_AA_F",
+		"O_APC_Tracked_02_AA_F"
+		*/
 	] call BIS_fnc_selectRandom;
 
 	_missionType = switch (true) do
 	{
-		case ({_vehicleClass isKindOf _x} count ["B_APC_Tracked_01_AA_F", "O_APC_Tracked_02_AA_F"] > 0): { "Anti Aircraft Vehicle" };
-		case (_vehicleClass isKindOf "Tank_F"):                                                          { "Infantry Fighting Vehicle" };
-		default                                                                                          { "Armored Personnel Carrier" };
+		case ({_vehicleClass isKindOf _x} count ["CUP_B_M163_USA", "CUP_O_ZSU23_TK","CUP_O_2S6M_RU","CUP_B_M6LineBacker_USA_D", "CUP_B_M6LineBacker_USA_W"] > 0): { "Anti Aircraft Vehicle" };
+		case ({_vehicleClass isKindOf _x} count ["CUP_B_M2Bradley_USA_D",
+		"CUP_B_M2Bradley_USA_W",
+		"CUP_B_M2A3Bradley_USA_D",
+		"CUP_B_M2A3Bradley_USA_W",
+		"CUP_B_FV432_Bulldog_GB_D",
+		"CUP_B_FV432_Bulldog_GB_W",
+		"CUP_B_FV432_Bulldog_GB_D_RWS",
+		"CUP_B_FV432_Bulldog_GB_W_RWS",
+		"CUP_B_FV510_GB_D",
+		"CUP_B_FV510_GB_W"] > 0):{ "Infantry Fighting Vehicle" };
+		default  { "Armoured Personnel Carrier" };
 	};
 
 	_locationsArray = MissionSpawnMarkers;

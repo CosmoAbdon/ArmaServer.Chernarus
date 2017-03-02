@@ -15,8 +15,22 @@ _setupVars =
 {
 	_vehicleClass =
 	[
-		"rhsusf_m1025_w_s_mk19",
-		"rhsusf_m1025_w_s_m2"
+		"CUP_O_UAZ_SPG9_CHDKZ",
+		"CUP_O_UAZ_METIS_CHDKZ",
+		"CUP_O_Ural_ZU23_RU",
+		"CUP_O_GAZ_Vodnik_PK_RU",
+		"CUP_O_GAZ_Vodnik_BPPU_RU",
+		"CUP_O_BRDM2_CHDKZ",
+		"CUP_O_BRDM2_ATGM_CHDKZ",
+		"CUP_B_HMMWV_TOW_USMC",
+		"CUP_B_HMMWV_M2_GPK_USA",
+		"CUP_B_HMMWV_Avenger_USMC",
+		"CUP_B_HMMWV_Avenger_USA",
+		"CUP_B_RG31_M2_GC_USMC",
+		"CUP_B_RG31_M2_OD_USMC",
+		"CUP_B_RG31_Mk19_USMC",
+		"CUP_B_RG31_Mk19_OD_USMC"
+
 	] call BIS_fnc_selectRandom;
 
 	_missionType = "Light Armed Vehicle";

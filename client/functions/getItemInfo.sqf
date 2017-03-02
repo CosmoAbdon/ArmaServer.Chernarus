@@ -7,6 +7,8 @@
 //	@file Created: 12/10/2013 22:45
 //	@file Args:
 
+#define CEIL_PRICE(PRICE) (ceil ((PRICE) / 5) * 5)
+
 private ["_itemText", "_itemData", "_price", "_description", "_showAmmo", "_itemEntry", "_parentCfg", "_itemType", "_weapon"];
 
 _itemText = _this select 0;
@@ -20,7 +22,7 @@ _showAmmo = false;
 if (isNil "_itemEntry") then
 {
 	{
-		if (_itemText == _x select 0 && _itemData == _x select 1) exitWith
+		if (_itemData == _x select 1) exitWith
 		{
 			_itemEntry = _x;
 			_parentCfg = "CfgWeapons";
@@ -32,7 +34,7 @@ if (isNil "_itemEntry") then
 if (isNil "_itemEntry") then
 {
 	{
-		if (_itemText == _x select 0 && _itemData == _x select 1) exitWith
+		if (_itemData == _x select 1) exitWith
 		{
 			_itemEntry = _x;
 			_parentCfg = "CfgMagazines";
@@ -46,7 +48,7 @@ if (isNil "_itemEntry") then
 		if (!isNil "_itemEntry") exitWith {};
 
 		{
-			if (_itemText == _x select 0 && _itemData == _x select 1) exitWith
+			if (_itemData == _x select 1) exitWith
 			{
 				_itemEntry = _x;
 				_itemType = _x select 3;
@@ -69,7 +71,7 @@ if (isNil "_itemEntry") then
 		if (!isNil "_itemEntry") exitWith {};
 
 		{
-			if (_itemText == _x select 0 && _itemData == _x select 1) exitWith
+			if (_itemData == _x select 1) exitWith
 			{
 				_itemEntry = _x;
 				_parentCfg = "CfgWeapons";
@@ -84,7 +86,7 @@ if (isNil "_itemEntry") then
 		if (!isNil "_itemEntry") exitWith {};
 
 		{
-			if (_itemText == _x select 0 && _itemData == _x select 1) exitWith
+			if (_itemData == _x select 1) exitWith
 			{
 				_itemEntry = _x;
 				_parentCfg = "CfgVehicles";
@@ -131,6 +133,10 @@ if (!isNil "_itemEntry") then
 						//_name = getText (_weapon >> "displayName") + " UAV";
 						_description = "Remote-controlled quadcopter to spy on your neighbors, pre-packaged in a backpack.<br/>UAV Terminal sold separately. Ages 8+";
 					};
+					case (["_Static_Designator_", _itemType] call fn_findString != -1):
+					{
+						_description = "Remote-controlled laser designator.<br/>UAV Terminal sold separately.";
+					};
 					default
 					{
 						//_name = _itemText;
@@ -142,20 +148,24 @@ if (!isNil "_itemEntry") then
 			{
 				switch (true) do
 				{
-					case (["Default Uniform", _itemText] call fn_findString != -1):
+					case (["Default Uniform", _itemText] call fn_startsWith):
 					{
 						//_name = _itemText;
 						_description = "In case you lost your clothes";
 					};
-					case (["_GhillieSuit", _itemType] call fn_findString != -1):
+					case ([["Ghillie","_T_Sniper"], _itemType] call fn_findString != -1):
 					{
 						//_name = _itemText;
 						_description = "Disguise as a swamp monster";
 					};
-					case (["_Wetsuit", _itemType] call fn_findString != -1):
+					case ([["_Wetsuit","_survival_uniform"], _itemType] call fn_findString != -1):
 					{
 						//_name = _itemText;
 						_description = "Allows faster swimming<br/>Required to fire SDAR underwater";
+					};
+					case ([["_CTRG_Soldier","_Soldier_Viper"], _itemType] call fn_findString != -1):
+					{
+						_description = "Thermally insulated pajamas";
 					};
 					default
 					{
@@ -186,7 +196,8 @@ if (!isNil "_itemEntry") then
 
 				if (_price < 0) then
 				{
-					_price = [_itemType] call getCapacity;
+					([_itemType] call fn_getItemArmor) params ["_ballArmor", "_explArmor"];
+					_price = CEIL_PRICE(([_itemType] call getCapacity) / 2 + _ballArmor*3 + _explArmor*2); // price formula also defined in buyItems.sqf
 				};
 			};
 			case "hat":
@@ -200,6 +211,10 @@ if (!isNil "_itemEntry") then
 				if (_itemType == "G_Diving") then
 				{
 					_description = "Increases underwater visibility";
+				};
+				if (["G_Balaclava_TI_", _itemType] call fn_startsWith) then
+				{
+					_description = "Thermally insulated";
 				};
 			};
 			default

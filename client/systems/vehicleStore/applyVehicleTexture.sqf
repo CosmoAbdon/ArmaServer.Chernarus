@@ -13,9 +13,9 @@
 
 private ["_veh", "_texture", "_selections", "_textures"];
 
-_veh = [_this, 0, objNull, [objNull]] call BIS_fnc_param;
-_texture = [_this, 1, "", ["",[]]] call BIS_fnc_param;
-_selections = [_this, 2, [], [[]]] call BIS_fnc_param;
+_veh = param [0, objNull, [objNull]];
+_texture = param [1, "", ["",[]]];
+_selections = param [2, [], [[]]];
 
 if (isNull _veh || count _texture == 0) exitWith {};
 
@@ -23,8 +23,21 @@ _veh setVariable ["BIS_enableRandomization", false, true];
 
 _textures = _veh getVariable ["A3W_objectTextures", []];
 
+scopeName "applyVehicleTexture";
+
+// if _texture == ["string"], extract data from TextureSources config
+if (_texture isEqualType [] && {count _texture == 1 && _texture isEqualTypeAll ""}) then
+{
+	private _srcTextures = getArray (configFile >> "CfgVehicles" >> typeOf _veh >> "TextureSources" >> (_texture select 0) >> "textures");
+
+	if (_srcTextures isEqualTo []) exitWith { breakOut "applyVehicleTexture" };
+
+	_texture = [];
+	{ _texture pushBack [_forEachIndex, _x]	} forEach _srcTextures;
+};
+
 // Apply texture to all appropriate parts
-if (typeName _texture == "STRING") then
+if (_texture isEqualType "") then
 {
 	if (count _selections == 0) then
 	{
@@ -33,12 +46,12 @@ if (typeName _texture == "STRING") then
 			case (_veh isKindOf "Van_01_base_F"):                 { [0,1] };
 
 			case (_veh isKindOf "MRAP_01_base_F"):                { [0,2] };
-			case (_veh isKindOf "MRAP_02_base_F"):                { [0,2] };
+			case (_veh isKindOf "MRAP_02_base_F"):                { [0,1,2] };
 			case (_veh isKindOf "MRAP_03_base_F"):                { [0,1] };
 
 			case (_veh isKindOf "Truck_01_base_F"):               { [0,1,2] };
 			case (_veh isKindOf "Truck_02_base_F"):               { [0,1] };
-			case (_veh isKindOf "Truck_03_base_F"):               { [0,1] };
+			case (_veh isKindOf "Truck_03_base_F"):               { [0,1,2,3] };
 
 			case (_veh isKindOf "APC_Wheeled_01_base_F"):         { [0,2] };
 			case (_veh isKindOf "APC_Wheeled_02_base_F"):         { [0,2] };
@@ -54,13 +67,18 @@ if (typeName _texture == "STRING") then
 
 			case (_veh isKindOf "Heli_Transport_01_base_F"):      { [0,1] };
 			case (_veh isKindOf "Heli_Transport_02_base_F"):      { [0,1,2] };
-			case (_veh isKindOf "B_Heli_Transport_03_base_F"):    { [0,1] };
+			case (_veh isKindOf "Heli_Transport_03_base_F"):      { [0,1] };
 			case (_veh isKindOf "Heli_Transport_04_base_F"):      { [0,1,2,3] };
 			case (_veh isKindOf "Heli_Attack_02_base_F"):         { [0,1] };
 
+			case (_veh isKindOf "VTOL_Base_F"):                   { [0,1,2,3] };
 			case (_veh isKindOf "Plane_Base_F"):                  { [0,1] };
 
 			case (_veh isKindOf "UGV_01_rcws_base_F"):            { [0,2] };
+			case (_veh isKindOf "UAV_03_base_F"):                 { [0,1] };
+
+			case (_veh isKindOf "LSV_01_base_F"):                 { [0,2] };
+			case (_veh isKindOf "LSV_02_base_F"):                 { [0,2] };
 
 			default                                               { [0] };
 		};

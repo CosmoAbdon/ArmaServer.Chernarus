@@ -14,23 +14,18 @@ if (!isServer) exitWith {};
 // Exit if territories are not set
 if (isNil "currentTerritoryDetails" || {count currentTerritoryDetails == 0}) exitWith {};
 
-private ["_player", "_JIP", "_markers", "_markerName", "_markerTeam"];
-
-_player = _this select 0;
-_JIP = _this select 1;
-
-_markers = [];
+params ["_player", "_JIP"];
+private _markers = [];
 
 {
-	_markerName = _x select 0;
-	_markerTeam = _x select 2;
+	_x params ["_markerName", "", "_markerTeam"];
 
-	if (typeName _markerTeam == "GROUP" || {_markerTeam != sideUnknown}) then
+	if !(_markerTeam in [sideUnknown,grpNull]) then
 	{
 		_markers pushBack [_markerName, _markerTeam];
 	};
 } forEach currentTerritoryDetails;
 
-//diag_log format ["updateConnectingClients [Player: %1] [JIP: %2]", _player, _JIP];
+diag_log format ["updateConnectingClients [Player: %1] [JIP: %2]", _player, _JIP];
 
-[[[_markers, true], "territory\client\updateTerritoryMarkers.sqf"], "BIS_fnc_execVM", _player, false] call BIS_fnc_MP;
+[_markers, true] remoteExec ["A3W_fnc_updateTerritoryMarkers", _player];

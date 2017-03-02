@@ -13,18 +13,10 @@ private ["_vehicleClass", "_nbUnits"];
 
 _setupVars =
 {
-	_vehicleClass = [
-	"rhs_ka60_grey",
-	"rhs_ka60_c",
-	"RHS_Mi8mt_vdv",
-	"RHS_Mi8mt_vv",
-	"RHS_Mi8mt_vvs",
-	"RHS_Mi8mt_vvsc",
-	"rhs_uh60m_mev",
-	"rhs_uh60m_mev_d"
-	] call BIS_fnc_selectRandom;
+	_vehicleClass = 
+	["CUP_O_Mi8_CHDKZ","CUP_B_UH60M_FFV_US","CUP_B_MH60S_FFV_USMC","CUP_B_UH1D_GER_KSK","CUP_B_UH1D_GER_KSK_Des","CUP_B_CH47F_USA"] call BIS_fnc_selectRandom;
 
-	_missionType = "Transport Helicopter";
+	_missionType = "Troop Transport Helicopter";
 	_locationsArray = MissionSpawnMarkers;
 
 	_nbUnits = if (missionDifficultyHard) then { AI_GROUP_LARGE } else { AI_GROUP_MEDIUM };

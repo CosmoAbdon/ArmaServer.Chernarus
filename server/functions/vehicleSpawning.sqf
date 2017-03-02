@@ -12,20 +12,19 @@ private ["_createRandomVehicle", "_totalRadius", "_carPerMeters", "_townThreads"
 
 _createRandomVehicle =
 {
-	private ["_pos", "_minrad", "_maxrad", "_counter", "_num", "_vehicleType", "_mindist"];
+	private ["_pos", "_minrad", "_maxrad", "_counter", "_vehicleType", "_mindist"];
 	_pos = _this select 0;
 	_minrad = _this select 1;
 	_maxrad = _this select 2;
 	_counter = _this select 3;
 
-	_num = random 100;
-
-	switch (true) do
-	{
-		case (_num < 15): { _vehicleType = mediumMilitaryVehicles call BIS_fnc_selectRandom };
-		case (_num < 50): { _vehicleType = lightMilitaryVehicles call BIS_fnc_selectRandom };
-		default           { _vehicleType = civilianVehicles call BIS_fnc_selectRandom };
-	};
+	_vehicleType =
+	[
+		[A3W_smallVehicles, 0.30],
+		[civilianVehicles, 0.40],
+		[lightMilitaryVehicles, 0.15],
+		[mediumMilitaryVehicles, 0.15]
+	] call fn_selectRandomWeightedPairs call fn_selectRandomNested;
 
 	if (_vehicleType isKindOf "Quadbike_01_base_F") then {
 		_mindist = 1.5;
@@ -62,7 +61,7 @@ _startTime = diag_tickTime;
 		_pos = getMarkerPos (_town select 0);
 		_tradius = _town select 1;
 		_townname = _town select 2;
-		_vehammount = round (_tradius * _carPerMeters); // Calculates the quantity of vehicle based on the town's radius
+		_vehammount = 1 max round (_tradius * _carPerMeters); // Calculates the quantity of vehicle based on the town's radius
 		_angleIncr = 360 / _vehammount;
 		_langle = random _angleIncr;
 		//_minrad = 15;

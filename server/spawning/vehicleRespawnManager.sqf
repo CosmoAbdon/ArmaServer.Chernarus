@@ -25,7 +25,7 @@ while {true} do
 
 			// Check if vehicle is not being towed or moved
 			if (isNull (_veh getVariable ["R3F_LOG_est_transporte_par", objNull]) &&
-				isNull (_veh getVariable ["R3F_LOG_est_deplace_par", objNull])) then
+			    isNull (_veh getVariable ["R3F_LOG_est_deplace_par", objNull])) then
 			{
 				_settings = _x;
 
@@ -155,7 +155,7 @@ while {true} do
 							} forEach playableUnits;
 
 							// Is the last owner within proximity distance
-							if (isPlayer _lastOwner && {_lastDriver distance _veh <= _proxyDistance}) then
+							if (isPlayer _lastOwner && {_lastOwner distance _veh <= _proxyDistance}) then
 							{
 								// Take proximity timer extra into account
 								_proxyExtra = _proxyTimer;
@@ -209,7 +209,11 @@ while {true} do
 					};
 
 					sleep 0.1;
-					deleteVehicle _veh;
+
+					if (_veh getVariable ["ownerUID",""] isEqualTo "") then
+					{
+						deleteVehicle _veh;
+					};
 
 					if (_vehClass isKindOf "Ship_F") then
 					{

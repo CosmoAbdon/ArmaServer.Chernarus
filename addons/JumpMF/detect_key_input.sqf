@@ -4,7 +4,8 @@
 // Modified by: AgentRev
 //////////////////////////////////////////////////////////////////
 
-#define HORDE_JUMPMF_SLOWING_MULTIPLIER 0.75
+#define HORDE_JUMPMF_SLOWING_MULTIPLIER 0.9
+#define HORDE_JUMPMF_IMPUSLE 2.5
 
 private ["_pressedKey", "_handled", "_move", "_moveM", "_moveP"];
 _pressedKey = _this select 1;
@@ -27,39 +28,62 @@ if (_pressedKey in actionKeys "GetOver") then
 		{
 			horde_jumpmf_var_jumping = true;
 
-			_move spawn
+			private _prevVel = velocity player;
+			private _fatigue = getFatigue player;
+
+			[player, "AovrPercMrunSrasWrflDf"] call switchMoveGlobal;
+
+			if (currentWeapon player == "") then
 			{
-				private ["_prevMove", "_prevVel", "_fatigue", "_load"];
+				player playMoveNow "AovrPercMrunSrasWrflDf";
+			};
 
-				_prevMove = _this;
-				_prevVel = velocity player;
-				_fatigue = getFatigue player;
-				_load = loadAbs player;
+			horde_jumpmf_var_prevVel = _prevVel;
+			horde_jumpmf_var_vel1 = nil;
+			horde_jumpmf_var_vel2 = _prevVel select 2;
 
-				[player, "AovrPercMrunSrasWrflDf"] call switchMoveGlobal;
+			private _frameEvent = addMissionEventHandler ["EachFrame",
+			{
+				horde_jumpmf_var_vel1 = ((velocity player) select 2) + ([0,HORDE_JUMPMF_IMPUSLE] select isNil "horde_jumpmf_var_vel1");
+
+				// Ignore very high downward accelerations caused by step transitions, otherwise this kills the player
+				if (horde_jumpmf_var_vel1 - horde_jumpmf_var_vel2 < -7) then
+				{
+					horde_jumpmf_var_vel1 = horde_jumpmf_var_vel2;
+				};
+
+				player setVelocity
+				[
+					(horde_jumpmf_var_prevVel select 0) * HORDE_JUMPMF_SLOWING_MULTIPLIER,
+					(horde_jumpmf_var_prevVel select 1) * HORDE_JUMPMF_SLOWING_MULTIPLIER,
+					horde_jumpmf_var_vel1 min HORDE_JUMPMF_IMPUSLE
+				];
+
+				horde_jumpmf_var_vel2 = (velocity player) select 2;
+			}];
+
+			[_move, _prevVel, _fatigue, _frameEvent] spawn
+			{
+				params ["_prevMove", "_prevVel", "_fatigue", "_frameEvent"];
+				private _load = loadAbs player;
 
 				waitUntil
 				{
 					player setFatigue (_fatigue + 0.05 + (_load / 5000));
-					player setVelocity
-					[
-						(_prevVel select 0) * HORDE_JUMPMF_SLOWING_MULTIPLIER,
-						(_prevVel select 1) * HORDE_JUMPMF_SLOWING_MULTIPLIER,
-						((velocity player) select 2) min 1
-					];
 					(animationState player != "AovrPercMrunSrasWrflDf")
 				};
 
-				[player, _prevMove] call switchMoveGlobal;
+				removeMissionEventHandler ["EachFrame", _frameEvent];
+
+				/*[player, _prevMove] call switchMoveGlobal;
 				player setVelocity
 				[
 					_prevVel select 0,
 					_prevVel select 1,
 					(velocity player) select 2
-				];
+				];*/
 
 				sleep 0.5; // Cooldown
-
 				horde_jumpmf_var_jumping = false;
 			};
 

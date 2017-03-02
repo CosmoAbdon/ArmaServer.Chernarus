@@ -8,12 +8,12 @@
 
 // This function was created with the purpose of letting players know when an admin is abusing his powers
 
-if !([getPlayerUID player, 3] call isAdmin) exitWith {};
+if !((getPlayerUID player) call isAdmin) exitWith {};
 
 private ["_action", "_value", "_cfg", "_displayStr", "_message"];
 
-_action = [_this, 0, "", [""]] call BIS_fnc_param;
-_value = [_this, 1, "", [0,"",[]]] call BIS_fnc_param;
+_action = param [0, "", [""]];
+_value = param [1, "", [0,"",[]]];
 
 switch (toLower _action) do
 {

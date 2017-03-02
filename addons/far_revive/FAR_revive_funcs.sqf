@@ -3,6 +3,8 @@
 // ******************************************************************************************
 #include "FAR_defines.sqf"
 
+#define FAR_Max_Distance 2.5
+
 ////////////////////////////////////////////////
 // Player Actions
 ////////////////////////////////////////////////
@@ -13,11 +15,11 @@ FAR_Player_Actions =
 		// addAction args: title, filename, (arguments, priority, showWindow, hideOnUse, shortcut, condition, positionInModel, radius, radiusView, showIn3D, available, textDefault, textToolTip)
 		{ [player, _x] call fn_addManagedAction } forEach
 		[
-			["<t color='#00C900'>" + "Revive" + "</t>", "addons\FAR_revive\FAR_handleAction.sqf", ["action_revive"], 100, true, true, "", FAR_Check_Revive],
-			["<t color='#00C900'>" + "Stabilize" + "</t>", "addons\FAR_revive\FAR_handleAction.sqf", ["action_stabilize"], 99, true, true, "", FAR_Check_Stabilize],
-			["<t color='#C9C900'>" + "Drag" + "</t>", "addons\FAR_revive\FAR_handleAction.sqf", ["action_drag"], 98, true, true, "", FAR_Check_Dragging],
-			["<t color='#C90000'>" + "Gut" + "</t>", "addons\FAR_revive\FAR_handleAction.sqf", ["action_gut"], 97, true, true, "", FAR_Check_Dragging]
-			
+			["<t color='#FF0000'>" + "Finish off" + "</t>", "addons\FAR_revive\FAR_handleAction.sqf", ["action_slay"], 101, true, true, "", FAR_Check_Slay],
+			["<t color='#00FF00'>" + "Revive" + "</t>", "addons\FAR_revive\FAR_handleAction.sqf", ["action_revive"], 100, true, true, "", FAR_Check_Revive],
+			["<t color='#00FF00'>" + "Stabilize" + "</t>", "addons\FAR_revive\FAR_handleAction.sqf", ["action_stabilize"], 99, true, true, "", FAR_Check_Stabilize],
+			["<t color='#FFFF00'>" + "Drag" + "</t>", "addons\FAR_revive\FAR_handleAction.sqf", ["action_drag"], 98, true, true, "", FAR_Check_Dragging],
+			["<t color='#FFFF00'>" + "Eject injured units from vehicle" + "</t>", "addons\FAR_revive\FAR_handleAction.sqf", ["action_eject"], 5.2, false, true, "", FAR_Check_Eject_Injured]
 		];
 	};
 }
@@ -27,6 +29,7 @@ call mf_compile;
 // Handle Death
 ////////////////////////////////////////////////
 FAR_HandleDamage_EH = "addons\far_revive\FAR_HandleDamage_EH.sqf" call mf_compile;
+//FAR_fnc_headshotHitPartEH = "addons\far_revive\FAR_headshotHitPartEH.sqf" call mf_compile;
 
 ////////////////////////////////////////////////
 // Make Player Unconscious
@@ -43,40 +46,7 @@ FAR_Player_Unconscious = "addons\far_revive\FAR_Player_Unconscious.sqf" call mf_
 ////////////////////////////////////////////////
 FAR_HandleRevive =
 {
-	private ["_target", "_medicMove"];
-	_target = _this select 0;
-
-	if (alive _target) then
-	{
-		_target setVariable ["FAR_treatedBy", player, true];
-
-		_medicMove = format ["AinvPknlMstpSlayW%1Dnon_medic", [_target, true] call getMoveWeapon];
-		player playMove _medicMove;
-
-		waitUntil {sleep 0.1; animationState player == _medicMove || !CAN_PERFORM};
-		waitUntil {sleep 0.1; animationState player != _medicMove || !CAN_PERFORM};
-
-		if (CAN_PERFORM) then
-		{
-			_target setVariable ["FAR_isUnconscious", 0, true];
-
-			[player, "reviveCount", 1] call fn_addScore;
-
-			// [Debugging] Code below is only relevant if revive script is enabled for AI
-			if (!isPlayer _target) then
-			{
-				_target setDamage 0;
-				_target setCaptive false;
-
-				_target playMove format ["AmovPpneMstpSrasW%1Dnon", _target call getMoveWeapon];
-			};
-		};
-
-		if (_target getVariable ["FAR_treatedBy", objNull] == player) then
-		{
-			_target setVariable ["FAR_treatedBy", nil, true];
-		};
-	};
+	[_this select 0, true] call FAR_HandleTreating;
 }
 call mf_compile;
 
@@ -85,45 +55,65 @@ call mf_compile;
 ////////////////////////////////////////////////
 FAR_HandleStabilize =
 {
-	private ["_target", "_medicMove"];
-	_target = _this select 0;
-
-	if (alive _target) then
-	{
-		_target setVariable ["FAR_treatedBy", player, true];
-
-		_medicMove = format ["AinvPknlMstpSlayW%1Dnon_medic", [_target, true] call getMoveWeapon];
-		player playMove _medicMove;
-
-		waitUntil {sleep 0.1; animationState player == _medicMove || !CAN_PERFORM};
-		waitUntil {sleep 0.1; animationState player != _medicMove || !CAN_PERFORM};
-
-		if (CAN_PERFORM) then
-		{
-			_target setVariable ["FAR_isStabilized", 1, true];
-
-			if (isPlayer _target) then
-			{
-				_target setVariable ["FAR_handleStabilize", true, true];
-			}
-			else // [Debugging] Code below is only relevant if revive script is enabled for AI
-			{
-				_target setDamage 0.25;
-			};
-
-			if !("Medikit" in items player) then
-			{
-				player removeItem "FirstAidKit";
-			};
-		};
-
-		if (_target getVariable ["FAR_treatedBy", objNull] == player) then
-		{
-			_target setVariable ["FAR_treatedBy", nil, true];
-		};
-	};
+	[_this select 0, false] call FAR_HandleTreating;
 }
 call mf_compile;
+
+////////////////////////////////////////////////
+// Revive or Stabilize Player
+////////////////////////////////////////////////
+FAR_HandleTreating =
+{
+	private "_treatThread";
+	_treatThread = _this spawn
+	{
+		params ["_target", ["_revive",false]]; // _revive false = stabilize
+		private "_medicMove";
+
+		if (alive _target) then
+		{
+			_target setVariable ["FAR_treatedBy", player, true];
+			player setVariable ["FAR_isTreating", _target];
+
+			_medicMove = format ["AinvPknlMstpSlayW%1Dnon_medic", [player, true] call getMoveWeapon];
+			player playMove _medicMove;
+
+			waitUntil {sleep 0.1; animationState player == _medicMove || !CAN_PERFORM};
+			waitUntil {sleep 0.1; animationState player != _medicMove || !CAN_PERFORM};
+
+			if (CAN_PERFORM) then
+			{
+				if (_revive) then
+				{
+					_target setVariable ["FAR_isUnconscious", 0, true];
+					[player, "reviveCount", 1] call fn_addScore;
+				}
+				else
+				{
+					_target setVariable ["FAR_isStabilized", 1, true];
+					_target setVariable ["FAR_handleStabilize", true, true];
+				};
+
+				if !("Medikit" in items player) then
+				{
+					player removeItem "FirstAidKit";
+				};
+			};
+
+			if (TREATED_BY(_target) == player) then
+			{
+				_target setVariable ["FAR_treatedBy", nil, true];
+			};
+		};
+	};
+
+	waitUntil {scriptDone _treatThread};
+	player setVariable ["FAR_isTreating", nil];
+}
+call mf_compile;
+
+
+#define IS_DRAGGING_UNIT(UNIT) (alive player && |UNCONSCIOUS(player) && alive UNIT && UNCONSCIOUS(UNIT) && FAR_isDragging && DRAGGED_BY(UNIT) == player)
 
 ////////////////////////////////////////////////
 // Drag Injured Player
@@ -137,23 +127,33 @@ FAR_Drag =
 
 	FAR_isDragging = true;
 
-	private ["_target", "_id"];
+	private ["_target", "_actions"];
 	_target = _this select 0;
 
 	player playMoveNow "AcinPknlMstpSrasWrflDnon";
 
 	_target attachTo [player, [0, 1.1, 0.092]];
-	_target setDir 180;
 	_target setVariable ["FAR_draggedBy", player, true];
+	player setVariable ["FAR_isDragging", _target];
 
 	// Rotation fix
-	FAR_isDragging_EH = _target;
-	publicVariable "FAR_isDragging_EH";
+	if (local _target) then
+	{
+		["FAR_isDragging_EH", _target] call FAR_public_EH;
+	}
+	else
+	{
+		["FAR_isDragging_EH", _target] remoteExecCall ["FAR_fnc_public_EH", _target];
+	};
 
 	// Add release action and save its id so it can be removed
-	_id = player addAction ["<t color='#C90000'>" + "Release" + "</t>", "addons\FAR_revive\FAR_handleAction.sqf", ["action_release"], 10];
+	_actions =
+	[
+		[player, ["<t color='#FFFF00'>" + "Load unit in vehicle" + "</t>", "addons\FAR_revive\FAR_handleAction.sqf", ["action_load"], 103, true, true, "", FAR_Check_Load_Dragged]] call fn_addManagedAction,
+		player addAction ["<t color='#FF0000'>" + "Release" + "</t>", "addons\FAR_revive\FAR_handleAction.sqf", ["action_release"], 102]
+	];
 
-	player globalChat "Press ""C"" if you can't move.";
+	titleText [format ["Press %1 (%2) if you can't move back.", (actionKeysNamesArray "TactToggle") param [0,"<UNDEFINED>"], actionName "TactToggle"], "PLAIN DOWN", 0.5];
 	player selectWeapon primaryWeapon player;
 
 	// Drag & Carry animation fix
@@ -161,16 +161,19 @@ FAR_Drag =
 	{
 		while {FAR_isDragging} do
 		{
-			_animState = animationState player;
-
-			if (_animState == "AcinPknlMstpSrasWrflDnon_AcinPercMrunSrasWrflDnon" || _animState == "helper_switchtocarryrfl") then
+			if (vehicle player == player) then
 			{
-				[player, "AcinPknlMstpSrasWrflDnon"] call switchMoveGlobal;
-			};
+				_animState = animationState player;
 
-			if (currentWeapon player != primaryWeapon player) then
-			{
-				player selectWeapon primaryWeapon player;
+				if (_animState == "AcinPknlMstpSrasWrflDnon_AcinPercMrunSrasWrflDnon" || _animState == "helper_switchtocarryrfl") then
+				{
+					[player, "AcinPknlMstpSrasWrflDnon"] call switchMoveGlobal;
+				};
+
+				if (currentWeapon player != primaryWeapon player) then
+				{
+					player selectWeapon primaryWeapon player;
+				};
 			};
 
 			sleep 0.5;
@@ -182,13 +185,14 @@ FAR_Drag =
 
 	if (!isNull _target) then
 	{
-		detach _target;
+		if (!isNull attachedTo _target) then { detach _target };;
 		_target setVariable ["FAR_draggedBy", nil, true];
 	};
 
 	FAR_isDragging = false;
-	player playMove format ["AmovPknlMstpSrasW%1Dnon", player call getMoveWeapon];
-	player removeAction _id;
+	player setVariable ["FAR_isDragging", objNull];
+	if (vehicle player == player) then { player playMove "AmovPknlMstpSrasWrflDnon" };
+	{ [player, _x] call fn_removeManagedAction } forEach _actions;
 }
 call mf_compile;
 
@@ -198,55 +202,118 @@ FAR_Release =
 }
 call mf_compile;
 
+FAR_Drag_Load_Vehicle =
+{
+	params [["_veh",cursorTarget]];
+	private "_draggedUnit";
+	_draggedUnit = player getVariable ["FAR_isDragging", objNull];
+
+	if (alive player && alive _draggedUnit && attachedTo _draggedUnit == player) then
+	{
+		FAR_isDragging = false;
+
+		if ([_draggedUnit, _veh, true] call fn_canGetIn) then
+		{
+			_draggedUnit setVariable ["FAR_cancelAutoEject", true, true];
+			detach _draggedUnit;
+			[_draggedUnit, _veh, true] call A3W_fnc_getInFast;
+		};
+	};
+}
+call mf_compile;
+
+FAR_Eject_Injured =
+{
+	params [["_veh",cursorTarget]];
+
+	{
+		if (UNCONSCIOUS(_x) && [_x, player] call A3W_fnc_isFriendly) then
+		{
+			moveOut _x;
+			unassignVehicle _x;
+		};
+	} forEach crew _veh;
+}
+call mf_compile;
+
+FAR_Slay_Target =
+{
+	private "_target";
+	_target = call FAR_FindTarget;
+
+	if ([_target] call FAR_Check_Slay) then
+	{
+		["FAR_slayTarget", [_target, player]] remoteExecCall ["FAR_fnc_public_EH", _target];
+	};
+}
+call mf_compile;
+
 ////////////////////////////////////////////////
 // Event handler for public variables
 ////////////////////////////////////////////////
 FAR_public_EH =
 {
-	if(count _this < 2) exitWith {};
+	params ["_EH", "_value"];
 
-	_EH  = _this select 0;
-	_value = _this select 1;
-
-	// FAR_isDragging
-	if (_EH == "FAR_isDragging_EH") then
+	switch (_EH) do
 	{
-		_value setDir 180;
-	};
-
-	// FAR_deathMessage
-	if (_EH == "FAR_deathMessage") then
-	{
-		_names = _value select 0;
-		_unitName = _names select 0;
-		_killerName = [_names, 1] call BIS_fnc_param;
-		_unit = objectFromNetId (_value select 1);
-
-		if (alive _unit) then
+		case "FAR_isDragging_EH":
 		{
-			if (isNil "_killerName") then
+			if (local _value) then
 			{
-				systemChat format ["%1 was injured", toString _unitName];
+				_value setDir 180;
+				_value spawn // fix for hovering on release
+				{
+					_unit = _this;
+					waitUntil {sleep 0.1; !alive _unit || vehicle _unit != _unit || isNull attachedTo _unit};
+
+					if (alive _unit && vehicle _unit == _unit && isNull attachedTo _unit) then
+					{
+						_unit setVelocity velocity _unit;
+					};
+				};
+			};
+		};
+
+		case "FAR_deathMessage":
+		{
+			_value params [["_unit",objNull,[objNull]], ["_unitName",[],[[]]], ["_killerName",[],[[]]], ["_friendlyFire",false,[false]]];
+
+			if (alive _unit && !(_unitName isEqualTo [])) then
+			{
+				if (_killerName isEqualTo []) then
+				{
+					systemChat format ["%1 was injured", toString _unitName];
+				}
+				else
+				{
+					systemChat format ["%1 injured %2%3", toString _killerName, toString _unitName, [""," (friendly fire)"] select _friendlyFire];
+				};
+			};
+		};
+
+		case "FAR_slayTarget":
+		{
+			_value params [["_victim",objNull,[objNull]], ["_killer",objNull,[objNull]]];
+
+			if (local _victim) then
+			{
+				if (alive _victim && {!isNull _killer && _killer distance _victim <= FAR_Max_Distance}) then
+				{
+					_victim setVariable ["A3W_deathCause_local", ["slay",nil,_killer]];
+					_victim setDamage 1;
+				};
 			}
 			else
 			{
-				systemChat format ["%1 was injured by %2", toString _unitName, toString _killerName];
+				_this remoteExecCall ["FAR_fnc_public_EH", _victim];
 			};
 		};
 	};
-	
-	if (_EH == "FAR_gutMessage") then
-	{
-		_names = _value select 0;
-		_unitName = _names select 0;
-		_killerName = [_names, 1] call BIS_fnc_param;
-		_unit = objectFromNetId (_value select 1);
-
-		systemChat format ["%1 was gutted by %2", toString _unitName, toString _killerName];
-
-	};
 }
 call mf_compile;
+
+FAR_fnc_public_EH = FAR_public_EH;
 
 ////////////////////////////////////////////////
 // Suicide Action Check
@@ -257,24 +324,47 @@ FAR_Check_Suicide =
 }
 call mf_compile;
 
+#define ABDOMEN_ASL(UNIT) (AGLtoASL (UNIT modelToWorldVisual (UNIT selectionPosition "spine1")))
+#define FAR_Target_INVALID(TARGET) (!alive TARGET || (!isPlayer TARGET && !FAR_Debugging) || TARGET distance player > FAR_Max_Distance || !UNCONSCIOUS(TARGET) || BEING_TREATED(TARGET) || DRAGGED(TARGET) || \
+(TARGET != cursorTarget && {!(lineIntersectsObjs [ABDOMEN_ASL(player), ABDOMEN_ASL(TARGET), TARGET, player, false, 4] isEqualTo [])}))
+
+// lineIntersectsObjs is to check whether or not there is a wall between an imaginary line that goes from the medic's abdomen to the target's abdomen, if the target is not being aimed at directly
+
+////////////////////////////////////////////////
+// Find target for actions
+////////////////////////////////////////////////
+FAR_FindTarget =
+{
+	private ["_target", "_unit"];
+	_target = cursorTarget;
+
+	if (FAR_Target_INVALID(_target)) then
+	{
+		_target = objNull;
+
+		{
+			_unit = _x;
+			_relDir = player getRelDir _unit;
+			if (_relDir > 180) then { _relDir = _relDir - 360 };
+
+			if (abs _relDir < 45 && {!FAR_Target_INVALID(_unit)}) exitWith // medic must have target visible within a 90° horizontal FoV
+			{
+				_target = _unit;
+			};
+		} forEach ((player modelToWorldVisual [0,0,0]) nearEntities ["CAManBase", FAR_Max_Distance]);
+	};
+
+	_target
+}
+call mf_compile;
+
 ////////////////////////////////////////////////
 // Dragging Action Check
 ////////////////////////////////////////////////
 FAR_Check_Dragging =
 {
-	_target = cursorTarget;
-
-	if (isNull _target) exitWith {false};
-
 	// Make sure player is alive and target is an injured unit
-	if (!alive player || UNCONSCIOUS(player) || FAR_isDragging || isNil "_target" ||
-	   {!alive _target || (!isPlayer _target && !FAR_Debugging) || (_target distance player > 2) || !isNull (_target getVariable ["FAR_treatedBy", objNull])}) exitWith
-	{
-		false
-	};
-
-	// Make sure target is unconscious
-	UNCONSCIOUS(_target) && !DRAGGED(_target)
+	(alive player && !UNCONSCIOUS(player) && !IS_TREATING(player) && !FAR_isDragging && !isNull call FAR_FindTarget)
 }
 call mf_compile;
 
@@ -283,7 +373,10 @@ call mf_compile;
 ////////////////////////////////////////////////
 FAR_Check_Stabilize =
 {
-	call FAR_Check_Dragging && {!STABILIZED(cursorTarget) && ({_x in ["FirstAidKit","Medikit"]} count items player > 0)}
+	private _target = call FAR_FindTarget;
+
+	// do not show Stabilize if Revive is shown, unless target is enemy
+	(!IS_MEDIC(player) || !([player, _target] call A3W_fnc_isFriendly)) && FAR_Check_Dragging && {!STABILIZED(_target) && !(["FirstAidKit","Medikit"] arrayIntersect items player isEqualTo [])}
 }
 call mf_compile;
 
@@ -292,44 +385,56 @@ call mf_compile;
 ////////////////////////////////////////////////
 FAR_Check_Revive =
 {
-	call FAR_Check_Dragging && IS_MEDIC(player)
+	private _target = call FAR_FindTarget;
+
+	// do not show Revive if target is enemy
+	IS_MEDIC(player) && [player, _target] call A3W_fnc_isFriendly && FAR_Check_Dragging
 }
 call mf_compile;
 
 ////////////////////////////////////////////////
-// Gut Player Action
+// Slay Action Check
 ////////////////////////////////////////////////
- 
-FAR_Gut =
-{	
-	private ["_target", "_killer", "_unit"];
-	_target = _this select 0;
-	_killer = player;
-	
-	_medicMove = format ["AinvPknlMstpSlayW%1Dnon_medic", [_target, true] call getMoveWeapon];
-	player playMove _medicMove;
+FAR_Check_Slay =
+{
+	private _target = if (_this isEqualType []) then { param [0,objNull,[objNull]] } else { call FAR_FindTarget }; // if not array then it's an addAction condition check
 
-	waitUntil {sleep 0.1; animationState player == _medicMove || !CAN_PERFORM};
-	waitUntil {sleep 0.1; animationState player != _medicMove || !CAN_PERFORM};
-	
-	sleep 2;
-	
-	if (CAN_PERFORM) then
-	{
-		[100] call BIS_fnc_bloodEffect;
-		[player, "gutCount", 1] call fn_addScore;
-		_target allowDamage true;
-		_target setDamage 1;
-	};
+	!([_target, player] call A3W_fnc_isFriendly) && FAR_Check_Dragging
 }
 call mf_compile;
+
+////////////////////////////////////////////////
+// Load Dragged Action Check
+////////////////////////////////////////////////
+FAR_Check_Load_Dragged =
+{
+	private ["_veh", "_draggedUnit"];
+	_veh = cursorTarget;
+	_draggedUnit = player getVariable ["FAR_isDragging", objNull];
+
+	player distance _veh <= (sizeOf typeOf _veh / 3) max 2 && [_draggedUnit, _veh, true] call fn_canGetIn && [_draggedUnit, player] call A3W_fnc_isFriendly
+}
+call mf_compile;
+
+////////////////////////////////////////////////
+// Eject Injured Action Check
+////////////////////////////////////////////////
+FAR_Check_Eject_Injured =
+{
+	private "_veh";
+	_veh = cursorTarget;
+
+	player distance _veh <= (sizeOf typeOf _veh / 3) max 2 && !(_veh isKindOf "Man") && {{UNCONSCIOUS(_x) && [_x, player] call A3W_fnc_isFriendly} count crew _veh > 0}
+}
+call mf_compile;
+
 
 ////////////////////////////////////////////////
 // Show Nearby Friendly Medics
 ////////////////////////////////////////////////
 FAR_IsFriendlyMedic =
 {
-	IS_MEDIC(_this) && !UNCONSCIOUS(_this) && side _this == playerSide && {playerSide in [BLUFOR,OPFOR] || group _this == group player}
+	IS_MEDIC(_this) && !UNCONSCIOUS(_this) && [_this, player] call A3W_fnc_isFriendly
 }
 call mf_compile;
 

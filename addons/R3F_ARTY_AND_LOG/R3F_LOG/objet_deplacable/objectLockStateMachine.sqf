@@ -10,7 +10,7 @@ if(R3F_LOG_mutex_local_verrou) exitWith {
 	player globalChat STR_R3F_LOG_mutex_action_en_cours;
 };
 
-private["_locking", "_object", "_lockState", "_lockDuration", "_stringEscapePercent", "_iteration", "_unlockDuration", "_totalDuration", "_checks", "_success"];
+private["_locking", "_object", "_lockState", "_lockDuration", "_stringEscapePercent", "_iteration", "_unlockDuration", "_totalDuration", "_poiDist", "_poiMarkers", "_checks", "_success"];
 
 _object = _this select 0;
 _lockState = _this select 3;
@@ -27,6 +27,17 @@ switch (_lockState) do
 		//_lockDuration = _totalDuration;
 		//_iteration = 0;
 
+		// Points of interest
+		_poiDist = ["A3W_poiObjLockDistance", 100] call getPublicVar;
+		_poiMarkers = allMapMarkers select {markerType _x == "Empty" && {[["GenStore","GunStore","VehStore","Mission_","ForestMission_","LandConvoy_"], _x] call fn_startsWith}};
+
+		if ({(getPosASL player) vectorDistance (ATLtoASL getMarkerPos _x) < _poiDist} count _poiMarkers > 0) exitWith
+		{
+			playSound "FD_CP_Not_Clear_F";
+			[format ["You are not allowed to lock objects within %1m of stores and mission spawns", _poiDist], 5] call mf_notify_client;
+			R3F_LOG_mutex_local_verrou = false;
+		};
+
 		_checks =
 		{
 			private ["_progress", "_object", "_failed", "_text"];
@@ -41,7 +52,6 @@ switch (_lockState) do
 				case (vehicle player != player): { _text = "Action failed! You can't do this in a vehicle" };
 				case (!isNull (_object getVariable ["R3F_LOG_est_transporte_par", objNull])): { _text = "Action failed! Somebody moved the object" };
 				case (_object getVariable ["objectLocked", false]): { _text = "Somebody else locked it before you" };
-				case (count (nearestObjects [player, ["Land_Cashdesk_F"], 350]) > 0): { _text = "You are not allowed to lock objects within 350m of shops"};
 				default
 				{
 					_failed = false;

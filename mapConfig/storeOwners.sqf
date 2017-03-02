@@ -8,14 +8,11 @@
 //
 // Array contents are as follows:
 // Name, Building Position, Desk Direction (or [Desk Direction, Front Offset]), Excluded Buttons
-//
-// Motavar@judgement.net:  Set Position to 99 to skip auto buildingPos detect. This sets location to current on map
-
 storeOwnerConfig = compileFinal str
 [
 	["GenStore1", 2, 180, []],
 	["GenStore2", 0, 175, []],
-	["GenStore3", 0, 295, []],
+	["GenStore3", -1, 349, []],
 	["GenStore4", 2, 90, []],
 	["GenStore5", 0, 350, []],
 

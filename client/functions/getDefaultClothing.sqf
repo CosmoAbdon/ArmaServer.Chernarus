@@ -36,8 +36,8 @@ switch (_side) do
 		{
 			case (_isSniper):
 			{
-				if (_item == "uniform") then { _result = "U_B_Ghilliesuit" };
-				if (_item == "vest") then { _result = _defaultVest };
+				if (_item == "uniform") then { _result = "CUP_U_B_BAF_DPM_Ghillie" };
+				if (_item == "vest") then { _result = "CUP_V_B_GER_Carrier_Vest" };
 			};
 			case (_isDiver):
 			{
@@ -47,12 +47,12 @@ switch (_side) do
 			};
 			default
 			{
-				if (_item == "uniform") then { _result = "rhs_uniform_cu_ocp" };
-				if (_item == "vest") then { _result = _defaultVest };
+				if (_item == "uniform") then { _result = "CUP_U_B_BAF_DDPM_S1_RolledUp" };
+				if (_item == "vest") then { _result = "CUP_V_B_GER_Carrier_Vest" };
 			};
 		};
 
-		if (_item == "headgear") then { _result = "rhsusf_patrolcap_ocp" };
+		if (_item == "headgear") then { _result = "CUP_H_FR_BeanieGreen" };
 	};
 	case OPFOR:
 	{
@@ -60,8 +60,8 @@ switch (_side) do
 		{
 			case (_isSniper):
 			{
-				if (_item == "uniform") then { _result = "U_O_Ghilliesuit" };
-				if (_item == "vest") then { _result = _defaultVest };
+				if (_item == "uniform") then { _result = "CUP_U_O_TK_Ghillie_Top" };
+				if (_item == "vest") then { _result = "CUP_V_O_Ins_Carrier_Rig" };
 			};
 			case (_isDiver):
 			{
@@ -71,12 +71,12 @@ switch (_side) do
 			};
 			default
 			{
-				if (_item == "uniform") then { _result = "rhs_uniform_emr_patchless" };
-				if (_item == "vest") then { _result = _defaultVest };
+				if (_item == "uniform") then { _result = "CUP_U_O_TK_Officer" };
+				if (_item == "vest") then { _result = "CUP_V_O_Ins_Carrier_Rig" };
 			};
 		};
 
-		if (_item == "headgear") then { _result = "rhs_fieldcap" };
+		if (_item == "headgear") then { _result = "CUP_H_ChDKZ_Beanie" };
 	};
 	default
 	{
@@ -84,8 +84,8 @@ switch (_side) do
 		{
 			case (_isSniper):
 			{
-				if (_item == "uniform") then { _result = "U_I_Ghilliesuit" };
-				if (_item == "vest") then { _result = _defaultVest };
+				if (_item == "uniform") then { _result = "CUP_U_I_Ghillie_Top" };
+				if (_item == "vest") then { _result = "CUP_V_I_Carrier_Belt" };
 			};
 			case (_isDiver):
 			{
@@ -95,12 +95,12 @@ switch (_side) do
 			};
 			default
 			{
-				if (_item == "uniform") then { _result = "U_I_CombatUniform" };
-				if (_item == "vest") then { _result = _defaultVest };
+				if (_item == "uniform") then { _result = "CUP_U_I_GUE_Flecktarn" };
+				if (_item == "vest") then { _result = "CUP_V_I_Carrier_Belt" };
 			};
 		};
 
-		if (_item == "headgear") then { _result = "H_MilCap_dgtl" };
+		if (_item == "headgear") then { _result = "CUP_H_C_Beanie_02" };
 	};
 };
 

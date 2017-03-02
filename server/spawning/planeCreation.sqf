@@ -9,25 +9,24 @@
 
 if (!isServer) exitWith {};
 
-private ["_markerPos", "_markerDir", "_noBuzzard", "_pos", "_planeType", "_plane"];
+params ["_markerPos", "_markerDir", "_noBuzzard"];
+private ["_pos", "_planeType", "_plane"];
 
-_markerPos = _this select 0;
-_markerDir = _this select 1;
-_noBuzzard = _this select 2;
-
-_planeType = staticPlaneList call BIS_fnc_selectRandom;
+_planeType = staticPlaneList call fn_selectRandomNested;
 
 if (_noBuzzard && {_planeType isKindOf "Plane_Fighter_03_base_F"}) exitWith {};
 
 _pos = _markerPos;
 
 //Plane Initialization
-_plane = createVehicle [_planeType, _pos, [], 0, "None"];
+_plane = createVehicle [_planeType, _pos vectorAdd [0,0,0.5], [], 0, "CAN_COLLIDE"];
+
+_plane setPosATL [_pos select 0, _pos select 1, ((getPosATL _plane) select 2) - ((getPos _plane) select 2) + 0.1];
+_plane setVelocity [0,0,0.01];
+_plane setDamage 0;
 
 [_plane] call vehicleSetup;
 
-_plane setPosATL [_pos select 0, _pos select 1, ((getPosATL _plane) select 2) + 0.1];
-_plane setVelocity [0,0,0.01];
 _plane setFuel (0.4 + random 0.2);
 
 _plane setDir _markerDir;

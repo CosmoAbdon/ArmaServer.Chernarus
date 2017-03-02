@@ -9,12 +9,12 @@
 if (!isServer) exitwith {};
 #include "sideMissionDefines.sqf"
 
-private ["_nbUnits", "_box1", "_box2", "_loadout"];
+private ["_nbUnits", "_box1", "_box2"];
 
 _setupVars =
 {
 	_missionType = "Aircraft Wreck";
-	_locationsArray = MissionSpawnMarkers;
+	_locationsArray = [ForestMissionMarkers, MissionSpawnMarkers] select (ForestMissionMarkers isEqualTo []);
 	_nbUnits = if (missionDifficultyHard) then { AI_GROUP_LARGE } else { AI_GROUP_MEDIUM };
 };
 
@@ -22,19 +22,18 @@ _setupObjects =
 {
 	_missionPos = markerPos _missionLocation;
 
-	_box1 = createVehicle ["rhs_weapons_crate_ak_standard", _missionPos, [], 5, "None"];
+	_box1 = createVehicle ["Box_NATO_Wps_F", _missionPos, [], 5, "None"];
 	_box1 setDir random 360;
-	[_box1, randomMissionSpecialCargo, 1] call randomCargoFill;
+	[_box1, "mission_USSpecial"] call fn_refillbox;
 
-	_box2 = createVehicle ["rhs_weapons_crate_ak_ammo_545x39_standard", _missionPos, [], 5, "None"];
+	_box2 = createVehicle ["Box_East_Wps_F", _missionPos, [], 5, "None"];
 	_box2 setDir random 360;
-	[_box2, randomMissionExplosiveCargo, 1] call randomCargoFill;
+	[_box2, "mission_USLaunchers"] call fn_refillbox;
 
 	{ _x setVariable ["R3F_LOG_disabled", true, true] } forEach [_box1, _box2];
 
 	_aiGroup = createGroup CIVILIAN;
-	_loadout = aiLoadoutsBasic call BIS_fnc_selectRandom;
-	[_aiGroup, _missionPos, _loadout, _nbUnits] call createRandomGroup;
+	[_aiGroup, _missionPos, _nbUnits] call createCustomGroup;
 
 	_missionHintText = "A weapon cache has been spotted near the marker.";
 };

@@ -31,13 +31,6 @@ switch (true) do
 	};
 };
 
-_owner = _obj getVariable ["ownerUID", ""];
-
-if (_owner != "") then
-{
-	_variables pushBack ["ownerUID", _owner];
-};
-
 switch (true) do
 {
 	case (_obj call _isBox):
@@ -60,6 +53,8 @@ switch (true) do
 		_variables pushBack ["ownerName", toArray (_obj getVariable ["ownerName", "[Beacon]"])];
 	};
 };
+
+_owner = _obj getVariable ["ownerUID", ""];
 
 _r3fSide = _obj getVariable "R3F_Side";
 
@@ -86,7 +81,12 @@ _turretMags = [];
 
 if (_staticWeaponSavingOn && {_class call _isStaticWeapon}) then
 {
-	_turretMags = magazinesAmmo _obj;
+	{
+		if (_x select 0 != "FakeWeapon") then
+		{
+			_turretMags pushBack [_x select 0, _x select 2];
+		};
+	} forEach magazinesAllTurrets _obj;
 };
 
 _ammoCargo = getAmmoCargo _obj;
@@ -104,6 +104,7 @@ if (isNil "_repairCargo" || {!finite _repairCargo}) then { _repairCargo = 0 };
 	["Direction", _dir],
 	["Damage", _damage],
 	["AllowDamage", _allowDamage],
+	["OwnerUID", _owner],
 	["Variables", _variables],
 
 	["Weapons", _weapons],

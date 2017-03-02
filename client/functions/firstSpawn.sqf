@@ -45,6 +45,7 @@ player addEventHandler ["Put",
 					_m setVariable ["cmoney", player getVariable "cmoney", true];
 					_m setVariable ["owner", "world", true];
 					player setVariable ["cmoney", 0, true];
+					[_m] remoteExec ["A3W_fnc_setItemCleanup", 2];
 				};
 			};
 
@@ -54,6 +55,45 @@ player addEventHandler ["Put",
 }];
 
 player addEventHandler ["WeaponDisassembled", { _this spawn weaponDisassembledEvent }];
+player addEventHandler ["WeaponAssembled",
+{
+	params ["_player", "_obj"];
+
+	if (round getNumber (configFile >> "CfgVehicles" >> typeOf _obj >> "isUav") > 0) then
+	{
+		// ownerUID handled thru save funcs
+
+		_playerSide = side group _player;
+
+		if (side _obj != _playerSide) then
+		{
+			(crew _obj) joinSilent createGroup _playerSide;
+		};
+
+		if (_obj isKindOf "StaticWeapon") then
+		{
+			[_obj, _player] call fn_forceSaveObject;
+		}
+		else
+		{
+			[_obj, _player] call A3W_fnc_takeOwnership;
+		};
+
+		if (!alive getConnectedUAV _player) then
+		{
+			_player connectTerminalToUAV _obj;
+		};
+
+		if ({_obj isKindOf _x} count ["Static_Designator_01_base_F","Static_Designator_02_base_F"] > 0) then
+		{
+			_obj setAutonomous false; // disable autonomous mode by default on static designators so they stay on target after releasing controls
+		};
+
+		{
+			[_x, ["UAV","",""]] remoteExec ["A3W_fnc_setName", 0, _x]; 
+		} forEach crew _obj;
+	};
+}];
 
 player addEventHandler ["InventoryOpened",
 {
@@ -109,7 +149,7 @@ player addEventHandler ["InventoryClosed",
 		_lastVeh = _currVeh;
 
 		// Prevent usage of commander camera
-		if (cameraView == "GROUP") then
+		if (cameraView == "GROUP" && cameraOn in [player, vehicle player]) then
 		{
 			cameraOn switchCamera "EXTERNAL";
 		};
@@ -120,16 +160,17 @@ player addEventHandler ["InventoryClosed",
 
 player addEventHandler ["HandleDamage", unitHandleDamage];
 
-if (["A3W_combatAbortDelay", 0] call getPublicVar > 0) then
+if (["A3W_remoteBombStoreRadius", 0] call getPublicVar > 0) then
 {
 	player addEventHandler ["Fired",
 	{
-		// Remove remote explosives if within 100m of a store
+		// Remove explosives if within 100m of a store
 		if (_this select 1 == "Put") then
 		{
 			_ammo = _this select 4;
 
-			if ({_ammo isKindOf _x} count ["PipeBombBase", "ClaymoreDirectionalMine_Remote_Ammo"] > 0) then
+			//if ({_ammo isKindOf _x} count ["PipeBombBase", "ClaymoreDirectionalMine_Remote_Ammo"] > 0) then // "touchable" remote explosives only
+			if (_ammo isKindOf "TimeBombCore") then // all explosives
 			{
 				_mag = _this select 5;
 				_bomb = _this select 6;
@@ -139,15 +180,18 @@ if (["A3W_combatAbortDelay", 0] call getPublicVar > 0) then
 					if (_x getVariable ["storeNPC_setupComplete", false] && {_bomb distance _x < _minDist}) exitWith
 					{
 						deleteVehicle _bomb;
-						player addMagazine _mag;
+						[player, _mag] call fn_forceAddItem;
 						playSound "FD_CP_Not_Clear_F";
-						titleText [format ["You are not allowed to place remote explosives within %1m of a store.\nThe explosive has been re-added to your inventory.", _minDist], "PLAIN DOWN", 0.5];
+						titleText [format ["You are not allowed to place explosives within %1m of a store.\nThe explosive has been re-added to your inventory.", _minDist], "PLAIN DOWN", 0.5];
 					};
 				} forEach entities "CAManBase";
 			};
 		};
 	}];
+};
 
+if (["A3W_combatAbortDelay", 0] call getPublicVar > 0) then
+{
 	player addEventHandler ["FiredNear",
 	{
 		// Prevent aborting if event is not for placing an explosive
@@ -164,6 +208,10 @@ if (["A3W_combatAbortDelay", 0] call getPublicVar > 0) then
 		};
 	}];
 };
+
+// Reset fast anim speed set in fn_inGameUIActionEvent.sqf
+player addEventHandler ["GetInMan", { player setAnimSpeedCoef 1 }];
+player addEventHandler ["GetOutMan", { player setAnimSpeedCoef 1 }];
 
 _uid = getPlayerUID player;
 

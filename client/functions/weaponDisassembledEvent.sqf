@@ -8,7 +8,7 @@ _unit = _this select 0;
 _bag1 = _this select 1;
 _bag2 = _this select 2;
 
-if (_bag1 isKindOf "B_UAV_01_backpack_F") exitWith {};
+if ({_bag1 isKindOf _x} count ["B_UAV_01_backpack_F", "B_Static_Designator_01_weapon_F", "O_Static_Designator_02_weapon_F"] > 0) exitWith {};
 
 _currBag = unitBackpack _unit;
 
@@ -33,8 +33,8 @@ _this spawn
 		if (!isNull _bag1Cont && !isNull _bag2Cont) exitWith {};
 	} forEach (_unit nearEntities ["GroundWeaponHolder", 25]);
 
-	_bag1Cont hideObjectGlobal true;
-	_bag2Cont hideObjectGlobal true;
+	[_bag1Cont, true] call fn_hideObjectGlobal;
+	[_bag2Cont, true] call fn_hideObjectGlobal;
 };
 
 _unit action ["TakeBag", _bag1];
@@ -43,8 +43,8 @@ _unit action ["TakeBag", _bag1];
 pvar_waitUntilBagTaken = [_unit, _bag1];
 publicVariableServer "pvar_waitUntilBagTaken";
 
-_time = time;
-waitUntil {_unit getVariable ["waitUntilBagTaken", objNull] == _bag1 || time - _time > 3};
+_time = serverTime;
+waitUntil {_unit getVariable ["waitUntilBagTaken", objNull] == _bag1 || serverTime - _time > 3};
 
 if (unitBackpack _unit == _bag1 && _unit getVariable ["waitUntilBagTaken", objNull] == _bag1) then
 {

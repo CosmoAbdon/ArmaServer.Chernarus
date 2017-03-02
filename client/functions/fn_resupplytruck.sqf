@@ -1,444 +1,374 @@
 // ******************************************************************************************
-// * This project is licensed under the GNU Affero GPL v3. Copyright © 2014 A3Wasteland.com *
+// * This project is licensed under the GNU Affero GPL v3. Copyright © 2016 A3Wasteland.com *
 // ******************************************************************************************
-//	@file Name: fn_resupplyTruck.sqf
-//	@file Author: Wiking, AgentRev
+//  @file Name: fn_resupplyTruck.sqf
+//  @file Author: Wiking, AgentRev, micovery
 
-
-#define RESUPPLY_TRUCK_DISTANCE 40
-#define REARM_TIME_SLICE 10
+#define RESUPPLY_TRUCK_DISTANCE 20
+#define REARM_TIME_SLICE 5
 #define REPAIR_TIME_SLICE 1
 #define REFUEL_TIME_SLICE 1
-#define PRICE_RELATIONSHIP 4
+#define PRICE_RELATIONSHIP 4 // resupply price = brand-new store price divided by PRICE_RELATIONSHIP
+#define RESUPPLY_TIMEOUT 30
 
 // Check if mutex lock is active.
-if (mutexScriptInProgress) exitWith
-{
-	["You are already performing another action.", 5] call mf_notify_client;
+if (mutexScriptInProgress) exitWith {
+	titleText ["You are already performing another action.", "PLAIN DOWN", 0.5];
 };
 
 mutexScriptInProgress = true;
+doCancelAction = false;
 
-_truck = _this select 0;
-_unit = _this select 1;
+params ["", ["_unit",objNull,[objNull]]];
+
 _vehicle = vehicle _unit;
 
-//check if caller is not in vehicle
+//check if caller is in vehicle
 if (_vehicle == _unit) exitWith {};
 
-//set up prices
-_vehClass = typeOf _vehicle;
-_price = 1000; // price = 1000 for vehicles not found in vehicle store. (e.g. Static Weapons)
-
+_resupplyThread = [_vehicle, _unit] spawn
 {
-	if (_vehClass == _x select 1) exitWith
-	{
-		_price = (ceil (((_x select 2) / PRICE_RELATIONSHIP) / 5)) * 5;
-	};
-} forEach (call allVehStoreVehicles + call staticGunsArray);
-
-_text = format ["Stop engine in 10s to start resupply. Cost for service is $%1 for this vehicle. This will take some time.\nYou can always abort by getting out of the vehicle.", _price];
-[_text, 5] call mf_notify_client;
-
-uiSleep 10;
-
-if (isEngineOn _vehicle) exitWith
-{
-	["Engine still running. Service CANCELLED!", 5] call mf_notify_client;
-	mutexScriptInProgress = false;
-};
-
-/*
-if ((!isnull (gunner _vehicle)) && !(_vehicle isKindOf "StaticWeapon")) then {
-	_vehicle vehicleChat format ["Gunner must be out of seat for service! Get gunner out in 20s."];
-	sleep 10;
-	_vehicle vehicleChat format ["Gunner must be out of seat for service! Get gunner out in 10s."];
-	sleep 10;
-	if (!isnull (gunner _vehicle)) exitWith
-	{
-		_vehicle vehicleChat format ["Gunner still inside. Service CANCELED!"];
-		mutexScriptInProgress = false;
-	};
-};
-*/
-
-_resupplyThread = [_truck, _unit, _vehicle, _price] spawn
-{
-	_truck = _this select 0;
-	_unit = _this select 1;
-	_vehicle = _this select 2;
-	_price = _this select 3;
+	params ["_vehicle", "_unit"];
 
 	_vehClass = typeOf _vehicle;
 	_vehCfg = configFile >> "CfgVehicles" >> _vehClass;
 	_vehName = getText (_vehCfg >> "displayName");
+	_isUAV = (round getNumber (_vehCfg >> "isUav") >= 1);
+	_isStaticWep = _vehClass isKindOf "StaticWeapon";
 
-	scopeName "fn_resupplyTruck";
+	scopeName "resupplyTruckThread";
 
-	_titleText =
+	_price = 1000; // price = 1000 for vehicles not found in vehicle store
+
 	{
-		if (vehicle _unit == _vehicle) then
+		if (_vehClass == _x select 1) exitWith
 		{
-			titleText [_this, "PLAIN DOWN", ((REARM_TIME_SLICE max 1) / 10) max 1];
-		}
-		else
-		{
-			titleText ["", "PLAIN"];
+			_price = _x select 2;
+			_price = round (_price / PRICE_RELATIONSHIP);
 		};
-	};
+	} forEach (call allVehStoreVehicles + call staticGunsArray);
 
-
-
-
-
+	_titleText = { titleText [_this, "PLAIN DOWN", ((REARM_TIME_SLICE max 1) / 10) max 0.3] };
 
 	_checkAbortConditions =
 	{
-		// Abort everything if vehicle is no longer local, otherwise commands won't do anything
-		if (!local _vehicle) then
+		private _abortText = "";
+		private _pauseText = "";
+		private "_checkCondition";
+
+		call
 		{
-
-				//Aborted: We want to make sure they didn't acquire weapons they weren't supposed to have:
-					//A10: set/remove weapon systems
-					if (typeOf _vehicle == "rhs_a10") then {
-						//AIM-9 Sidewinder
-						_vehicle removeWeaponGlobal "rhs_weap_sidewinderlauncher";
-						
-						//AGM-65 Maverick
-						_vehicle removeWeaponGlobal "rhs_weap_agm65";
-
-						//LAU-61 pod
-						_vehicle removeWeaponGlobal "rhs_weap_ffarlauncher";
-
-						//GBU-12 Paveway II
-						_vehicle removeWeaponGlobal "rhs_weap_gbu12";
-
-						//Flare Launcher
-						_vehicle setAmmo ["cmflareLauncher", 96];
-					};
-	
-
-					//Su-25: set/remove weapon systems
-					if (typeOf _vehicle == "RHS_Su25SM_vvs" || typeOf _vehicle == "RHS_Su25SM_vvsc") then {
-						//R73 AA
-						_vehicle removeWeaponGlobal "rhs_weap_r73_Launcher";
-						_vehicle addMagazineGlobal "rhs_mag_gsh30_bt_250";
-
-						//S-8 Pod
-						_vehicle removeWeaponGlobal "rhs_weap_s8";
-
-						//FAB 250
-						_vehicle removeWeaponGlobal "rhs_weap_fab250";
-
-						//Flare Launcher
-						_vehicle setAmmo ["CMFlareLauncher", 96];
-
-					};
-
-			_crew = crew _vehicle;
-			_text = format ["Vehicle resupply aborted by %1", if (count _crew > 0 && !isStreamFriendlyUIEnabled) then { name (_crew select 0) } else { "another player" }];
-			[_text, 5] call mf_notify_client;
-			mutexScriptInProgress = false;
-			breakOut "fn_resupplyTruck";
-
-		};
-
-		// Abort everything if truck not in proximity or player gets out of vehicle
-		if (_vehicle distance _truck > RESUPPLY_TRUCK_DISTANCE || vehicle _unit != _vehicle) then
-		{
-			if (_started) then { ["Vehicle resupply aborted", 5] call mf_notify_client };
-
-				//Aborted: We want to make sure they didn't acquire weapons they weren't supposed to have:
-					//A10: set/remove weapon systems
-					if (typeOf _vehicle == "rhs_a10") then {
-						//AIM-9 Sidewinder
-						_vehicle removeWeaponGlobal "rhs_weap_sidewinderlauncher";
-						
-						//AGM-65 Maverick
-						_vehicle removeWeaponGlobal "rhs_weap_agm65";
-
-						//LAU-61 pod
-						_vehicle removeWeaponGlobal "rhs_weap_ffarlauncher";
-
-						//GBU-12 Paveway II
-						_vehicle removeWeaponGlobal "rhs_weap_gbu12";
-
-						//Flare Launcher
-						_vehicle setAmmo ["cmflareLauncher", 96];
-					};
-	
-
-					//Su-25: set/remove weapon systems
-					if (typeOf _vehicle == "RHS_Su25SM_vvs" || typeOf _vehicle == "RHS_Su25SM_vvsc") then {
-						//R73 AA
-						_vehicle removeWeaponGlobal "rhs_weap_r73_Launcher";
-						_vehicle addMagazineGlobal "rhs_mag_gsh30_bt_250";
-
-						//S-8 Pod
-						_vehicle removeWeaponGlobal "rhs_weap_s8";
-
-						//FAB 250
-						_vehicle removeWeaponGlobal "rhs_weap_fab250";
-
-						//Flare Launcher
-						_vehicle setAmmo ["CMFlareLauncher", 96];
-
-					};
-
-			mutexScriptInProgress = false;
-			breakOut "fn_resupplyTruck";
-		};
-	};
-
-
-
-
-
-	_started = false;
-	call _checkAbortConditions;
-	_started = true;
-
-	//Add cost for resupply
-	_playerMoney = player getVariable ["bmoney", 0];
-
-	if (_playerMoney < _price) exitWith
-	{
-		_text = format ["Not enough money in your BANK! You need $%1 to resupply %2. Service cancelled!", _price call fn_numbersText, _vehName];
-		[_text, 10] call mf_notify_client;
-		mutexScriptInProgress = false;
-	};
-
-	//start resupply here
-	player setVariable ["bmoney", _playerMoney - _price, true];
-
-	_text = format ["You paid $%1 to resupply %2.\nNo Refunds!\nPlease stand by...", _price call fn_numbersText, _vehName];
-	[_text, 10] call mf_notify_client;
-	[] spawn fn_savePlayerData;
-
-	_turretsArray = [[_vehCfg, [-1]]];
-	_turretsCfg = configFile >> "CfgVehicles" >> _vehClass >> "Turrets";
-
-	if (isClass _turretsCfg) then
-	{
-		_nbTurrets = count _turretsCfg;
-		_turretPath = 0;
-
-		for "_i" from 0 to (_nbTurrets - 1) do
-		{
-			_turretCfg = _turretsCfg select _i;
-
-			if (isClass _turretCfg && {getNumber (_turretCfg >> "hasGunner") > 0}) then
+			if (doCancelAction) exitWith
 			{
-				_turretsArray set [count _turretsArray, [_turretCfg, [_turretPath]]];
+				doCancelAction = false;
+				_abortText = "Cancelled by player.";
+			};
 
-				_subTurretsCfg = _turretCfg >> "Turrets";
+			if (!alive player) exitWith
+			{
+				_abortText = "You have been killed.";
+			};
 
-				if (isClass _subTurretsCfg) then
+			// Abort if vehicle is no longer local, otherwise commands won't do anything
+			_checkCondition = {!local _vehicle};
+			if (call _checkCondition) exitWith
+			{
+				_pauseText = "Take back control of the vehicle.";
+				_abortText = "Another player took control of the vehicle.";
+			};
+
+			// Abort if vehicle is destroyed
+			_checkCondition = {!alive _vehicle};
+			if (call _checkCondition) exitWith
+			{
+				_abortText = "The vehicle has been destroyed.";
+			};
+
+			// Abort if no resupply vehicle in proximity
+			_checkCondition = {{alive _x && {_x getVariable ["A3W_resupplyTruck", false]}} count (_vehicle nearEntities ["AllVehicles", RESUPPLY_TRUCK_DISTANCE]) == 0};
+			if (call _checkCondition) exitWith
+			{
+				_pauseText = "Move closer to a resupply vehicle.";
+				_abortText = "Too far from resupply vehicle.";
+			};
+
+			// Abort if player gets out of vehicle
+			_checkCondition = {vehicle _unit != _vehicle};
+			if (!_isUAV && !_isStaticWep && _checkCondition) exitWith
+			{
+				_pauseText = "Get back in the vehicle.";
+				_abortText = "You are not in the vehicle.";
+			};
+
+			// Abort if someone gets in the gunner seat
+			_checkCondition = {alive gunner _vehicle};
+			if (!_isUAV && _checkCondition) exitWith
+			{
+				_pauseText = "The gunner seat must be empty.";
+				_abortText = "Someone is in the gunner seat.";
+			};
+		};
+
+		if (_pauseText != "") then
+		{
+			private "_i";
+
+			for [{_i = RESUPPLY_TIMEOUT}, {_i > 0 && _checkCondition && !doCancelAction}, {_i = _i - 1}] do
+			{
+				_vehicle setVariable ["A3W_resupplyTruckTimeout", true];
+				titleText [format ["%1\n%2", _pauseText, format ["Resupply sequence timeout in %1", _i]], "PLAIN DOWN", 0.5];
+				sleep 1;
+			};
+
+			_vehicle setVariable ["A3W_resupplyTruckTimeout", nil];
+
+			if !(call _checkCondition) then
+			{
+				_abortText = "";
+				titleText ["", "PLAIN DOWN", 0.5];
+			};
+
+			if (doCancelAction) then
+			{
+				_abortText = "Cancelled by player.";
+			};
+		};
+
+		if (_abortText != "") then
+		{
+			titleText [format ["%1\n%2", _abortText, "Resupply sequence aborted"], "PLAIN DOWN", 0.5];
+			breakTo "resupplyTruckThread";
+		};
+	};
+
+	// Check if player has enough money
+	_checkPlayerMoney =
+	{
+		if (player getVariable ["cmoney",0] < _price) then
+		{
+			_text = format ["%1\n%2", format ["Not enough money, you need $%1 to resupply %2", _price, _vehName], "Resupply sequence aborted"];
+			[_text, 10] call mf_notify_client;
+			breakTo "resupplyTruckThread";
+		};
+	};
+
+	call
+	{
+		if (_isStaticWep) then
+		{
+			_text = format ["%1\n%2", "Resupply sequence started", "Please get out of the static weapon."];
+			titleText [_text, "PLAIN DOWN", 0.5];
+			sleep 10;
+
+			call _checkAbortConditions;
+		};
+
+		call _checkPlayerMoney;
+		call _checkAbortConditions;
+
+		_vehicle setVariable ["A3W_truckResupplyEngineEH", _vehicle addEventHandler ["Engine",
+		{
+			params ["_vehicle", "_started"];
+
+			(_vehicle getVariable "A3W_truckResupplyThread") params [["_resupplyThread", scriptNull, [scriptNull]]];
+
+			if (_started && !scriptDone _resupplyThread && !(_vehicle getVariable ["A3W_resupplyTruckTimeout", false])) then
+			{
+				_vehicle engineOn false;
+			};
+		}]];
+
+		_vehicle engineOn false;
+
+		if (player getVariable ["cmoney",0] >= _price) then
+		{
+			_msg = format ["%1<br/><br/>%2", format ["It will cost you $%1 to resupply %2.", _price, _vehName], "Do you want to proceed?"];
+
+			if !([_msg, "Resupply Vehicle", true, true] call BIS_fnc_guiMessage) then
+			{
+				breakTo "resupplyTruckThread";
+			};
+		};
+
+		call _checkAbortConditions;
+		call _checkPlayerMoney;
+
+		//start resupply here
+		player setVariable ["cmoney", (player getVariable ["cmoney",0]) - _price, true];
+		_text = format ["%1\n%2", format ["You paid $%1 to resupply %2.", _price, _vehName], "Please stand by..."];
+		[_text, 10] call mf_notify_client;
+		[] spawn fn_savePlayerData;
+
+		call _checkAbortConditions;
+
+		private _pathArrs = [];
+
+		// Collect turret mag data
+		{
+			_x params ["_mag", "_path", "_ammo"];
+
+			if (_mag != "FakeWeapon") then
+			{
+				_pathArr = [_pathArrs, _path] call fn_getFromPairs;
+				_new = isNil "_pathArr";
+
+				if (_new) then { _pathArr = [] };
+
+				_index = [_pathArr, _mag, 1] call fn_addToPairs;
+
+				if (_ammo < getNumber (configFile >> "CfgMagazines" >> _mag >> "count")) then
 				{
-					_nbSubTurrets = count _subTurretsCfg;
-					_subTurretPath = 0;
-
-					for "_j" from 0 to (_nbSubTurrets - 1) do
-					{
-						_subTurretCfg = _subTurretsCfg select _j;
-
-						if (isClass _subTurretCfg && {getNumber (_subTurretCfg >> "hasGunner") > 0}) then
-						{
-							_turretsArray set [count _turretsArray, [_subTurretCfg, [_turretPath, _subTurretPath]]];
-							_subTurretPath = _subTurretPath + 1;
-						};
-					};
+					(_pathArr select _index) set [2, true]; // mark mag for reload
 				};
 
-				_turretPath = _turretPath + 1;
+				if (_new) then { _pathArrs pushBack [_path, _pathArr] };
 			};
-		};
-	};
+		} forEach magazinesAllTurrets _vehicle;
 
-	sleep (REARM_TIME_SLICE / 2);
-	call _checkAbortConditions;
+		_checkDone = true;
 
-	/*_engineOn = false;
-
-	if !(_vehicle isKindOf "Air") then
-	{
-		_engineOn = isEngineOn _vehicle;
-		_vehicle engineOn false;
-		_unit action ["EngineOff", _vehicle];
-	};*/
-
-	{
-		_turretCfg = _x select 0;
-		_turretPath = _x select 1;
-		_turretMags = getArray (_turretCfg >> "magazines");
-		_turretMagPairs = [];
-
-		{ [_turretMagPairs, _x, 1] call fn_addToPairs } forEach _turretMags;
-
+		// Reload turret mags
 		{
-			_mag = _x select 0;
-			_ammo = _x select 1;
+			_x params ["_path", "_magPairs"];
 
-			if (_ammo >= getNumber (configFile >> "CfgMagazines" >> _mag >> "count")) then
 			{
+				_x params ["_mag", "_qty", ["_notFull", false]];
+
+				if (_notFull) then
 				{
-					if (_x select 0 == _mag) exitWith
+					if (_checkDone) then
 					{
-						_count = if (count _x > 2) then { _x select 2 } else { 0 };
-						_x set [2, _count + 1];
+						_checkDone = false;
+						sleep 3;
 					};
-				} forEach _turretMagPairs;
-			};
-		} forEach magazinesAmmo _vehicle;
 
-		{
-			_mag = _x select 0;
-			_qty = _x select 1;
-			_fullQty = if (count _x > 2) then { _x select 2 } else { 0 };
+					call _checkAbortConditions;
 
-			if (_fullQty < _qty) then
-			{
-				_vehicle removeMagazinesTurret [_mag, _turretPath];
-
-				for "_i" from 1 to _qty do
-				{
 					_magName = getText (configFile >> "CfgMagazines" >> _mag >> "displayName");
 
-					if (_magName == "") then
-					{
-						{
-							_weaponCfg = configFile >> "CfgWeapons" >> _x;
-
-							if ({_mag == _x} count getArray (_weaponCfg >> "magazines") > 0) exitWith
-							{
-								_magName = getText (_weaponCfg >> "displayName");
-							};
-						} forEach getArray (_turretCfg >> "weapons");
-					};
-
-					_text = format ["Reloading %1...", if (_magName != "") then { _magName } else { _vehName }];
+					_text = format ["Reloading %1...", [_vehName, _magName] select (_magName != "")];
 					_text call _titleText;
 
 					sleep (REARM_TIME_SLICE / 2);
 					call _checkAbortConditions;
 
-					_vehicle addMagazineTurret [_mag, _turretPath];
+					if (_qty isEqualTo 1) then
+					{
+						_vehicle setMagazineTurretAmmo [_mag, getNumber (configFile >> "CfgMagazines" >> _mag >> "count"), _path];
+					}
+					else
+					{
+						_vehicle removeMagazinesTurret [_mag, _path];
 
-
-//motavar: maybe setting ammo amounts lower should go here?
+						private "_i";
+						for "_i" from 1 to _qty do
+						{
+							_vehicle addMagazineTurret [_mag, _path];
+						};
+					};
 
 					sleep (REARM_TIME_SLICE / 2);
-					call _checkAbortConditions;
 				};
-			};
-		} forEach _turretMagPairs;
-	} forEach _turretsArray;
+			} forEach _magPairs;
+		} forEach _pathArrs;
 
-	_vehicle setVehicleAmmoDef 1; // Full ammo reset just to be sure
+		[_vehicle, false, true, true] call A3W_fnc_setVehicleLoadout;
 
+		_checkDone = true;
 
+		(getAllHitPointsDamage _vehicle) params ["_hitPoints", "_selections", "_dmgValues"];
+		_repairSlice = if (count _hitPoints > 0) then { REPAIR_TIME_SLICE min (10 / (count _hitPoints)) } else { 0 }; // no longer than 10 seconds
 
-//Now that the vehicle ammo is loaded we are going to change some of the numbers around
-//Please reference server/functions/SpawnStoreObject, this should match the initial vehicle loadout from purchase
-
-//A10: set/remove weapon systems
-					if (typeOf _vehicle == "rhs_a10") then {
-						//AIM-9 Sidewinder
-						_vehicle removeWeaponGlobal "rhs_weap_sidewinderlauncher";
-						
-						//AGM-65 Maverick
-						_vehicle removeWeaponGlobal "rhs_weap_agm65";
-
-						//LAU-61 pod
-						_vehicle removeWeaponGlobal "rhs_weap_ffarlauncher";
-
-						//GBU-12 Paveway II
-						_vehicle removeWeaponGlobal "rhs_weap_gbu12";
-
-						//Flare Launcher
-						_vehicle setAmmo ["cmflareLauncher", 96];
-					};
+		{
 	
+			if (_dmgValues select _forEachIndex > 0.001) then
+			{
+				if (_checkDone) then
+				{
+					_checkDone = false;
+					sleep 3;
+				};
 
-		//Su-25: set/remove weapon systems
-					if (typeOf _vehicle == "RHS_Su25SM_vvs" || typeOf _vehicle == "RHS_Su25SM_vvsc") then {
-						//R73 AA
-						_vehicle removeWeaponGlobal "rhs_weap_r73_Launcher";
-						_vehicle addMagazineGlobal "rhs_mag_gsh30_bt_250";
+				call _checkAbortConditions;
 
-						//S-8 Pod
-						_vehicle removeWeaponGlobal "rhs_weap_s8";
+				"Repairing..." call _titleText;
+				sleep (_repairSlice / 2);
+				call _checkAbortConditions;
 
-						//FAB 250
-						_vehicle removeWeaponGlobal "rhs_weap_fab250";
+				if (_x != "") then
+				{
+					_vehicle setHitpointDamage [_x, 0];
+				}
+				else
+				{
+					_selName = _selections select _forEachIndex;
 
-						//Flare Launcher
-						_vehicle setAmmo ["CMFlareLauncher", 96];
-
+					if (_selName != "") then
+					{
+						_vehicle setHit [_selName, 0];
 					};
+				};
 
+				sleep (_repairSlice / 2);
+				_repaired = true;
+			};
+		} forEach _hitPoints;
 
-
-	if (damage _vehicle > 0.001) then
-	{
-		call _checkAbortConditions;
-
-		while {damage _vehicle > 0.001} do
+		if (damage _vehicle > 0.001) then
 		{
+			call _checkAbortConditions;
+
 			"Repairing..." call _titleText;
-
 			sleep 1;
-			call _checkAbortConditions;
 
-			_vehicle setDamage ((damage _vehicle) - 0.1);
+			call _checkAbortConditions;
+			_vehicle setDamage 0;
+			_repaired = true;
 		};
 
-		sleep 3;
-	};
+		_checkDone = true;
 
-	if (fuel _vehicle < 0.999) then
-	{
-		call _checkAbortConditions;
-
-		while {fuel _vehicle < 0.999} do
+		if (fuel _vehicle < 0.999 && !_isStaticWep) then
 		{
-			"Refueling..." call _titleText;
+			while {fuel _vehicle < 0.999} do
+			{
+				if (_checkDone) then
+				{
+					_checkDone = false;
+					sleep 3;
+				};
 
-			sleep REFUEL_TIME_SLICE;
-			call _checkAbortConditions;
+				call _checkAbortConditions;
 
-			_vehicle setFuel ((fuel _vehicle) + 0.1);
+				"Refueling..." call _titleText;
+				sleep (REFUEL_TIME_SLICE / 2);
+				call _checkAbortConditions;
+
+				_vehicle setFuel ((fuel _vehicle) + 0.1);
+				 sleep (REFUEL_TIME_SLICE / 2);
+			};
 		};
 
-		sleep 2;
+		titleText ["Your vehicle is ready.", "PLAIN DOWN", 0.5];
 	};
-
-	//if !(_vehicle isKindOf "Air") then
-	//{
-		_vehicle removeEventHandler ["Engine", _vehicle getVariable ["A3W_resupplyEngineEH", -1]];
-		_vehicle engineOn true; //_engineOn;
-	//};
-
-	["Your vehicle is ready!", 5] call mf_notify_client;
-	mutexScriptInProgress = false;
 };
 
-//if !(_vehicle isKindOf "Air") then
-//{
-	_vehicle setVariable ["A3W_resupplyThread", _resupplyThread];
-	_vehicle setVariable ["A3W_resupplyEngineEH", _vehicle addEventHandler ["Engine",
+_vehicle setVariable ["A3W_truckResupplyThread", _resupplyThread];
+
+// Secondary thread for cleanup in case of error in resupply thread
+[_vehicle, _resupplyThread] spawn
+{
+	params ["_vehicle", "_resupplyThread"];
+
+	waitUntil {scriptDone _resupplyThread};
+
+	_ehID = _vehicle getVariable ["A3W_truckResupplyEngineEH", -1];
+
+	if (_ehID isEqualType 0) then
 	{
-		_vehicle = _this select 0;
-		_started = _this select 1;
+		_vehicle removeEventHandler ["Engine", _ehID];
+	};
 
-		if (_started && !scriptDone (_vehicle getVariable ["A3W_resupplyThread", scriptNull])) then
-		{
-			_vehicle engineOn false;
-			player action ["EngineOff", _vehicle];
-		};
-	}]];
-//};
-
-
-
-
+	_vehicle setVariable ["A3W_truckResupplyEngineEH", nil];
+	mutexScriptInProgress = false;
+};

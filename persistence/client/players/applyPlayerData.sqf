@@ -6,48 +6,38 @@
 
 // This is where you load player status & inventory data which will be wiped upon death, for persistent variables use c_applyPlayerInfo.sqf instead
 
-private ["_data", "_name", "_value"];
+private ["_data", "_removal", "_name", "_value"];
 
 _data = _this;
+_removal = param [1, true];
 
-removeAllWeapons player;
-removeAllAssignedItems player;
-removeUniform player;
-removeVest player;
-removeBackpack player;
-removeGoggles player;
-removeHeadgear player;
+if (_removal isEqualTo false) then
+{
+	_data = param [0, [], [[]]];
+}
+else
+{
+	removeAllWeapons player;
+	removeAllAssignedItems player;
+	removeUniform player;
+	removeVest player;
+	removeBackpack player;
+	removeGoggles player;
+	removeHeadgear player;
+};
 
 {
-	_name = _x select 0;
-	_value = _x select 1;
-
-	// diag_log format ["DEBUG: applyPlayerData name:%1 value:%2", _name, _value];
-
-	if (typeName _value == "STRING") then
-	{
-		// diag_log "STRING TYPE DETECTED";
-		if (_value == "") then
-		{
-			// diag_log "EMPTY VALUE DETECTED";
-			// Null Value
-			switch (_name) do
-			{
-				case "Backpack":
-				{
-					// diag_log "Removed Backpack";
-					removeBackpack player;
-				};
-			};
-			_name = "";
-		};
-	};
+	_x params ["_name", "_value"];
 
 	switch (_name) do
 	{
-		case "": {};
 		case "Damage": { player setDamage _value };
-		case "HitPoints": { { player setHitPointDamage _x } forEach _value };
+		case "HitPoints":
+		{
+			player allowDamage true;
+			{ player setHitPointDamage _x } forEach _value;
+			player allowDamage !(player getVariable ["playerSpawning", true]);
+		};
 		case "Hunger": { hungerLevel = _value };
 		case "Thirst": { thirstLevel = _value };
 		case "Money": { player setVariable ["cmoney", _value, true] };
@@ -63,60 +53,68 @@ removeHeadgear player;
 		case "Uniform":
 		{
 			// If uniform cannot be worn by player due to different team, try to convert it, else give default instead
-			if (player isUniformAllowed _value) then
+			if (_value != "") then
 			{
-				player addUniform _value;
-			}
-			else
-			{
-				_newUniform = [player, _value] call uniformConverter;
-
-				if (player isUniformAllowed _newUniform) then
+				if (player isUniformAllowed _value || // indie exception for NATO jungle ghillie & thermal suit due to BIS not giving a damn
+				    (playerSide == INDEPENDENT && {{_value == _x} count ["U_B_CTRG_Soldier_F","U_B_T_FullGhillie_tna_F"] > 0})) then
 				{
-					player addUniform _newUniform;
+					player forceAddUniform _value;
 				}
 				else
 				{
-					player addUniform ([player, "uniform"] call getDefaultClothing);
-				}
+					_newUniform = [player, _value] call uniformConverter;
+
+					if (player isUniformAllowed _newUniform ||
+					    (playerSide == INDEPENDENT && {{_newUniform == _x} count ["U_B_CTRG_Soldier_F","U_B_T_FullGhillie_tna_F"] > 0})) then
+					{
+						player forceAddUniform _newUniform;
+					}
+					else
+					{
+						player forceAddUniform ([player, "uniform"] call getDefaultClothing);
+					}
+				};
 			};
 		};
-		case "Vest": {  player addVest _value };
+		case "Vest": { if (_value != "") then { player addVest _value } };
 		case "Backpack":
 		{
-			// diag_log "Removed Backpack";
 			removeBackpack player;
 
-			if (_value isKindOf "Weapon_Bag_Base" && !(_value isKindOf "B_UAV_01_backpack_F")) then
+			if (_value != "") then
 			{
-				// diag_log "Add Default Backpack";
-				player addBackpack "B_AssaultPack_rgr"; // NO SOUP FOR YOU
-			}
-			else
-			{
-				// diag_log "Add Backpack";
-				player addBackpack _value;
+				if (_value isKindOf "Weapon_Bag_Base" && ({_value isKindOf _x} count ["B_UAV_01_backpack_F", "B_Static_Designator_01_weapon_F", "O_Static_Designator_02_weapon_F"] == 0)) then
+				{
+					player addBackpack "B_AssaultPack_rgr"; // NO SOUP FOR YOU
+				}
+				else
+				{
+					player addBackpack _value;
+				};
 			};
 		};
-		case "Goggles": { player addGoggles _value };
+		case "Goggles": { if (_value != "") then { player addGoggles _value } };
 		case "Headgear":
 		{
 			// If wearing one of the default headgears, give the one belonging to actual team instead
-			_defHeadgear = [player, "headgear"] call getDefaultClothing;
-			_defHeadgears =
-			[
-				[typeOf player, "headgear", BLUFOR] call getDefaultClothing,
-				[typeOf player, "headgear", OPFOR] call getDefaultClothing,
-				[typeOf player, "headgear", INDEPENDENT] call getDefaultClothing
-			];
+			if (_value != "") then
+			{
+				_defHeadgear = [player, "headgear"] call getDefaultClothing;
+				_defHeadgears =
+				[
+					[typeOf player, "headgear", BLUFOR] call getDefaultClothing,
+					[typeOf player, "headgear", OPFOR] call getDefaultClothing,
+					[typeOf player, "headgear", INDEPENDENT] call getDefaultClothing
+				];
 
-			if (_value != _defHeadgear && {_defHeadgear != ""} && {{_value == _x} count _defHeadgears > 0}) then
-			{
-				player addHeadgear _defHeadgear;
-			}
-			else
-			{
-				player addHeadgear _value;
+				if (_value != _defHeadgear && {_defHeadgear != ""} && {{_value == _x} count _defHeadgears > 0}) then
+				{
+					player addHeadgear _defHeadgear;
+				}
+				else
+				{
+					player addHeadgear _value;
+				};
 			};
 		};
 		case "LoadedMagazines":
@@ -135,8 +133,7 @@ removeHeadgear player;
 			{
 				if ([player, _x] call isAssignableBinocular) then
 				{
-					// Temporary fix for http://feedback.arma3.com/view.php?id=21618
-					if (_x == "Laserdesignator" && {{_x == "Laserbatteries"} count magazines player == 0}) then
+					if (_x select [0,15] == "Laserdesignator" && {{_x == "Laserbatteries"} count magazines player == 0}) then
 					{
 						[player, "Laserbatteries"] call fn_forceAddItem;
 					};
@@ -160,7 +157,7 @@ removeHeadgear player;
 			} forEach _value;
 		};
 		case "CurrentWeapon": { player selectWeapon _value };
-		case "Stance": { [player, [player, _value] call getFullMove] call switchMoveGlobal };
+		case "Stance": { [player, [player, _value] call getFullMove] call switchMoveGlobal; uiSleep 1 }; // 1 sec sleep to ensure full stance transition before moving player to fimal location
 		case "UniformWeapons": { { (uniformContainer player) addWeaponCargoGlobal _x } forEach _value };
 		case "UniformItems": { { (uniformContainer player) addItemCargoGlobal _x } forEach _value };
 		case "UniformMagazines": { [uniformContainer player, _value] call processMagazineCargo };
@@ -172,6 +169,5 @@ removeHeadgear player;
 		case "BackpackMagazines": { [backpackContainer player, _value] call processMagazineCargo };
 		case "PartialMagazines": { { player addMagazine _x } forEach _value };
 		case "WastelandItems": { { [_x select 0, _x select 1, true] call mf_inventory_add } forEach _value };
-		default {diag_log format ["DEBUG: applyPlayerData Error: Name: %1 Value:%2", _name, _value]}
 	};
 } forEach _data;

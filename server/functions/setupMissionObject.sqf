@@ -6,21 +6,14 @@
 
 // For use in mission.sqm
 
-if (!isServer) exitWith {};
+params [["_object",objNull,[objNull]], ["_disableR3F",true,[false]], ["_straightenUp",false,[false]], ["_customCode",nil,[{}]]];
 
-private ["_object", "_r3fDisabled", "_straightenUp", "_customCode", "_pos"];
-
-_object = [_this, 0, objNull, [objNull]] call BIS_fnc_param;
-_r3fDisabled = [_this, 1, true, [true]] call BIS_fnc_param;
-_straightenUp = [_this, 2, false, [true]] call BIS_fnc_param;
-_customCode = [_this, 3, nil, [{}]] call BIS_fnc_param;
-
-if (isNull _object) exitWith {};
-
-if (_r3fDisabled) then
+if (_disableR3F) then
 {
-	_object setVariable ["R3F_LOG_disabled", true, true];
+	_object setVariable ["R3F_LOG_disabled", true];
 };
+
+if (!local _object) exitWith {};
 
 if (_straightenUp) then
 {

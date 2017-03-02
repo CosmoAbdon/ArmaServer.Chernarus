@@ -13,34 +13,83 @@ private ["_vehicleClass", "_nbUnits"];
 
 _setupVars =
 {
-	_vehicleClass =
-	[
-	"RHS_Ka52_vvs",
-	"RHS_Ka52_vvsc",
-	"RHS_Mi24P_vdv",
-	"RHS_Mi24V_vdv",
-	"RHS_Mi24P_vvs",
-	"RHS_Mi24V_vvs",
-	"RHS_Mi24P_vvsc",
-	"RHS_Mi24V_vvsc",
-	"RHS_Mi8AMT_vdv",
-	"RHS_Mi8AMT_vvs",
-	"RHS_Mi8AMT_vvsc",
-	"RHS_Mi8AMTSh_vdv",
-	"RHS_Mi8AMTSh_vvs",
-	"RHS_Mi8AMTSh_vvsc",
-	"RHS_Mi8MTV3_vdv",
-	"RHS_Mi8MTV3_vvs",
-	"RHS_Mi8MTV3_vvsc",
-	"rhs_ah64d_wd",
-	"rhs_ah64d",
-	"rhs_ch_47f",
-	"rhs_ch_47f_light",
-	"rhs_uh60m",
-	"rhs_uh60m_d"
-	] call BIS_fnc_selectRandom;
+	
+	if (count playAbleunits > 19) then
+	{
+		_vehicleClass =
+		[
+			/*
+			 "CUP_O_Mi8_SLA_2",
+			 "CUP_O_Ka52_RU",
+			 "CUP_O_Ka52_Blk_RU",
+			 "CUP_O_Mi24_D_TK",
+			 "CUP_I_Mi24_Mk3_S8_GSh_AAF",
+			 "CUP_B_AH6J_Escort_USA",
+			 "CUP_B_AH6J_Escort19_USA",
+			 "CUP_B_AH6J_AT_USA",
+			 "CUP_B_AH6J_MP_USA",
+			 "CUP_B_UH1Y_GUNSHIP_USMC",
+			 "CUP_B_AH1Z_USMC",
+			 "CUP_B_AH64D_USA",
+			 "CUP_B_AH64D_ES_USA",
+			 "CUP_B_AW159_Hellfire_GB",
+			 "CUP_B_AW159_Hellfire_RN_Blackcat"
+			 */
+			 "CUP_I_Mi24_Mk3_S8_GSh_AAF" //remove after testing
 
-	_missionType = "Armed Helicopter";
+		/*
+			"B_Heli_Light_01_armed_F",
+			"B_Heli_Transport_01_F",
+			"B_Heli_Attack_01_F",
+			"O_Heli_Light_02_F",
+			"O_Heli_Attack_02_F",
+			"I_Heli_light_03_F"
+		*/
+		] call BIS_fnc_selectRandom;
+	}
+	else
+	{
+		_vehicleClass =
+		[
+			 "CUP_O_Mi8_SLA_2",
+			 //"CUP_O_Ka52_RU",
+			 //"CUP_O_Ka52_Blk_RU",
+			 //"CUP_O_Mi24_D_TK",
+			 //"CUP_I_Mi24_Mk3_S8_GSh_AAF",
+			 "CUP_B_AH6J_Escort_USA",
+			 "CUP_B_AH6J_Escort19_USA",
+			 "CUP_B_AH6J_AT_USA",
+			 //"CUP_B_AH6J_MP_USA",
+			 "CUP_B_UH1Y_GUNSHIP_USMC",
+			 //"CUP_B_AH1Z_USMC",
+			 //"CUP_B_AH64D_USA",
+			 //"CUP_B_AH64D_ES_USA",
+			 "CUP_B_AW159_Hellfire_GB",
+			 "CUP_B_AW159_Hellfire_RN_Blackcat"
+
+		/*
+			"B_Heli_Light_01_armed_F",
+			"B_Heli_Transport_01_F",
+			"B_Heli_Attack_01_F",
+			"O_Heli_Light_02_F",
+			"O_Heli_Attack_02_F",
+			"I_Heli_light_03_F"
+		*/
+		] call BIS_fnc_selectRandom;
+	
+	
+	};
+
+	_missionType = "Attack Helicopter";
+	
+	/*
+	_missionType = switch (true) do
+	{
+		case (_vehicleClass isKindOf "B_Heli_Light_01_armed_F"): { "Experimental Attack Helicopter" };
+		default { "Attack Helicopter" };
+	};
+	*/
+	
 	_locationsArray = MissionSpawnMarkers;
 
 	_nbUnits = if (missionDifficultyHard) then { AI_GROUP_LARGE } else { AI_GROUP_MEDIUM };

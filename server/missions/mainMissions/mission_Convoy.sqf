@@ -22,8 +22,7 @@ private [
 	"_vehicleName",
 	"_numWaypoints",
 	"_box1",
-	"_box2",
-	"_loadout"
+	"_box2"
 ];
 
 _setupVars =
@@ -32,7 +31,6 @@ _setupVars =
 	_locationsArray = LandConvoyPaths;
 };
 
-_loadout = aiLoadoutsBasic call BIS_fnc_selectRandom;
 
 _setupObjects =
 {
@@ -42,9 +40,10 @@ _setupObjects =
 	// pick the vehicles for the convoy
 	_convoyVeh =
 	[
-		["rhsusf_m1025_w_s_mk19", "rhs_ural_vmf", "rhsusf_m1025_w_s_m2"],
-		["rhsusf_m1025_w_s_mk19", "rhs_ural_vmf", "rhsusf_m1025_w_s_m2"],
-		["rhsusf_m1025_w_s_mk19", "rhs_ural_vmf", "rhsusf_m1025_w_s_m2"]
+
+		["CUP_B_HMMWV_M2_USMC", "CUP_B_MTVR_USMC", "CUP_B_HMMWV_M2_USMC"],
+		["CUP_O_UAZ_MG_CHDKZ", "CUP_O_Ural_RU", "CUP_O_UAZ_MG_CHDKZ"],
+		["CUP_B_BAF_Coyote_L2A1_GB_W", "CUP_B_LR_Transport_GB_W", "CUP_B_BAF_Coyote_L2A1_GB_W"]
 	] call BIS_fnc_selectRandom;
 
 	_veh1 = _convoyVeh select 0;
@@ -66,18 +65,18 @@ _setupObjects =
 		_vehicle setDir _direction;
 		_aiGroup addVehicle _vehicle;
 
-		_soldier = [_aiGroup, _position, _loadout] call createRandomSoldier;
+		_soldier = [_aiGroup, _position] call createRandomSoldier;
 		_soldier moveInDriver _vehicle;
 
-		_soldier = [_aiGroup, _position, _loadout] call createRandomSoldier;
+		_soldier = [_aiGroup, _position] call createRandomSoldier;
 		_soldier moveInCargo [_vehicle, 0];
 
 		if !(_type isKindOf "Truck_F") then
 		{
-			_soldier = [_aiGroup, _position, _loadout] call createRandomSoldier;
+			_soldier = [_aiGroup, _position] call createRandomSoldier;
 			_soldier moveInGunner _vehicle;
 
-			_soldier = [_aiGroup, _position, _loadout] call createRandomSoldier;
+			_soldier = [_aiGroup, _position] call createRandomSoldier;
 
 			if (_vehicle emptyPositions "commander" > 0) then
 			{
@@ -146,13 +145,19 @@ _successExec =
 {
 	// Mission completed
 
-	_box1 = createVehicle ["rhs_weapons_crate_ak_standard", _lastPos, [], 2, "None"];
+	_Boxes1 = ["Box_IND_Wps_F","Box_East_Wps_F","Box_NATO_Wps_F","Box_NATO_AmmoOrd_F","Box_NATO_Grenades_F","Box_East_WpsLaunch_F","Box_NATO_WpsLaunch_F","Box_East_WpsSpecial_F","Box_NATO_WpsSpecial_F"];    
+	_currBox1 = _Boxes1 call BIS_fnc_selectRandom;
+	_box1 = createVehicle [_currBox1, _lastPos, [], 5, "None"];
 	_box1 setDir random 360;
-	[_box1, randomMissionCargo, 1] call randomCargoFill;
-
-	_box2 = createVehicle ["rhs_weapons_crate_ak_ammo_545x39_standard", _lastPos, [], 2, "None"];
+	_box1 call randomCrateLoadOutNoThermal;
+	
+	_Boxes2 = ["Box_IND_Wps_F","Box_East_Wps_F","Box_NATO_Wps_F","Box_NATO_AmmoOrd_F","Box_NATO_Grenades_F","Box_East_WpsLaunch_F","Box_NATO_WpsLaunch_F","Box_East_WpsSpecial_F","Box_NATO_WpsSpecial_F"];    
+	_currBox2 = _Boxes2 call BIS_fnc_selectRandom;
+	_box2 = createVehicle [_currBox2, _lastPos, [], 5, "None"];
 	_box2 setDir random 360;
-	[_box2, randomMissionExplosiveCargo, 1] call randomCargoFill;
+	_box2 call randomCrateLoadOutNoThermal;
+	
+	{ _x setVariable ["R3F_LOG_disabled", false, true] } forEach [_box1, _box2];
 
 	_successHintMessage = "The convoy has been stopped, the weapon crates and vehicles are now yours to take.";
 };

@@ -65,7 +65,6 @@
 	[25618.6, 21353.5, 1.52992],
 	[27030.1, 23282.8, 1.396]
 ]
-
 // The above array was built using the following code snippet called from the mission editor debug console:
 /*
 _atms = [];

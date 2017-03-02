@@ -18,18 +18,27 @@ fn_logAdminMenu = [_playerFuncs, "logAdminMenu.sqf"] call mf_compile;
 fn_logBankTransfer = [_playerFuncs, "logBankTransfer.sqf"] call mf_compile;
 fn_kickPlayerIfFlagged = "persistence\server\players\fn_kickPlayerIfFlagged.sqf" call mf_compile;
 
+A3W_fnc_checkPlayerFlag =
+{
+	params [["_player",objNull,[objNull]], ["_jip",true,[false]]];
+	[0, getPlayerUID _player, name _player, _jip, owner _player] spawn fn_kickPlayerIfFlagged;
+} call mf_compile;
+
 "pvar_savePlayerData" addPublicVariableEventHandler
 {
 	(_this select 1) spawn
 	{
-		_UID = _this select 0;
-		_info = _this select 1;
-		_data = _this select 2;
-		_player = _this select 3;
+		params ["_UID", "_info", "_data", "_player"];
 
-		if (!isNull _player && alive _player && _player getVariable ["FAR_isUnconscious", 0] == 0) then
+		if (!isNull _player && alive _player && !(_player call A3W_fnc_isUnconscious)) then
 		{
-			_info pushBack ["BankMoney", _player getVariable ["bmoney", 0]];
+			_info append
+			[
+				["BankMoney", _player getVariable ["bmoney", 0]],
+				["Bounty", _player getVariable ["bounty", 0]],
+				["BountyKills", _player getVariable ["bountyKills", 0]]
+			];
+
 			[_UID, _info, _data] call fn_saveAccount;
 		};
 
@@ -44,17 +53,13 @@ fn_kickPlayerIfFlagged = "persistence\server\players\fn_kickPlayerIfFlagged.sqf"
 {
 	(_this select 1) spawn
 	{
-		_UID = _this select 1;
-		_data = _UID call fn_loadAccount;
+		params ["_player", "_UID"];
+		_data = [_UID, _player] call fn_loadAccount;
 
 		[[_this, _data],
 		{
-			_pVal = _this select 0;
-			_data = _this select 1;
-
-			_player = _pVal select 0;
-			_UID = _pVal select 1;
-			_pNetId = _pVal select 2;
+			params ["_pVal", "_data"];
+			_pVal params ["_player", "_UID", "_pNetId"];
 
 			_pvarName = "pvar_applyPlayerData_" + _UID;
 
@@ -62,21 +67,12 @@ fn_kickPlayerIfFlagged = "persistence\server\players\fn_kickPlayerIfFlagged.sqf"
 			(owner _player) publicVariableClient _pvarName;
 
 			{
-				if (_x select 0 == "BankMoney") then
+				_x params ["_var", "_val"];
+				switch (_var) do
 				{
-					_player setVariable ["bmoney", _x select 1, true];
-				};
-				if (_x select 0 == "DonatorLevel") then
-				{
-					_player setVariable ["donator", _x select 1, true];
-				};
-				if (_x select 0 == "TeamKiller") then
-				{
-					_player setVariable ["teamkiller", _x select 1, true];
-				};
-				if (_x select 0 == "CustomUniform") then
-				{
-					_player setVariable ["uniform", _x select 1, true];
+					case "BankMoney":    { _player setVariable ["bmoney", _val, true] };
+					case "Bounty":       { _player setVariable ["bounty", _val, true] };
+					case "BountyKills":  { _player setVariable ["bountyKills", _val, true] };
 				};
 			} forEach _data;
 
@@ -85,4 +81,12 @@ fn_kickPlayerIfFlagged = "persistence\server\players\fn_kickPlayerIfFlagged.sqf"
 	};
 };
 
-"pvar_deletePlayerData" addPublicVariableEventHandler { (_this select 1) spawn fn_deletePlayerSave };
+"pvar_deletePlayerData" addPublicVariableEventHandler
+{
+	_player = param [1, objNull, [objNull]];
+
+	if (isPlayer _player) then
+	{
+		(getPlayerUID _player) spawn fn_deletePlayerSave;
+	};
+};

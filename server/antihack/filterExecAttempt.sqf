@@ -5,31 +5,25 @@
 //	@file Name: filterExecAttempt.sqf
 //	@file Author: AgentRev
 //	@file Created: 14/07/2013 13:10
-// Update: Motavar@judgement.net
-// Port: A3Wasteland 
-// Vehicle Radar 
-// Date: 4/5/15
-// 
-
 
 private "_packetName";
-_packetName = [_this, 0, "", [""]] call BIS_fnc_param;
+_packetName = param [0, "", [""]];
 
 if (_packetName == "BIS_fnc_MP_packet") then
 {
 	private ["_values", "_args", "_function", "_whitelisted", "_filePath", "_argsType", "_argsStr", "_buffer"];
 
-	_values = [_this, 1, [], [[]]] call BIS_fnc_param;
+	_values = param [1, [], [[]]];
 
 	if (count _values < 3) exitWith {};
 
-	_args = [_values, 1, []] call BIS_fnc_param;
-	_function = [_values, 2, "", [""]] call BIS_fnc_param;
+	_args = _values param [1, []];
+	_function = _values param [2, "", [""]];
 	_whitelisted = false;
 
 	if (_function == "BIS_fnc_execVM") then
 	{
-		_filePath = if (typeName _args == "STRING") then { _args } else { [_args, 1, "", [""]] call BIS_fnc_param };
+		_filePath = if (typeName _args == "STRING") then { _args } else { _args param [1, "", [""]] };
 
 		{
 			if (_filePath == _x) exitWith
@@ -41,7 +35,6 @@ if (_packetName == "BIS_fnc_MP_packet") then
 		[
 			"client\functions\defineServerRules.sqf",
 			"territory\client\updateTerritoryMarkers.sqf",
-			"server\functions\RadarMarkerUpdate.sqf",
 			"initPlayerServer.sqf"
 		];
 	}
@@ -58,8 +51,10 @@ if (_packetName == "BIS_fnc_MP_packet") then
 			"BIS_fnc_effectKilledAirDestruction",
 			"BIS_fnc_effectKilledAirDestructionStage2",
 			"BIS_fnc_effectKilledSecondaries",
-			"rhs_fnc_flashbang_effect"
-			//"JTS_FNC_SENT" // PM Compact by JTS
+			"BIS_fnc_objectVar"/*,
+			"JTS_FNC_SENT"*/ // PM Compact by JTS
+
+			// NOTE: You also need to whitelist individual functions in client\CfgRemoteExec_fnc.hpp
 		];
 
 		if (!_whitelisted) then

@@ -22,11 +22,11 @@ _setupObjects =
 
 	_vehicleClass = if (missionDifficultyHard) then
 	{
-		["rhs_ah64d_wd", "RHS_Ka52_vvsc"] call BIS_fnc_selectRandom;
+		["CUP_B_AH1Z_USMC", "CUP_O_Mi24_D_TK", "CUP_O_Ka52_Blk_RU", "CUP_B_AH64D_USA", "CUP_I_Mi24_Mk3_S8_GSh_AAF"] call BIS_fnc_selectRandom;
 	}
 	else
 	{
-		["B_Heli_Light_01_armed_F", "O_Heli_Light_02_F", "I_Heli_light_03_F"] call BIS_fnc_selectRandom;
+		["CUP_B_AH6J_Escort_USA","CUP_O_Mi8_SLA_2", "CUP_B_AH6J_AT_USA", "CUP_O_Ka60_GL_Whale_CSAT"] call BIS_fnc_selectRandom;
 	};
 
 	_createVehicle =
@@ -51,9 +51,29 @@ _setupObjects =
 
 		switch (true) do
 		{
-			case (_type isKindOf "Heli_Transport_01_base_F"):
+			case (_vehicle isKindOf "CUP_O_Ka60_GL_Whale_CSAT"):
+			
 			{
+				//This chopper has a single side gunner with index 0 - tested in editor - should work
+				_soldier = [_aiGroup, _position, _loadout] call createRandomCrewman;
+				_soldier moveInTurret [_vehicle, [0]];
+				/*
 				// these choppers have 2 turrets so we need 2 gunners
+				_soldier = [_aiGroup, _position, _loadout] call createRandomCrewman;
+				_soldier moveInTurret [_vehicle, [1]];
+
+				_soldier = [_aiGroup, _position, _loadout] call createRandomCrewman;
+				_soldier moveInTurret [_vehicle, [2]];
+				*/
+			};
+			
+			case (_vehicle isKindOf "CUP_O_Mi8_SLA_2"):
+			
+			{
+				// these chopper has 3 turrets so we need 3 gunners
+				_soldier = [_aiGroup, _position, _loadout] call createRandomCrewman;
+				_soldier moveInTurret [_vehicle, [0]];
+				
 				_soldier = [_aiGroup, _position, _loadout] call createRandomCrewman;
 				_soldier moveInTurret [_vehicle, [1]];
 
@@ -61,7 +81,8 @@ _setupObjects =
 				_soldier moveInTurret [_vehicle, [2]];
 			};
 
-			case (_type isKindOf "Heli_Attack_01_base_F" || _type isKindOf "Heli_Attack_02_base_F"):
+			//case (_type isKindOf "Heli_Attack_01_base_F" || _type isKindOf "Heli_Attack_02_base_F"):
+			case ({_vehicle isKindOf _x} count ["CUP_B_AH6J_Escort_USA","CUP_O_Mi8_SLA_2", "CUP_B_AH6J_AT_USA", "CUP_B_AH1Z_USMC", "CUP_O_Mi24_D_TK", "CUP_O_Ka52_Blk_RU", "CUP_B_AH64D_USA", "CUP_I_Mi24_Mk3_S8_GSh_AAF"] > 0): 
 			{
 				// these choppers need 1 gunner
 				_soldier = [_aiGroup, _position, _loadout] call createRandomCrewman;
@@ -132,13 +153,11 @@ _successExec =
 {
 	// Mission completed
 
-	_box1 = createVehicle ["rhs_weapons_crate_ak_standard", _lastPos, [], 5, "None"];
+	_Boxes1 = ["Box_IND_Wps_F","Box_East_Wps_F","Box_NATO_Wps_F","Box_NATO_AmmoOrd_F","Box_NATO_Grenades_F","Box_East_WpsLaunch_F","Box_NATO_WpsLaunch_F","Box_East_WpsSpecial_F","Box_NATO_WpsSpecial_F"];    
+	_currBox1 = _Boxes1 call BIS_fnc_selectRandom;
+	_box1 = createVehicle [_currBox1, _lastPos, [], 5, "None"];
 	_box1 setDir random 360;
-	[_box1, randomMissionCargo, 1] call randomCargoFill;
-
-	_box2 = createVehicle ["rhs_weapons_crate_ak_ammo_545x39_standard", _lastPos, [], 5, "None"];
-	_box2 setDir random 360;
-	[_box2, randomMissionCargo, 1] call randomCargoFill;
+	_box1 call randomCrateLoadOutNoThermal;
 
 	_successHintMessage = "The sky is clear again, the enemy patrol was taken out! Ammo crates have fallen near the wreck.";
 };

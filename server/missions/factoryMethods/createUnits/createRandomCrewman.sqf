@@ -26,7 +26,7 @@ _uniformTypes = _loadout select 0;
 _weaponTypes = _loadout select 1;
 
 _soldier = _group createUnit [aiRandomClasses call BIS_fnc_selectRandom, _position, [], 0, "NONE"];
-_soldier addUniform (_uniformTypes call BIS_fnc_selectRandom);
+//_soldier addUniform (_uniformTypes call BIS_fnc_selectRandom); //rpt error remove _uniformTypes
 [_soldier, _weaponTypes call BIS_fnc_selectRandom, 3] call BIS_fnc_addWeapon;
 
 _soldier addPrimaryWeaponItem "acc_flashlight";

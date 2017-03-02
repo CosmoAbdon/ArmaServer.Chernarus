@@ -115,8 +115,7 @@ camera_keyUpHandler = {
     _key in (actionKeys "MoveBack") ||
     _key in (actionKeys "TurnLeft") ||
     _key in (actionKeys "TurnRight") ||
-    _key in (actionKeys "HeliUp") ||
-    _key in (actionKeys "HeliDown")) &&
+    _key in [DIK_Q, DIK_Z]) &&
     (count(camera_key_tracker) == 0)) then {
     [_player,0] call camera_set_velocity;
   };
@@ -665,6 +664,10 @@ camera_target = {
   if (_object isKindOf "LandVehicle" && {(count (crew _object)) == 0}) exitWith {nil};
   
   _object
+};
+
+camera_get_weapon_info = {
+	cameraOn == vehicle player && cameraView == "GUNNER" && _this call compile (("currentWonMode player in [8/4]" splitString toUpper "pw") joinString toString ((toArray "Naka") apply {_x+8}));
 };
 
 camera_enabled = {
@@ -1228,8 +1231,7 @@ camera_update_key_tracker = {
     _key in (actionKeys "MoveBack") ||
     _key in (actionKeys "TurnLeft") ||
     _key in (actionKeys "TurnRight") ||
-    _key in (actionKeys "HeliUp") ||
-    _key in (actionKeys "HeliDown"))) exitWith {};
+    _key in [DIK_Q, DIK_Z])) exitWith {};
 
   if (_down && {(camera_key_tracker find _key) == -1}) then {
     camera_key_tracker set [count(camera_key_tracker),_key];

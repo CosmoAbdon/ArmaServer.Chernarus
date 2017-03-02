@@ -4,7 +4,7 @@
 //	@file Name: fn_getVehicleProperties.sqf
 //	@file Author: AgentRev
 
-private ["_veh", "_flying", "_class", "_purchasedVehicle", "_missionVehicle", "_pos", "_dir", "_vel", "_fuel", "_damage", "_hitPoints", "_variables", "_owner", "_doubleBSlash", "_textures", "_tex", "_texArr", "_weapons", "_magazines", "_items", "_backpacks", "_turretMags", "_turretMags2", "_turretMags3", "_hasDoorGuns", "_turrets", "_path", "_ammoCargo", "_fuelCargo", "_repairCargo", "_props"];
+private ["_veh", "_flying", "_class", "_purchasedVehicle", "_missionVehicle", "_pos", "_dir", "_vel", "_fuel", "_damage", "_hitPoints", "_hpDamage", "_variables", "_owner", "_doubleBSlash", "_textures", "_tex", "_texArr", "_weapons", "_magazines", "_items", "_backpacks", "_turretMags", "_turretMags2", "_turretMags3", "_hasDoorGuns", "_turrets", "_path", "_ammoCargo", "_fuelCargo", "_repairCargo", "_props"];
 
 _veh = _this select 0;
 _flying = if (count _this > 1) then { _this select 1 } else { false };
@@ -20,20 +20,16 @@ _vel = velocity _veh;
 _fuel = fuel _veh;
 _damage = damage _veh;
 _hitPoints = [];
+_hpDamage = getAllHitPointsDamage _veh;
 
 {
-	_hitPoint = configName _x;
-	_hitPoints set [count _hitPoints, [_hitPoint, _veh getHitPointDamage _hitPoint]];
-} forEach (_class call getHitPoints);
+	if (_x != "") then
+	{
+		_hitPoints pushBack [_x, (_hpDamage select 2) select _forEachIndex];
+	};
+} forEach (_hpDamage select 0);
 
 _variables = [];
-
-_owner = _veh getVariable ["ownerUID", ""];
-
-if !(_owner in ["","0"]) then
-{
-	_variables pushBack ["ownerUID", _owner];
-};
 
 switch (true) do
 {
@@ -47,30 +43,55 @@ switch (true) do
 	};
 };
 
+private _resupplyTruck = _veh getVariable ["A3W_resupplyTruck", false];
+
+if (_resupplyTruck) then
+{
+	_variables pushBack ["A3W_resupplyTruck", true];
+};
+
+private _isUav = (round getNumber (configFile >> "CfgVehicles" >> _class >> "isUav") > 0);
+
+if (_isUav && side _veh in [BLUFOR,OPFOR,INDEPENDENT]) then
+{
+	_variables pushBack ["uavSide", str side _veh];
+};
+
+_owner = _veh getVariable ["ownerUID", ""];
+private _ownerName = _veh getVariable ["ownerName", ""];
+
+if (_ownerName != "") then
+{
+	_variables pushBack ["ownerName", toArray _ownerName];
+};
+
+private _locked = 1 max locked _veh; // default vanilla state is always 1, so we ignore 0's
+
 _doubleBSlash = (call A3W_savingMethod == "extDB");
 
 _textures = [];
+
+private _addTexture =
 {
 	_tex = _x select 1;
 
 	if (_doubleBSlash) then
 	{
-		_texArr = [];
-
-		{
-			_texArr pushBack _x;
-
-			if (_x == 92) then // backslash
-			{
-				_texArr pushBack 92; // double it
-			};
-		} forEach toArray _tex;
-
-		_tex = toString _texArr;
+		_tex = (_tex splitString "\") joinString "\\";
 	};
 
 	[_textures, _tex, [_x select 0]] call fn_addToPairs;
-} forEach (_veh getVariable ["A3W_objectTextures", []]);
+};
+
+// vehicle has at least 2 random textures, save everything
+if (count getArray (configFile >> "CfgVehicles" >> _class >> "textureList") >= 4) then
+{
+	{ _x = [_forEachIndex, _x]; call _addTexture } forEach getObjectTextures _veh;
+}
+else // only save custom ones
+{
+	_addTexture forEach (_veh getVariable ["A3W_objectTextures", []]);
+};
 
 _weapons = [];
 _magazines = [];
@@ -86,9 +107,13 @@ if (_class call fn_hasInventory) then
 	_backpacks = (getBackpackCargo _veh) call cargoToPairs;
 };
 
-_turretMags = magazinesAmmo _veh;
+// _turretMags and _turretMags3 are deprecated, leave empty
+_turretMags = []; // magazinesAmmo _veh;
 _turretMags2 = [];
 _turretMags3 = [];
+
+// deprecated
+/*
 _hasDoorGuns = isClass (configFile >> "CfgVehicles" >> _class >> "Turrets" >> "RightDoorGun");
 
 _turrets = allTurrets [_veh, false];
@@ -127,7 +152,14 @@ if (_hasDoorGuns) then
 			};
 		};
 	} forEach (_veh magazinesTurret _path);
-} forEach _turrets;
+} forEach _turrets;*/
+
+{
+	if (_x select 0 != "FakeWeapon") then
+	{
+		_turretMags2 pushBack [_x select 0, _x select 1, _x select 2];
+	};
+} forEach magazinesAllTurrets _veh;
 
 _ammoCargo = getAmmoCargo _veh;
 _fuelCargo = getFuelCargo _veh;
@@ -147,6 +179,8 @@ _props =
 	["Fuel", _fuel],
 	["Damage", _damage],
 	["HitPoints", _hitPoints],
+	["OwnerUID", _owner],
+	["LockState", _locked],
 	["Variables", _variables],
 	["Textures", _textures],
 
@@ -165,7 +199,7 @@ _props =
 ];
 
 // If flying and not UAV, do not save current pos/dir/vel
-if (_flying && {getNumber (configFile >> "CfgVehicles" >> _class >> "isUav") <= 0}) then
+if (_flying && !_isUav) then
 {
 	_props deleteRange [1,3];
 };

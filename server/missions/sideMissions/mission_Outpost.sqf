@@ -9,7 +9,7 @@
 if (!isServer) exitwith {};
 #include "sideMissionDefines.sqf";
 
-private ["_nbUnits", "_outpost", "_objects", "_loadout"];
+private ["_nbUnits", "_outpost", "_objects"];
 
 _setupVars =
 {
@@ -26,8 +26,7 @@ _setupObjects =
 	_objects = [_outpost, _missionPos, 0] call createOutpost;
 
 	_aiGroup = createGroup CIVILIAN;
-	_loadout = aiLoadoutsBasic call BIS_fnc_selectRandom;
-	[_aiGroup, _missionPos, _loadout, _nbUnits, 5] call createRandomGroup;
+	[_aiGroup, _missionPos, _nbUnits, 15] call createCustomGroup;
 
 	_missionHintText = format ["An armed <t color='%1'>outpost</t> containing weapon crates has been spotted near the marker, go capture it!", sideMissionColor]
 };

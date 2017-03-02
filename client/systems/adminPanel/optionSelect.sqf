@@ -37,19 +37,18 @@ if (_uid call isAdmin) then
 					closeDialog 0;
 					execVM "client\systems\adminPanel\vehicleManagement.sqf";
 				};
-				case 2: //Spectator Cam
-			    {
+				case 2: //Markers log
+				{
 					closeDialog 0;
-					if (isnil {RscSpectator_camera}) then {RscSpectator_allowFreeCam = true; cutrsc ['RscSpectator','plain'];if (!isNil "notifyAdminMenu") then { ["SpectatorCam", "used"] call notifyAdminMenu };} else {cuttext ['','plain']};
-			    };
-			    case 3: //Tags
-			    {
+					createDialog "MarkerLog";
+				};
+				case 3: //Tags
+				{
 					execVM "client\systems\adminPanel\playerTags.sqf";
-					if (!isNil "notifyAdminMenu") then { ["PlayerTag","used"] call notifyAdminMenu };
-			    };
-			    case 4: //Teleport
-			    {
-	                closeDialog 0;
+				};
+				case 4: //Teleport
+				{
+					closeDialog 0;
 					["A3W_teleport", "onMapSingleClick",
 					{
 						vehicle player setPos _pos;
@@ -58,27 +57,27 @@ if (_uid call isAdmin) then
 						true
 					}] call BIS_fnc_addStackedEventHandler;
 					hint "Click on map to teleport";
-			    };
-	            case 5: //Money
-			    {
+				};
+				case 5: //Money
+				{
 					_money = 5000;
 					player setVariable ["cmoney", (player getVariable ["cmoney",0]) + _money, true];
 					if (!isNil "notifyAdminMenu") then { ["money", _money] call notifyAdminMenu };
-			    };
-	            case 6: //Debug Menu
-			    {
-	            	closeDialog 0;
-	                execVM "client\systems\adminPanel\loadDebugMenu.sqf";
-			    };
+				};
+				case 6: //Debug Menu
+				{
+					closeDialog 0;
+					execVM "client\systems\adminPanel\loadDebugMenu.sqf";
+				};
 				case 7: //Object search menu
-			    {
-	            	closeDialog 0;
-	                execVM "client\systems\adminPanel\loadObjectSearch.sqf";
-			    };
-			    case 8: // toggle God mode
-			    {
-			    	execVM "client\systems\adminPanel\toggleGodMode.sqf";
-			    };
+				{
+					closeDialog 0;
+					execVM "client\systems\adminPanel\loadObjectSearch.sqf";
+				};
+				case 8: // toggle God mode
+				{
+					execVM "client\systems\adminPanel\toggleGodMode.sqf";
+				};
 			};
 		};
 		case (!isNull _displayDebug): //Debug panel

@@ -18,12 +18,23 @@ else
 {
 	R3F_LOG_mutex_local_verrou = true;
 
-	private ["_heliporteur", "_objet"];
+	private ["_hasNoProhibitedCargo", "_heliporteur", "_objet"];
+
+	_hasNoProhibitedCargo =
+	{
+		private _ammoCargo = getAmmoCargo _this;
+		private _repairCargo = getRepairCargo _this;
+
+		if (isNil "_ammoCargo" || {!finite _ammoCargo}) then { _ammoCargo = 0 };
+		if (isNil "_repairCargo" || {!finite _repairCargo}) then { _repairCargo = 0 };
+
+		(_ammoCargo <= 0 && _repairCargo <= 0)
+	};
 
 	_heliporteur = _this select 0;
-	_objet = nearestObjects [_heliporteur, R3F_LOG_CFG_objets_heliportables, 20];
+	_objet = (nearestObjects [_heliporteur, R3F_LOG_CFG_objets_heliportables, 20]) select {_obj = _x; _x call _hasNoProhibitedCargo && (_heliporteur getVariable ["R3F_LOG_heliporteurH",false] || {{_obj isKindOf _x} count R3F_LOG_CFG_objets_heliportablesH == 0})};
 	// Parce que l'héliporteur peut être un objet héliportable
-	_objet = _objet - [_heliporteur];
+	_objet = (_objet select {!(_x getVariable "R3F_LOG_disabled")}) - [_heliporteur];
 
 	if (count _objet > 0) then
 	{
@@ -33,7 +44,7 @@ else
 		{
 			if (isNull (_objet getVariable "R3F_LOG_est_transporte_par")) then
 			{
-				if (count crew _objet == 0) then
+				if ({isPlayer _x} count crew _objet == 0) then
 				{
 					// Si l'objet n'est pas en train d'être déplacé par un joueur
 					if (isNull (_objet getVariable "R3F_LOG_est_deplace_par") || (!alive (_objet getVariable "R3F_LOG_est_deplace_par"))) then
@@ -79,7 +90,7 @@ else
 							[
 								0 - _objectCenterX,
 								0 - _objectCenterY,
-								((_objectPos select 2) - (_heliPos select 2) + 2) min _minZ
+								/*((_objectPos select 2) - (_heliPos select 2) + 2) min*/ _minZ
 							]];
 
 							player globalChat format [STR_R3F_LOG_action_heliporter_fait, getText (configFile >> "CfgVehicles" >> (typeOf _objet) >> "displayName")];

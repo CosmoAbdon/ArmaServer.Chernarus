@@ -7,7 +7,7 @@
 //	@file Created: 12/10/2013 12:36
 //	@file Args:
 
-#define STORE_ACTION_CONDITION "(player distance _target < 4)"
+#define STORE_ACTION_CONDITION "(player distance _target < 3)"
 #define SELL_CRATE_CONDITION "(!isNil 'R3F_LOG_joueur_deplace_objet' && {R3F_LOG_joueur_deplace_objet isKindOf 'ReammoBox_F'})"
 #define SELL_CONTENTS_CONDITION "(!isNil 'R3F_LOG_joueur_deplace_objet' && {{R3F_LOG_joueur_deplace_objet isKindOf _x} count ['ReammoBox_F','AllVehicles'] > 0})"
 #define SELL_VEH_CONTENTS_CONDITION "{!isNull objectFromNetId (player getVariable ['lastVehicleRidden', ''])}"
@@ -52,43 +52,27 @@ if (hasInterface) then
 	_npc addAction ["<img image='client\icons\money.paa'/> Sell crate", "client\systems\selling\sellCrateItems.sqf", [false, false, true], 0.99, false, true, "", STORE_ACTION_CONDITION + " && " + SELL_CRATE_CONDITION];
 	_npc addAction ["<img image='client\icons\money.paa'/> Sell contents", "client\systems\selling\sellCrateItems.sqf", [], 0.98, false, true, "", STORE_ACTION_CONDITION + " && " + SELL_CONTENTS_CONDITION];
 	_npc addAction ["<img image='client\icons\money.paa'/> Sell last vehicle contents", "client\systems\selling\sellVehicleItems.sqf", [], 0.97, false, true, "", STORE_ACTION_CONDITION + " && " + SELL_VEH_CONTENTS_CONDITION];
+	_npc addAction ["<img image='client\icons\money.paa'/> Sell last vehicle", "client\systems\selling\sellVehicle.sqf", [], 0.96, false, true, "", STORE_ACTION_CONDITION + " && " + SELL_VEH_CONTENTS_CONDITION];
 };
 
 if (isServer) then
 {
-	_building = nearestBuilding _npc;
-
-
-//Find the nearest Barracks and place NPC
-	//_building = nearestObject [_npc, "Land_Barrack2"];
-
-//IF NOT BARRACKS THEN FIND NEAREST BUILDING
-	//if(isNull _building) then {
-	//	_building = nearestBuilding _npc;
-	//};
-	
-
+	// nearestBuilding no longer detects barracks since A3 v1.42, so we need this shitty workaround
+	_building = (_npc modelToWorld [0,0,0]) nearestObject "House";
+	if !(_building isKindOf "Land_i_Barracks_V1_F") then { _building = nearestBuilding _npc };
 
 	_npc setVariable ["storeNPC_nearestBuilding", netId _building, true];
 
-	_facesCfg = configFile >> "CfgFaces" >> "Man_A3";
 	_faces = [];
 
-	for "_i" from 0 to (count _facesCfg - 1) do
 	{
-		_faceCfg = _facesCfg select _i;
-
-		_faceTex = toArray getText (_faceCfg >> "texture");
-		_faceTex resize 1;
-		_faceTex = toString _faceTex;
-
-		if (_faceTex == "\") then
+		if (getText (_x >> "DLC") == "" && !(((getText (_x >> "texture")) select [0,1]) in ["","#"])) then
 		{
-			_faces pushBack configName _faceCfg;
+			_faces pushBack _x;
 		};
-	};
+	} forEach ("true" configClasses (configFile >> "CfgFaces" >> "Man_A3"));
 
-	_face = _faces call BIS_fnc_selectRandom;
+	_face = configName (_faces call BIS_fnc_selectRandom);
 	_npc setFace _face;
 	_npc setVariable ["storeNPC_face", _face, true];
 }
@@ -108,36 +92,52 @@ else
 
 if (isNil "_building" || {isNull _building}) then
 {
-	_building = nearestBuilding _npc;
+	_building = (_npc modelToWorld [0,0,0]) nearestObject "House";
+	if !(_building isKindOf "Land_i_Barracks_V1_F") then { _building = nearestBuilding _npc };
 };
 
-_building allowDamage true;
-for "_i" from 1 to 99 do { _building setHit ["glass_" + str _i, 1] }; // pre-break the windows so people can shoot thru them
-_building allowDamage false; // disable building damage
+_setDmg = [_building,
+{
+	_this allowDamage true;
+	for "_i" from 1 to 99 do { _this setHit ["glass_" + str _i, 1] }; // pre-break the windows so people can shoot thru them
+	_this allowDamage false; // disable building damage
+}] execFSM "call.fsm";
+
+waitUntil {completedFSM _setDmg};
 
 if (isServer) then
 {
 	removeAllWeapons _npc;
+	_createStoreFurniture = compile preprocessFileLineNumbers "server\functions\createStoreFurniture.sqf";
 
 	waitUntil {!isNil "storeConfigDone"};
 
 	{
 		if (_x select 0 == _npcName) exitWith
 		{
-			private "_frontOffset";
+			private ["_frontOffset", "_bPos"];
 
 			//collect our arguments
 			_npcPos = _x select 1;
 			_deskDirMod = _x select 2;
 
-			if (typeName _deskDirMod == "ARRAY" && {count _deskDirMod > 0}) then
+			if (_npcPos < 0) then { _npcPos = 1e9 }; // fix for buildingPos Arma 3 v1.55 change
+			
+			if (_deskDirMod isEqualType []) then
 			{
-				if (count _deskDirMod > 1) then
+				if (_deskDirMod isEqualTo []) then
 				{
-					_frontOffset = _deskDirMod select 1;
-				};
+					_deskDirMod = getDir _npc;
+				}
+				else
+				{
+					if (count _deskDirMod > 1) then
+					{
+						_frontOffset = _deskDirMod select 1;
+					};
 
-				_deskDirMod = _deskDirMod select 0;
+					_deskDirMod = _deskDirMod select 0;
+				};
 			};
 
 			_storeOwnerAppearance = [];
@@ -183,36 +183,7 @@ if (isServer) then
 			} forEach _storeOwnerAppearance;
 
 			_pDir = getDir _npc;
-
-			private "_bPos";
-			switch (toUpper typeName _npcPos) do
-			{
-				case "SCALAR":
-				{
-					_bPos = _building buildingPos _npcPos;
-				};
-				case "ARRAY":
-				{
-					_bPos = _npcPos;
-				};
-			};
-
-
-			//#############################################
-			//Place the NPC where he stands
-			if (_npcPos == 99) then {
-				bPos = [0,0,0];
-			} else { 
-				_bPos = _building buildingPos _npcPos;
-			};
-			//#############################################
-
-			//_bPos = _building buildingPos _npcPos;
-
-			if (!isNil "_frontOffset") then
-			{
-				_bPos = _bPos vectorAdd ([[0, _frontOffset, 0], -_pDir] call BIS_fnc_rotateVector2D);
-			};
+			_bPos = _building buildingPos _npcPos;
 
 			if (_bPos isEqualTo [0,0,0]) then
 			{
@@ -220,10 +191,15 @@ if (isServer) then
 			}
 			else
 			{
-				_npc setPosATL _bPos;
+				if (!isNil "_frontOffset") then
+				{
+					_bPos = ASLtoAGL ((AGLtoASL _bPos) vectorAdd ([[0, _frontOffset, 0], -_pDir] call BIS_fnc_rotateVector2D));
+				};
+
+				_npc setPosASL AGLtoASL _bPos;
 			};
 
-			_desk = [_npc, _bPos, _pDir, _deskDirMod] call compile preprocessFileLineNumbers "server\functions\createStoreFurniture.sqf";
+			_desk = [_npc, _bPos, _pDir, _deskDirMod] call _createStoreFurniture;
 			_npc setVariable ["storeNPC_cashDesk", netId _desk, true];
 
 			sleep 1;
@@ -233,7 +209,7 @@ if (isServer) then
 			_bcNPC = boundingCenter _npc;
 			_bcDesk = boundingCenter _desk;
 
-			_npcHeightRel = (_desk worldToModel (getPosATL _npc)) select 2;
+			_npcHeightRel = (_desk worldToModel ASLtoAGL getPosASL _npc) select 2;
 
 			// must be done twice for the direction to set properly
 			for "_i" from 1 to 2 do
@@ -283,40 +259,42 @@ if (hasInterface) then
 
 	if (!isNull _desk) then
 	{
-		_desk spawn
+		[_desk, _npcName] spawn
 		{
-			_desk = _this;
+			_desk = _this select 0;
+			_npcName = _this select 1;
+
+			_sellBoxVar = "A3W_sellBox_" + _npcName;
+
 			_createSellBox =
 			{
-
-
-
 				_deskOffset = (getPosASL _desk) vectorAdd ([[-0.05,-0.6,0], -(getDir _desk)] call BIS_fnc_rotateVector2D);
 
-				//_sellBox = "Box_IND_Ammo_F" createVehicleLocal ASLtoATL _deskOffset;
-				//_sellBox = "rhs_weapons_crate_ak_ammo_545x39_standard" createVehicleLocal ASLtoATL _deskOffset; //small boxes
-				_sellBox = "rhs_weapons_crate_ak_standard" createVehicleLocal ASLtoATL _deskOffset;
-				//_sellBox = "rhsusf_weapons_crate" createVehicleLocal ASLtoATL _deskOffset;  //causes hack menu issues
+				missionNamespace setVariable [_sellBoxVar, objNull];
 
-				_sellBox allowDamage false;
+				// Box created outside scheduler to prevent its destruction before allowDamage kicks in
+				[[_deskOffset, _sellBoxVar],
+				{
+					_deskOffset = _this select 0;
+					_sellBoxVar = _this select 1;
+
+					_sellBox = "Box_IND_Ammo_F" createVehicleLocal ASLtoATL _deskOffset;
+					_sellBox allowDamage false;
+
+					missionNamespace setVariable [_sellBoxVar, _sellBox];
+				}] execFSM "call.fsm";
+
+				waitUntil {_sellBox = missionNamespace getVariable _sellBoxVar; !isNull _sellBox};
+
 				_sellBox setVariable ["R3F_LOG_disabled", true];
 				_sellBox setVariable ["A3W_storeSellBox", true];
-				//_sellBox setObjectTexture [0, ""]; // remove side marking
+				_sellBox setObjectTexture [0, ""]; // remove side marking
 
-/*
 				clearBackpackCargo _sellBox;
 				clearMagazineCargo _sellBox;
 				clearWeaponCargo _sellBox;
 				clearItemCargo _sellBox;
-*/
 
-				clearBackpackCargoGlobal _sellBox;
-				clearMagazineCargoGlobal _sellBox;
-				clearWeaponCargoGlobal _sellBox;
-				clearItemCargoGlobal _sellBox;
-
-//wtf?
-/*
 				// must be done twice for the position to set properly
 				for "_i" from 1 to 2 do
 				{
@@ -333,35 +311,16 @@ if (hasInterface) then
 					};
 				};
 
+				_sellBox addAction ["<img image='client\icons\money.paa'/> Sell bin contents", "client\systems\selling\sellCrateItems.sqf", [true], 1, false, false, "", STORE_ACTION_CONDITION + " && " + SELL_BIN_CONDITION];
 
-					//_sellBox setVelocity [0,0,0];
-					//_sellBox setVectorDirAndUp [[vectorDir _desk, -90] call BIS_fnc_rotateVector2D, [0,0,1]];
-					//_sellBox setPosASL _deskOffset;
-
-*/
-
-					
-	_sellBox attachto [_desk, [0,-1,0.1] ];  //attach to desk and move it out and up a bit
-	_sellBox setVectorDir [0,1,0]; //spin the box around 
-	_sellBox setPos (getPos _sellBox);  //set the position and update clients
-
-	_sellBox addAction ["<img image='client\icons\money.paa'/> Sell bin contents", "client\systems\selling\sellCrateItems.sqf", [true], 1, false, false, "", STORE_ACTION_CONDITION + " && " + SELL_BIN_CONDITION];
-
-
-				/*
 				_boxPos = getPosATL _sellBox;
 				_boxVecDir = vectorDir _sellBox;
 				_boxVecUp = vectorUp _sellBox;
-				*/
-
 			};
-
 
 			private ["_sellBox", "_boxPos", "_boxVecDir", "_boxVecUp"];
 			call _createSellBox;
 
-//Stop Flying Ammo Crates
-/*
 			while {true} do
 			{
 				sleep 5;
@@ -381,9 +340,6 @@ if (hasInterface) then
 					};
 				};
 			};
-*/
-
-
 		};
 	};
 };

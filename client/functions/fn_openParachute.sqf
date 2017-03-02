@@ -4,21 +4,33 @@
 //	@file Name: fn_openParachute.sqf
 //	@file Author: AgentRev
 
-if (!alive player) exitWith {};
-if (vehicle player != player) exitWith {};
+// make sure no crewed helicopters are within 10m, otherwise some will explode on contact with the parachute
+#define PARACHUTE_PRECHECK ({player distance _x < 10 max sizeOf typeOf _x && count crew _x > 0} count (player nearEntities ["Helicopter_Base_F", 20]) == 0)
 
-private "_preCheck";
-_preCheck = {{player distance _x < 10 max (sizeOf typeOf _x)} count (player nearEntities ["Helicopter_Base_F", 20]) == 0};
-
-if (call _preCheck) then
+// unschedule asap
+if (canSuspend) exitWith
 {
-	call fn_forceOpenParachute;
-}
+	[0, A3W_fnc_openParachute] execFSM "call.fsm";
+};
+
+if (!alive player || vehicle player != player) exitWith {};
+
+if (PARACHUTE_PRECHECK) then A3W_fnc_forceOpenParachute
 else
 {
-	_preCheck spawn
+	if (!isNil "A3W_openParachute_frameCheck") then
 	{
-		waitUntil {sleep 0.1; call _this};
-		[[], fn_forceOpenParachute] execFSM "call.fsm"; // force non-scheduled
+		removeMissionEventHandler ["EachFrame", A3W_openParachute_frameCheck];
+		A3W_openParachute_frameCheck = nil;
 	};
+
+	A3W_openParachute_frameCheck = addMissionEventHandler ["EachFrame", 
+	{
+		if (!isNil "A3W_openParachute_frameCheck" && {PARACHUTE_PRECHECK}) then
+		{
+			call A3W_fnc_forceOpenParachute;
+			removeMissionEventHandler ["EachFrame", A3W_openParachute_frameCheck];
+			A3W_openParachute_frameCheck = nil;
+		};
+	}];
 };

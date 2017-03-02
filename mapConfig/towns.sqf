@@ -35,7 +35,7 @@
 	//["Town_27", 200, "Komarovo"],
 	["Town_28", 200, "Gvozdno"],
 	["Town_29", 150, "Shalka"]
-     	//["Town_30", 150, "Olsha"]
+    //["Town_30", 150, "Olsha"]
 
 	//["Town_16", 150, "Chalkeia"],
 	//["Town_17", 150, "Oreokastro"],

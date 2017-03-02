@@ -9,7 +9,7 @@
 if (!isServer) exitwith {};
 #include "sideMissionDefines.sqf"
 
-private ["_nbUnits", "_vehicleClass", "_vehicle", "_loadout"];
+private ["_nbUnits", "_vehicleClass", "_vehicle"];
 
 _setupVars =
 {
@@ -21,30 +21,25 @@ _setupVars =
 _setupObjects =
 {
 	_missionPos = markerPos _missionLocation;
-
 	_vehicleClass =
 	[
-		"B_Truck_01_covered_F",
-		"B_Truck_01_fuel_F",
-		"B_Truck_01_medical_F",
-		"B_Truck_01_Repair_F",
-		"O_Truck_03_covered_F",
-		"O_Truck_03_fuel_F",
-		"O_Truck_03_medical_F",
-		"O_Truck_03_repair_F",
-		"I_Truck_02_covered_F",
-		"I_Truck_02_fuel_F",
-		"I_Truck_02_medical_F",
-		"I_Truck_02_box_F"
+		"CUP_B_MTVR_Ammo_USA",
+		"CUP_B_MTVR_Refuel_USA",
+		"CUP_B_MTVR_Repair_USA",
+		"CUP_O_Ural_Reammo_RU",
+		"CUP_O_Ural_Refuel_CHDKZ",
+		"CUP_O_Ural_Repair_CHDKZ",
+		//"I_Truck_02_fuel_F",
+		"CUP_I_Ural_Repair_UN"
+		//"I_Truck_02_ammo_F"
 	] call BIS_fnc_selectRandom;
 
 	// Class, Position, Fuel, Ammo, Damage, Special
 	_vehicle = [_vehicleClass, _missionPos] call createMissionVehicle;
-	[_vehicle, randomMissionCargo, 2] call randomCargoFill;
+	_vehicle call fn_refilltruck;
 
 	_aiGroup = createGroup CIVILIAN;
-	_loadout = aiLoadoutsBasic call BIS_fnc_selectRandom;
-	[_aiGroup, _missionPos, _loadout, _nbUnits] call createRandomGroup;
+	[_aiGroup, _missionPos, _nbUnits] call createCustomGroup;
 
 	_missionPicture = getText (configFile >> "CfgVehicles" >> _vehicleClass >> "picture");
 	_vehicleName = getText (configFile >> "CfgVehicles" >> _vehicleClass >> "displayName");
@@ -65,8 +60,7 @@ _failedExec =
 _successExec =
 {
 	// Mission completed
-	_vehicle lock 1;
-	_vehicle setVariable ["R3F_LOG_disabled", false, true];
+	[_vehicle, 1] call A3W_fnc_setLockState; // Unlock
 
 	_successHintMessage = "The truck has been captured, well done.";
 };

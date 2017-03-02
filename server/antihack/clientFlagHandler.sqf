@@ -11,8 +11,8 @@ if (isDedicated) exitWith {};
 if (typeName _this == "ARRAY" && {count _this > 1}) then
 {
 	private ["_sentChecksum", "_playerUID"];
-	_playerUID = [_this, 0, "", [""]] call BIS_fnc_param;
-	_sentChecksum = [_this, 1, "", [""]] call BIS_fnc_param;
+	_playerUID = param [0, "", [""]];
+	_sentChecksum = param [1, "", [""]];
 
 	if (_sentChecksum == _flagChecksum && {_playerUID == getPlayerUID player}) then
 	{
@@ -20,7 +20,12 @@ if (typeName _this == "ARRAY" && {count _this > 1}) then
 
 		disableUserInput true;
 		setPlayerRespawnTime 1e11;
-		player setDamage 1;
+
+		if (damage player < 1) then // if check required to prevent "Killed" EH from getting triggered twice
+		{
+			player setVariable ["A3W_deathCause_local", ["forcekill"]];
+			player setDamage 1;
+		};
 
 		1 fadeSound 0;
 		sleep 1;
@@ -33,6 +38,6 @@ if (typeName _this == "ARRAY" && {count _this > 1}) then
 		sleep 5;
 
 		// baibai hacker
-		preprocessFile "client\functions\quit.sqf";
+		call compile preprocessFile "client\functions\quit.sqf";
 	};
 };

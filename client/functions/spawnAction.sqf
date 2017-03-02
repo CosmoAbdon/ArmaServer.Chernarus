@@ -22,26 +22,22 @@ spawnActionHandle = (_this select 1) spawn
 {
 	disableSerialization;
 
-	private ["_switch", "_data", "_donatorLevel"];
+	private ["_switch", "_data"];
 	_switch = _this select 0;
 	_data = [_this select 1, false];
-	_donatorLevel = player getVariable ["donator", 0];
-	
+
 	if (isNil "playerData_resetPos") then
 	{
 		// Deal with money here
 		_baseMoney = ["A3W_startingMoney", 100] call getPublicVar;
-		switch (_donatorLevel) do
+		player setVariable ["cmoney", _baseMoney, true];
+
+		if (["A3W_survivalSystem"] call isConfigOn) then
 		{
-			case 1: { player setVariable ["cmoney", _baseMoney + 500, true]; [MF_ITEMS_CANNED_FOOD, 1] call mf_inventory_add; [MF_ITEMS_WATER, 1] call mf_inventory_add; };
-			case 2: { player setVariable ["cmoney", _baseMoney + 1000, true]; };
-			case 3: { player setVariable ["cmoney", _baseMoney + 1500, true]; };
-			case 4: { player setVariable ["cmoney", _baseMoney + 2000, true]; };
-			default { player setVariable ["cmoney", _baseMoney, true]; };
+			[MF_ITEMS_CANNED_FOOD, 1] call mf_inventory_add;
+			[MF_ITEMS_WATER, 1] call mf_inventory_add;
 		};
 
-		[MF_ITEMS_CANNED_FOOD, 1] call mf_inventory_add;
-		[MF_ITEMS_WATER, 1] call mf_inventory_add;
 		[MF_ITEMS_REPAIR_KIT, 1] call mf_inventory_add;
 	};
 

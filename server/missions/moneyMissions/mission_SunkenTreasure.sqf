@@ -22,10 +22,10 @@ _setupObjects =
 {
 	_missionPos = markerPos _missionLocation;
 
-	_box1 = createVehicle ["rhs_weapons_crate_ak_standard", _missionPos, [], 0, "None"];
+	_box1 = createVehicle ["Box_NATO_Wps_F", _missionPos, [], 0, "None"];
 	_box1 setVariable ["R3F_LOG_disabled", true, true];
 	_box1 setDir random 360;
-	[_box1, randomMissionCargo, 1] call randomCargoFill;
+	[_box1, "mission_USSpecial"] call fn_refillbox;
 
 	_cashObjects = [];
 
@@ -41,7 +41,7 @@ _setupObjects =
 		_cashObjects pushBack _cash;
 	};
 
-	_vehicleClass = ["B_Boat_Armed_01_minigun_F", "O_Boat_Armed_01_hmg_F", "I_Boat_Armed_01_minigun_F"] call BIS_fnc_selectRandom;
+	_vehicleClass = ["CUP_B_Frigate_ANZAC", "O_Boat_Armed_01_hmg_F", "CUP_I_RHIB2Turret_RACS"] call BIS_fnc_selectRandom;
 
 	// Vehicle Class, Position, Fuel, Ammo, Damage, Special
 	_vehicle = [_vehicleClass, _missionPos] call createMissionVehicle2;

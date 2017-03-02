@@ -17,29 +17,30 @@ _alt = _this select 4;
 _handled = false;
 
 // ********** Hardcoded keys **********
+// keycodes are defined in client\clientEvents\customKeys.sqf
 switch (true) do
 {
 	// U key
-	case (_key == 22):
+	case (_key in A3W_customKeys_adminMenu):
 	{
 		execVM "client\systems\adminPanel\checkAdmin.sqf";
 	};
 
 	// Tilde (key above Tab)
-	case (_key == 41):
+	case (_key in A3W_customKeys_playerMenu):
 	{
 		[] spawn loadPlayerMenu;
 		_handled = true;
 	};
 
 	// Home & Windows keys
-	case (_key in [199,219,220]):
+	case (_key in A3W_customKeys_playerNames):
 	{
 		showPlayerNames = if (isNil "showPlayerNames") then { true } else { !showPlayerNames };
 	};
 
 	// Earplugs - End Key
-	case (_key == 207):
+	case (_key in A3W_customKeys_earPlugs):
 	{
 		if (soundVolume > 0.5) then
 		{
@@ -59,33 +60,28 @@ switch (true) do
 // Parachute
 if (!_handled && _key in actionKeys "GetOver") then
 {
-	if (alive player) then
-	{
-		_veh = vehicle player;
+	if (!alive player) exitWith {};
 
-		if (_veh == player) then
+	_veh = vehicle player;
+
+	if (_veh == player) exitWith
+	{
+		// allow opening parachute only above 2.5m
+		if ((getPos player) select 2 > 2.5) then
 		{
-			if ((getPos player) select 2 > 2.5) then
-			{
-				true call fn_openParachute;
-				_handled = true;
-			};
-		}
-		else
+			true call A3W_fnc_openParachute;
+			_handled = true;
+		};
+	};
+
+	// 1 sec cooldown after parachute is deployed so you don't start falling again if you double-tap the key
+	if (_veh isKindOf "ParachuteBase" && (isNil "A3W_openParachuteTimestamp" || {diag_tickTime - A3W_openParachuteTimestamp >= 1})) then
+	{
+		moveOut player;
+		_veh spawn
 		{
-			if (_veh isKindOf "ParachuteBase") then
-			{
-				// 1s cooldown after parachute is deployed so you don't start falling again if you double-tap the key
-				if (isNil "openParachuteTimestamp" || {diag_tickTime - openParachuteTimestamp >= 1}) then
-				{
-					moveOut player;
-					_veh spawn
-					{
-						sleep 1;
-						deleteVehicle _this;
-					};
-				};
-			};
+			sleep 1;
+			deleteVehicle _this;
 		};
 	};
 };
@@ -121,6 +117,31 @@ if (!_handled && _key in actionKeys "NetworkStats") then
 		};
 
 		_handled = true;
+	};
+};
+
+// Push-to-talk
+if (!_handled && _key in call A3W_allVoiceChatKeys) then
+{
+	[true] call fn_voiceChatControl;
+};
+
+// UAV feed
+if (!_handled && _key in (actionKeys "UavView" + actionKeys "UavViewToggle")) then
+{
+	if (["A3W_disableUavFeed"] call isConfigOn) then
+	{
+		_handled = true;
+	};
+};
+
+// Override prone reload freeze (ffs BIS)
+if (!_handled && _key in (actionKeys "MoveDown" + actionKeys "MoveUp")) then
+{
+	if ((toLower animationState player) find "reloadprone" != -1) then
+	{
+		[player, format ["AmovPknlMstpSrasW%1Dnon", [player, true] call getMoveWeapon]] call switchMoveGlobal;
+		reload player;
 	};
 };
 

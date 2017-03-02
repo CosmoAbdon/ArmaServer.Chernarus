@@ -24,7 +24,7 @@ _index = lbCurSel _groupListBox;
 _playerData = _groupListBox lbData _index;
 
 //Check selected data is valid
-{ if (getPlayerUID _x == _playerData) exitWith { _target = _x } } forEach (call allPlayers);
+{ if (getPlayerUID _x == _playerData) exitWith { _target = _x } } forEach allPlayers;
 //diag_log "Promote to leader: Before the checks";
 
 //Checks
@@ -36,11 +36,11 @@ _inCombat = false;
 
 if (alive _target) then
 {
-	_isIndie = !((side group _target) in [BLUFOR,OPFOR]);
+	//_isIndie = !((side group _target) in [BLUFOR,OPFOR]);
 
 	//check to see how close to the enemy the target leader is
 	{
-		if (_x distance _target < 100 && {side group _x != side group _target || (_isIndie && group _x != group _target)}) exitWith
+		if (_x distance _target < 100 && {[_x, _target] call A3W_fnc_isFriendly}) exitWith
 		{
 			_inCombat = true;
 		};

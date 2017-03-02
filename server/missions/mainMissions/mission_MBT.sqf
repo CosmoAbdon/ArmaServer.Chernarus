@@ -15,23 +15,25 @@ _setupVars =
 {
 	_vehicleClass =
 	[
-	"rhs_t72ba_tv",
-	"rhs_t72bb_tv",
-	"rhs_t72bc_tv",
-	"rhs_t72bd_tv",
-	"rhsusf_m1a1aimwd_usarmy",
-	"rhsusf_m1a1aimd_usarmy",
-	"rhsusf_m1a1aim_tuski_wd",
-	"rhsusf_m1a1aim_tuski_d",
-	"rhsusf_m1a1fep_wd",
-	"rhsusf_m1a1fep_d",
-	"rhsusf_m1a2sep1wd_usarmy",
-	"rhsusf_m1a2sep1d_usarmy",
-	"rhsusf_m1a2sep1tuskiwd_usarmy",
-	"rhsusf_m1a2sep1tuskid_usarmy"
+		"CUP_O_T72_RU",
+		"CUP_O_T90_RU",
+		"CUP_B_M1A1_Woodland_US_Army",
+		"CUP_B_M1A1_DES_US_Army",
+		"CUP_B_M1A2_TUSK_MG_US_Army",
+		"CUP_B_M1A2_TUSK_MG_DES_US_Army",
+		"CUP_B_Challenger2_Woodland_BAF",
+		"CUP_B_Challenger2_Desert_BAF"
+
 	] call BIS_fnc_selectRandom;
 
-	_missionType = "Main Battle Tank";
+	//_missionType = "Main Battle Tank";
+	
+	_missionType = switch (true) do
+	{
+		case (_vehicleClass isKindOf "rhs_sprut_vdv"): { "Tank Destroyer" };
+		default { "Main Battle Tank" };
+	
+	};
 	_locationsArray = MissionSpawnMarkers;
 
 	_nbUnits = if (missionDifficultyHard) then { AI_GROUP_LARGE } else { AI_GROUP_MEDIUM };

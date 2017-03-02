@@ -9,13 +9,17 @@
 
 if (!isServer) exitWith {};
 
-#define RANDOM_BETWEEN(START,END) (START + floor random ((END - START) + 1))
+#define RANDOM_BETWEEN(START,END) ((START) + floor random ((END) - (START) + 1))
+#define RANDOM_ODDS(ODDS) ([0,1] select (random 1 < (ODDS))) // between 0.0 and 1.0
 
 private ["_box", "_boxType", "_boxItems", "_item", "_qty", "_mag"];
 _box = _this select 0;
 _boxType = _this select 1;
 
+_box setVariable [call vChecksum, true];
+
 _box allowDamage false; // No more fucking busted crates
+_box setVariable ["allowDamage", false, true];
 _box setVariable ["A3W_inventoryLockR3F", true, true];
 
 // Clear pre-existing cargo first
@@ -33,9 +37,10 @@ switch (_boxType) do
 		_boxItems =
 		[
 			// Item type, Item class(es), # of items, # of magazines per weapon
-			["wep", ["rhs_weap_fgm148", "rhs_weap_M136_hp", "rhs_weap_M136_hedp", "rhs_weap_M136"], RANDOM_BETWEEN(3,5), RANDOM_BETWEEN(1,2)],
-			["wep", ["rhs_weap_fim92", "rhs_weap_fim92"], RANDOM_BETWEEN(1,2), RANDOM_BETWEEN(1,2)],
-			["mag", ["ClaymoreDirectionalMine_Remote_Mag", "SLAMDirectionalMine_Wire_Mag", "ATMine_Range_Mag", "DemoCharge_Remote_Mag", "SatchelCharge_Remote_Mag"], RANDOM_BETWEEN(4,8)]
+			// Item type, Item class(es), # of items, # of magazines per weapon
+			["wep", ["CUP_launch_M47", "CUP_launch_Mk153Mod0", "CUP_optic_SMAW_Scope"], RANDOM_BETWEEN(3,5), RANDOM_BETWEEN(1,2)],
+			["wep", "CUP_launch_RPG18", RANDOM_BETWEEN(1,2), RANDOM_BETWEEN(1,2)],
+			["mag", ["ClaymoreDirectionalMine_Remote_Mag", "CUP_PG7VL_M", "ATMine_Range_Mag", "DemoCharge_Remote_Mag", "SatchelCharge_Remote_Mag"], RANDOM_BETWEEN(3,8)]
 		];
 	};
 	case "mission_USSpecial":
@@ -43,51 +48,45 @@ switch (_boxType) do
 		_boxItems =
 		[
 			// Item type, Item class(es), # of items, # of magazines per weapon
-			//["itm", "NVGoggles", 5],
-			["wep", ["Binocular", "Rangefinder"], RANDOM_BETWEEN(1,5)],
-			["itm", "Medikit", RANDOM_BETWEEN(1,3)],
-			["itm", "Toolkit", RANDOM_BETWEEN(0,1)],
-			["wep", ["hlc_rifle_honeybadger", "hlc_rifle_vendimus", "hlc_rifle_Bushmaster300", "hlc_rifle_m14sopmod", "hlc_rifle_osw_GL"], RANDOM_BETWEEN(2,3), RANDOM_BETWEEN(4,6)],
-			["wep", ["hlc_rifle_augpara_b", "hlc_rifle_augpara_t", "hlc_rifle_auga2para_b", "hlc_rifle_auga2para_t", "rhs_weap_ak74m_camo", "rhs_weap_ak74m_desert", "rhs_weap_ak74m_2mag_camo"], RANDOM_BETWEEN(2,3), RANDOM_BETWEEN(4,6)],
-			["wep", ["hlc_rifle_auga1_B", "hlc_rifle_auga2_b", "hlc_rifle_augsr_b", "hlc_rifle_auga3_bl", "hlc_rifle_auga3_GL_B", "hlc_rifle_auga3_GL_BL"], RANDOM_BETWEEN(1,3), RANDOM_BETWEEN(4,6)],
-			["wep", ["rhs_weap_pkp", "rhs_weap_m249_pip", "rhs_weap_m240B", "hlc_lmg_M60E4"], RANDOM_BETWEEN(1,3), RANDOM_BETWEEN(2,4)],
-			["mag", "rhs_mag_rdg2_black", RANDOM_BETWEEN(4,6)],
-			["mag", "rhs_mag_rgd5", RANDOM_BETWEEN(4,6)]
+			["wep", ["CUP_srifle_AS50_SBPMII", "CUP_srifle_AWM_des_SBPMII", "CUP_srifle_AWM_wdl_SBPMII", "CUP_srifle_M107_LeupoldVX3"], RANDOM_BETWEEN(3,5), RANDOM_BETWEEN(5,7)],
+			["wep", ["CUP_srifle_CZ750", "CUP_srifle_M24_des", "CUP_srifle_M24_wdl", "CUP_srifle_G22_des", "CUP_arifle_Mk20", "CUP_arifle_Mk20"], RANDOM_BETWEEN(8,10), RANDOM_BETWEEN(6,10)],
+			
+			["wep", ["Laserdesignator_03", "Rangefinder"], RANDOM_BETWEEN(5,10)],
+			["itm", "Medikit", 5],
+			["itm", "Toolkit", 5],
+			["itm", ["CUP_optic_HoloBlack", "CUP_optic_HoloWdl", "CUP_optic_HoloDesert", "CUP_optic_CompM2_Black", "CUP_optic_CompM2_Woodland", "CUP_optic_CompM2_Desert"], RANDOM_BETWEEN(10,15)],
+			["itm", ["CUP_optic_RCO", "CUP_optic_RCO_desert", "CUP_optic_ACOG", "CUP_optic_Elcan_reflex", "CUP_optic_SB_11_4x20_PM", "CUP_optic_LeupoldMk4_MRT_tan", "CUP_optic_LeupoldM3LR", "CUP_optic_SUSAT"], RANDOM_BETWEEN(10,15)],
+			
+			["mag", "CUP_30Rnd_556x45_Stanag", RANDOM_BETWEEN(10,20)],
+			["mag", "CUP_30Rnd_556x45_G36", RANDOM_BETWEEN(5,10)],
+			["mag", "CUP_100Rnd_556x45_BetaCMag", RANDOM_BETWEEN(4,8)],
+			["mag", "CUP_200Rnd_TE4_Green_Tracer_556x45_M249", 20],
+			["mag", "CUP_200Rnd_TE4_Green_Tracer_556x45_L110A1", 20],
+
+			["mag", "CUP_20Rnd_762x51_DMR", RANDOM_BETWEEN(10,20)],
+			["mag", "CUP_30Rnd_Sa58_M", RANDOM_BETWEEN(5,10)],
+			
+			["wep", ["CUP_launch_Javelin", "CUP_launch_FIM92Stinger", "CUP_launch_MAAWS", "CUP_launch_Mk153Mod0", "CUP_launch_M47"], RANDOM_BETWEEN(5,10), RANDOM_BETWEEN(5,7)],
+			
+			["mag", "CUP_1Rnd_StarCluster_Red_M203", RANDOM_BETWEEN(15,15)],
+			["mag", "CUP_1Rnd_StarFlare_White_M203", RANDOM_BETWEEN(15,15)],
+			
+			["mag", "CUP_HandGrenade_M67", RANDOM_BETWEEN(10,10)],
+			["mag", "SmokeShellPurple", RANDOM_BETWEEN(10,10)]
+
 		];
 	};
-
-//Armed Diver Mission / main: hostileheliformation
 	case "mission_Main_A3snipers":
 	{
 		_boxItems =
 		[
 			// Item type, Item class(es), # of items, # of magazines per weapon
-			["wep", ["rhs_weap_svdp_wd", "rhs_weap_XM2010_wd", "rhs_weap_XM2010_d", "rhs_weap_XM2010_sa"], RANDOM_BETWEEN(2,3), RANDOM_BETWEEN(6,8)],
-			["wep", ["hlc_rifle_psg1", "hlc_rifle_M21"], RANDOM_BETWEEN(2,3), RANDOM_BETWEEN(6,8)],
-			["wep", ["Rangefinder"], RANDOM_BETWEEN(4,4)],
-			["itm", ["HLC_Optic_PSO1", "optic_SOS"], RANDOM_BETWEEN(3,4)]
-		];
-	};
-	case "mission_TOP_Sniper":
-	{
-		_boxItems =
-		[
-			// Item type, Item class(es), # of items, # of magazines per weapon
-			["wep", ["srifle_LRR_SOS_F", "srifle_LRR_camo_SOS_F", "srifle_GM6_SOS_F", "srifle_GM6_camo_SOS_F"], RANDOM_BETWEEN(1,5), RANDOM_BETWEEN(4,6)],
-			["wep", ["srifle_EBR_F", "srifle_DMR_01_F"], RANDOM_BETWEEN(1,3), RANDOM_BETWEEN(4,6)],
-			["wep", "Rangefinder", RANDOM_BETWEEN(1,3)],
-			["itm", ["HLC_Optic_PSO1", "optic_SOS"], RANDOM_BETWEEN(3,4)]
-		];
-	};
-	case "mission_TOP_Gear1":
-	{
-		_boxItems =
-		[
-			// Item type, Item class(es), # of items, # of magazines per weapon
-			["itm", ["V_RebreatherB", "V_PlateCarrierIAGL_dgtl", "V_TacVest_camo", "V_PlateCarrierGL_rgr"], RANDOM_BETWEEN(1,8)],
-			["itm", ["B_Carryall_mcamo", "B_Kitbag_mcamo"], RANDOM_BETWEEN(1,5)],
-			["itm", ["U_B_HeliPilotCoveralls","U_B_Wetsuit","U_B_CombatUniform_mcam_vest"], RANDOM_BETWEEN(1,4)],
-			["itm", ["H_HelmetCrew_B","H_CrewHelmetHeli_B","H_HelmetB_plain_blk","H_HelmetSpecB"], RANDOM_BETWEEN(1,5)]
+			["wep", ["CUP_srifle_M40A3", "CUP_srifle_M24_des_LeupoldMk4LRT", "CUP_srifle_M24_ghillie_bipod", "CUP_srifle_M40A3_bipod", "CUP_srifle_CZ550"], RANDOM_BETWEEN(1,2), RANDOM_BETWEEN(4,6)],
+			["wep", ["CUP_srifle_CZ750", "CUP_srifle_CZ750_SOS_bipod", "CUP_srifle_SVD_pso", "CUP_srifle_VSSVintorez_pso", "CUP_srifle_SVD_wdl_ghillie"], RANDOM_BETWEEN(1,2), RANDOM_BETWEEN(4,6)],
+			["itm", ["Rangefinder", "Laserdesignator"], RANDOM_BETWEEN(1,2)],
+			["itm", ["CUP_optic_PSO_1", "CUP_Mxx_camo", "CUP_optic_LeupoldMk4_10x40_LRT_Woodland", "CUP_optic_PSO_3", "CUP_optic_Kobra", "CUP_muzzle_PBS4", "CUP_optic_SB_3_12x50_PMII"], RANDOM_BETWEEN(1,2)],
+			["itm", ["acc_pointer_IR", "acc_flashlight"], RANDOM_BETWEEN(1,3)],
+			["itm", ["CUP_optic_LeupoldMk4_MRT_tan", "CUP_optic_Leupold_VX3", "CUP_optic_ACOG"], RANDOM_BETWEEN(1,2)]
 		];
 	};
 };

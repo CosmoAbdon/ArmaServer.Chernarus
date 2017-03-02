@@ -43,13 +43,13 @@ mf_compile = compileFinal
 		if (_isDebug) then {
 			compile format ["call compile preProcessFileLineNumbers ""%1""", _path]
 		} else {
-			compileFinal preProcessFileLineNumbers _path;
+			compileFinal preProcessFileLineNumbers _path
 		};
 	} else {
 		if (_isDebug) then {
 			compile toString _code
 		} else {
-			compileFinal toString _code;
+			compileFinal toString _code
 		};
 	};
 ');
@@ -70,11 +70,14 @@ mf_init =
 _clientFunc = "client\functions";
 _serverFunc = "server\functions";
 
+A3W_fnc_deathMessage = [_serverFunc, "fn_deathMessage.sqf"] call mf_compile;
+A3W_fnc_getInFast = [_clientFunc, "fn_getInFast.sqf"] call mf_compile;
+A3W_fnc_isBleeding = [_serverFunc, "fn_isBleeding.sqf"] call mf_compile;
+A3W_fnc_isFriendly = [_clientFunc, "fn_isFriendly.sqf"] call mf_compile;
+A3W_fnc_isUnconscious = [_serverFunc, "fn_isUnconscious.sqf"] call mf_compile;
 A3W_fnc_pushVehicle = [_serverFunc, "pushVehicle.sqf"] call mf_compile;
-A3W_fnc_setName = [_clientFunc, "fn_setName.sqf"] call mf_compile;
-A3W_fnc_setupAntiExplode = [_clientFunc, "fn_setupAntiExplode.sqf"] call mf_compile;
+A3W_fnc_setVehicleLoadout = [_serverFunc, "fn_setVehicleLoadout.sqf"] call mf_compile;
 A3W_fnc_towingHelper = [_serverFunc, "towingHelper.sqf"] call mf_compile;
-allPlayers = [_serverFunc, "allPlayers.sqf"] call mf_compile;
 applyVehicleTexture = "client\systems\vehicleStore\applyVehicleTexture.sqf" call mf_compile;
 cargoToPairs = [_serverFunc, "cargoToPairs.sqf"] call mf_compile;
 detachTowedObject = [_serverFunc, "detachTowedObject.sqf"] call mf_compile;
@@ -82,10 +85,15 @@ FAR_setKillerInfo = "addons\far_revive\FAR_setKillerInfo.sqf" call mf_compile;
 findSafePos = [_serverFunc, "findSafePos.sqf"] call mf_compile;
 fn_addScore = [_serverFunc, "fn_addScore.sqf"] call mf_compile;
 fn_addToPairs = [_serverFunc, "fn_addToPairs.sqf"] call mf_compile;
+fn_addTurretWeapons = [_serverFunc, "fn_addTurretWeapons.sqf"] call mf_compile;
+fn_allPlayers = [_serverFunc, "allPlayers.sqf"] call mf_compile;
 fn_boundingBoxReal = [_serverFunc, "fn_boundingBoxReal.sqf"] call mf_compile;
+fn_canGetIn = [_clientFunc, "fn_canGetIn.sqf"] call mf_compile;
+fn_createCrewUAV = [_serverFunc, "fn_createCrewUAV.sqf"] call mf_compile;
 fn_enableSimulationGlobal = [_serverFunc, "fn_enableSimulationGlobal.sqf"] call mf_compile;
 fn_enableSimulationServer = [_serverFunc, "fn_enableSimulationServer.sqf"] call mf_compile;
 fn_filterString = [_serverFunc, "fn_filterString.sqf"] call mf_compile;
+fn_findInPairs = [_serverFunc, "fn_findInPairs.sqf"] call mf_compile;
 fn_findString = [_serverFunc, "fn_findString.sqf"] call mf_compile;
 fn_forceAddItem = [_clientFunc, "fn_forceAddItem.sqf"] call mf_compile;
 fn_getFromPairs = [_serverFunc, "fn_getFromPairs.sqf"] call mf_compile;
@@ -97,21 +105,29 @@ fn_loopSpread = [_serverFunc, "fn_loopSpread.sqf"] call mf_compile;
 fn_magazineAmmoCargo = [_serverFunc, "fn_magazineAmmoCargo.sqf"] call mf_compile;
 fn_numbersText = [_serverFunc, "fn_numbersText.sqf"] call mf_compile;
 fn_numToStr = [_serverFunc, "fn_numToStr.sqf"] call mf_compile;
+fn_remotePlayerSetup = [_clientFunc, "fn_remotePlayerSetup.sqf"] call mf_compile;
 fn_removeFromPairs = [_serverFunc, "fn_removeFromPairs.sqf"] call mf_compile;
+fn_removeTurretWeapons = [_serverFunc, "fn_removeTurretWeapons.sqf"] call mf_compile;
+fn_selectRandomNested = [_serverFunc, "fn_selectRandomNested.sqf"] call mf_compile;
+fn_selectRandomWeighted = [_serverFunc, "fn_selectRandomWeighted.sqf"] call mf_compile;
+fn_selectRandomWeightedPairs = [_serverFunc, "fn_selectRandomWeightedPairs.sqf"] call mf_compile;
 fn_setToPairs = [_serverFunc, "fn_setToPairs.sqf"] call mf_compile;
 fn_sortAlphabetically = [_serverFunc, "fn_sortAlphabetically.sqf"] call mf_compile;
 fn_splitString = [_serverFunc, "fn_splitString.sqf"] call mf_compile;
 fn_startsWith = [_serverFunc, "fn_startsWith.sqf"] call mf_compile;
 fn_ejectCorpse = [_serverFunc, "fn_ejectCorpse.sqf"] call mf_compile;
 //fn_vehicleInit = [_serverFunc, "fn_vehicleInit.sqf"] call mf_compile;
+fn_vehSafeDistance = [_serverFunc, "fn_vehSafeDistance.sqf"] call mf_compile;
 getBallMagazine = [_serverFunc, "getBallMagazine.sqf"] call mf_compile;
 getFwdVelocity = [_serverFunc, "getFwdVelocity.sqf"] call mf_compile;
 getHitPoints = [_serverFunc, "getHitPoints.sqf"] call mf_compile;
 getMagAmmoCount = [_serverFunc, "getMagAmmoCount.sqf"] call mf_compile;
+getMagazineDetailAmmo = [_serverFunc, "getMagazineDetailAmmo.sqf"] call mf_compile;
 getMoveWeapon = [_clientFunc, "getMoveWeapon.sqf"] call mf_compile;
 fn_getPlayerData = "persistence\client\players\getPlayerData.sqf" call mf_compile;
 getPublicVar = [_serverFunc, "getPublicVar.sqf"] call mf_compile;
 getTeamMarkerColor = "territory\client\getTeamMarkerColor.sqf" call mf_compile;
+A3W_fnc_getTeamMarkerColor = getTeamMarkerColor;
 isConfigOn = [_serverFunc, "isConfigOn.sqf"] call mf_compile;
 processMagazineCargo = [_serverFunc, "processMagazineCargo.sqf"] call mf_compile;
 relativePos = [_serverFunc, "relativePos.sqf"] call mf_compile;

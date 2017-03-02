@@ -25,13 +25,13 @@ _setupObjects =
 	// pick the vehicles for the convoy
 	_convoyVeh = if (missionDifficultyHard) then
 	{
-		["I_G_Offroad_01_armed_F", "I_Truck_02_transport_F", "I_G_Offroad_01_F"]
+		["CUP_I_Datsun_PK", "CUP_C_Datsun_Covered", "CUP_I_Datsun_PK"]
 	}
 	else
 	{
 		[
-			["B_Quadbike_01_F", "C_Van_01_box_F", "B_Quadbike_01_F"],
-			["I_G_Offroad_01_F", "I_Truck_02_transport_F", "I_G_Offroad_01_F"]
+			["CUP_I_SUV_Armored_ION", "CUP_I_SUV_UNO", "CUP_I_SUV_Armored_ION"],
+			["CUP_I_BTR40_MG_TKG", "CUP_I_V3S_Covered_TKG", "CUP_I_BTR40_MG_TKG"]
 		] call BIS_fnc_selectRandom;
 	};
 
@@ -56,17 +56,17 @@ _setupObjects =
 		_vehicle setDir _direction;
 		_aiGroup addVehicle _vehicle;
 
-		_soldier = [_aiGroup, _position, _loadout] call createRandomSoldier;
+		_soldier = [_aiGroup, _position] call createRandomSoldier;
 		_soldier moveInDriver _vehicle;
 
-		_soldier = [_aiGroup, _position, _loadout] call createRandomSoldier;
+		_soldier = [_aiGroup, _position] call createRandomSoldier;
 		_soldier moveInCargo [_vehicle, 0];
 
 		switch (true) do
 		{
 			case (_type isKindOf "Offroad_01_armed_base_F"):
 			{
-				_soldier = [_aiGroup, _position, _loadout] call createRandomSoldier;
+				_soldier = [_aiGroup, _position] call createRandomSoldier;
 				_soldier moveInGunner _vehicle;
 			};
 			case (_type isKindOf "C_Van_01_box_F"):
@@ -131,13 +131,12 @@ _failedExec = nil;
 _successExec =
 {
 	// Mission completed
-	_box1 = createVehicle ["rhs_weapons_crate_ak_standard", _lastPos, [], 2, "None"];
+	_Boxes1 = ["Box_IND_Wps_F","Box_East_Wps_F","Box_NATO_Wps_F","Box_NATO_AmmoOrd_F","Box_NATO_Grenades_F","Box_East_WpsLaunch_F","Box_NATO_WpsLaunch_F","Box_East_WpsSpecial_F","Box_NATO_WpsSpecial_F"];    
+	_currBox1 = _Boxes1 call BIS_fnc_selectRandom;
+	_box1 = createVehicle [_currBox1, _lastPos, [], 5, "None"];
 	_box1 setDir random 360;
-	[_box1, randomMissionSpecialCargo, 1] call randomCargoFill;
-
-	_box2 = createVehicle ["rhs_weapons_crate_ak_ammo_545x39_standard", _lastPos, [], 2, "None"];
-	_box2 setDir random 360;
-	[_box2, randomMissionExplosiveCargo, 1] call randomCargoFill;
+	_box1 call randomCrateLoadOutNoThermal;
+	{ _x setVariable ["R3F_LOG_disabled", false, true] } forEach [_box1];
 
 	_successHintMessage = "The convoy has been stopped, the weapon crates and vehicles are now yours to take.";
 };

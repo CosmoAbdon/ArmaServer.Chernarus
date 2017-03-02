@@ -6,31 +6,24 @@
 
 if (!isServer) exitWith {};
 
-private ["_objPos", "_objClass", "_obj", "_adjustZ", "_pos"];
+private ["_objPos", "_objList", "_objClass", "_obj", "_allowDamage", "_adjustZ", "_pos"];
 _objPos = _this select 0;
+_objList = _this select 1;
 
-if (["A3W_essentialsSpawning"] call isConfigOn && !(["A3W_baseBuilding"] call isConfigOn)) then
-{
-	_objClass = essentialsList call BIS_fnc_selectRandom;
-}
-else
-{
-	_objClass = objectList call BIS_fnc_selectRandom;
-};
-
+_objClass = _objList call BIS_fnc_selectRandom;
 _obj = createVehicle [_objClass, _objPos, [], 50, "None"];
+
+_allowDamage = false;
 
 switch (true) do
 {
 	case (_objClass == "Land_BarrelWater_F"):
 	{
 		_obj setVariable ["water", 50, true];
-		_obj allowDamage false;
 	};
 	case (_objClass == "Land_Sacks_goods_F"):
 	{
 		_obj setVariable ["food", 40, true];
-		_obj allowDamage false;
 	};
 	case (_objClass isKindOf "ReammoBox_F"):
 	{
@@ -38,22 +31,25 @@ switch (true) do
 		clearWeaponCargoGlobal _obj;
 		clearItemCargoGlobal _obj;
 
+		_obj addMagazineCargoGlobal ["16Rnd_9x21_Mag", 10];
 		_obj addMagazineCargoGlobal ["9Rnd_45ACP_Mag", 10];
-		_obj addMagazineCargoGlobal ["Laserbatteries", 1];
-		_obj addWeaponCargoGlobal ["Laserdesignator", 1];
+		//_obj addMagazineCargoGlobal ["Laserbatteries", 1];
+		//_obj addWeaponCargoGlobal ["Laserdesignator", 1];
+		_obj addWeaponCargoGlobal ["Rangefinder", 2];
 		_obj addWeaponCargoGlobal ["Binocular", 5];
 		_obj addItemCargoGlobal ["FirstAidKit", 10];
 		_obj addItemCargoGlobal ["ItemGPS", 5];
 		_obj addItemCargoGlobal ["Medikit", 4];
 		_obj addItemCargoGlobal ["ToolKit", 2];
-
-		_obj allowDamage false;
 	};
 	default
 	{
-		_obj setVariable ["allowDamage", true];
+		_allowDamage = true;
 	};
 };
+
+_obj allowDamage _allowDamage;
+_obj setVariable ["allowDamage", _allowDamage, true];
 
 // fix for sunken/rissen objects :)
 _adjustZ = switch (true) do
