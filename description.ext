@@ -80,7 +80,8 @@ class RscTitles
 	#include "client\systems\scoreboard\score_gui.hpp"
 	//#include "addons\far_revive\revive_gui.hpp"
 	#include "addons\statusBar\statusBar.hpp"
-	#include "addons\logo\main.hpp"	
+	//#include "addons\logo\main.hpp"
+	#include "addons\logo\logo.hpp"
 };
 
 class CfgFunctions

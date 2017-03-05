@@ -1,7 +1,7 @@
 class RscTitles {
-    class wnd_disp {
+    class wm_disp {
         idd = -1;
-        onLoad = "uiNamespace setVariable ['wnd_disp', _this select 0]";
+        onLoad = "uiNamespace setVariable ['wm_disp', _this select 0]";
         fadein = 0;
         fadeout = 0;
         duration = 10e10;
@@ -11,7 +11,7 @@ class RscTitles {
             class wm_text2 {
                 idc = 1;
                 x = safeZoneX+0.027;//safeZoneW*0.01;
-                y = safeZoneY+safeZoneH-0.2	;
+                y = safeZoneY+safeZoneH-0.16;
                 w = 0.151*safeZoneH;
                 h = 0.057*safeZoneH;
                 shadow = 2;
