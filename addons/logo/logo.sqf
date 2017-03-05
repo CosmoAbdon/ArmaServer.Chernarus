@@ -1,4 +1,4 @@
-/*_pic = "addons\logo\logo.paa";
+_pic = "addons\logo\logo.paa";
 [
     '<img align=''left'' size=''2.1'' shadow=''0'' image='+(str(_pic))+' />',
     safeZoneX+0.00,
@@ -7,4 +7,4 @@
     0,
     0,
     3090
-] spawn bis_fnc_dynamicText;*/
+] spawn bis_fnc_dynamicText;

@@ -151,22 +151,16 @@ rifleArray = compileFinal str
     ["M110 Sniper Rifle", "CUP_srifle_M110", 250],
     ["L129A1 DMR", "CUP_srifle_L129A1", 250],
     ["G22 Scout Rifle", "CUP_srifle_G22_des", 280],
-    ["M24 Sniper Rifle (Desert)", "CUP_srifle_M24_des", 250],
-    ["M24 Sniper Rifle (Camo)", "CUP_srifle_M24_wdl", 250],
-    ["M40A3 Sniper Rifle", "CUP_srifle_M40A3", 250],
     ["CZ750 Scout Rifle", "CUP_srifle_CZ750", 250],
     ["L115/AWM .338 LRR (Desert)", "CUP_srifle_AWM_des", 400],
     ["L115/AWM .338 LRR (Camo)", "CUP_srifle_AWM_wdl", 400],
-    ["M107 Anti-Personel Rifle", "CUP_srifle_M107_Base", 1000],
-    ["AS50 Anti-Material Rifle", "CUP_srifle_AS50", 1000],
    
        
 //Russian
    
     ["VSS Vintorez", "CUP_srifle_VSSVintorez", 200],
     ["SVD Dragunov", "CUP_srifle_SVD", 270],
-    ["SVD Dragunov (Desert)", "CUP_srifle_SVD_des", 270],
-    ["KSVK Anti-Material Rifle", "CUP_srifle_ksvk", 950]
+    ["SVD Dragunov (Desert)", "CUP_srifle_SVD_des", 270]
 ];
  
 lmgArray = compileFinal str
@@ -188,17 +182,17 @@ lmgArray = compileFinal str
 launcherArray = compileFinal str
 [
     ["FGM-148 Javelin", "CUP_launch_Javelin", 2500],
-    ["FIM-92F", "CUP_launch_FIM92Stinger", 1250],
+    //["FIM-92F", "CUP_launch_FIM92Stinger", 1250],
     ["M136", "CUP_launch_M136", 650],
-    ["M47 Dragon", "CUP_launch_M47", 2000],
+    //["M47 Dragon", "CUP_launch_M47", 2000],
     ["MAAWS", "CUP_launch_MAAWS", 1500],
     ["Mk153 SMAW", "CUP_launch_Mk153Mod0", 700],
-    ["AT-13 Metis", "CUP_launch_Metis", 2500],
+    //["AT-13 Metis", "CUP_launch_Metis", 2500],
     ["RPG-18", "CUP_launch_RPG18", 600],  
     ["9K32 Strela", "CUP_launch_9K32Strela", 800],
-    ["9K38 Igla", "CUP_launch_Igla", 800],
+    //["9K38 Igla", "CUP_launch_Igla", 800],
     ["RPG-7V", "CUP_launch_RPG7V", 300],
-    ["NLAW", "CUP_launch_NLAW", 2000]
+    //["NLAW", "CUP_launch_NLAW", 2000]
 ];
  
 allGunStoreFirearms = compileFinal str (call pistolArray + call smgArray + call rifleArray + call lmgArray + call launcherArray);
@@ -924,13 +918,6 @@ backpackArray = compileFinal str
  
 genItemArray = compileFinal str
 [
-    ["Quadrotor UAV (NATO)", "B_UAV_01_backpack_F", 5000, "backpack"],
-    ["Quadrotor UAV (CSAT)", "O_UAV_01_backpack_F", 5000, "backpack"],
-    ["Quadrotor UAV (AAF)", "I_UAV_01_backpack_F", 5000, "backpack"],
- 
-    ["UAV Terminal (NATO)", "B_UavTerminal", 150, "gps"],
-    ["UAV Terminal (CSAT)", "O_UavTerminal", 150, "gps"],
-    ["UAV Terminal (AAF)", "I_UavTerminal", 150, "gps"],
    
     ["GPS", "ItemGPS", 10, "gps"],
    
@@ -964,50 +951,7 @@ genItemArray = compileFinal str
     ["Chemlight (Blue)", "Chemlight_blue", 5, "mag"],
     ["Chemlight (Green)", "Chemlight_green", 5, "mag"],
     ["Chemlight (Yellow)", "Chemlight_yellow", 5, "mag"],
-    ["Chemlight (Red)", "Chemlight_red", 5, "mag"],
-   
-    ["Stealth Balaclava (Black)", "G_Balaclava_TI_blk_F", 50, "gogg"],
-    ["Stealth Balaclava (Black, Goggles)", "G_Balaclava_TI_G_blk_F", 50, "gogg"],
-    ["Stealth Balaclava (Green)", "G_Balaclava_TI_tna_F", 50, "gogg"],
-    ["Stealth Balaclava (Green, Goggles)", "G_Balaclava_TI_G_tna_F", 50, "gogg"],
-    ["Combat Goggles", "G_Combat", 5, "gogg"],
-    ["Combat Goggles (Green)", "G_Combat_Goggles_tna_F", 5, "gogg"],
-    ["VR Goggles", "G_Goggles_VR", 5, "gogg"],
-    ["Balaclava (Black)", "G_Balaclava_blk", 5, "gogg"],
-    ["Balaclava (Combat Goggles)", "G_Balaclava_combat", 5, "gogg"],
-    ["Balaclava (Low Profile Goggles)", "G_Balaclava_lowprofile", 5, "gogg"],
-    ["Balaclava (Olive)", "G_Balaclava_oli", 5, "gogg"],
-    ["Bandana (Aviator)", "G_Bandanna_aviator", 5, "gogg"],
-    ["Bandana (Beast)", "G_Bandanna_beast", 5, "gogg"],
-    ["Bandana (Black)", "G_Bandanna_blk", 5, "gogg"],
-    ["Bandana (Khaki)", "G_Bandanna_khk", 5, "gogg"],
-    ["Bandana (Olive)", "G_Bandanna_oli", 5, "gogg"],
-    ["Bandana (Shades)", "G_Bandanna_shades", 5, "gogg"],
-    ["Bandana (Sport)", "G_Bandanna_sport", 5, "gogg"],
-    ["Bandana (Tan)", "G_Bandanna_tan", 5, "gogg"],
- 
-    ["Aviator Glasses", "G_Aviator", 10, "gogg"],
-    ["Ladies Shades", "G_Lady_Blue", 10, "gogg"],
-    ["Ladies Shades (Fire)", "G_Lady_Red", 10, "gogg"],
-    ["Ladies Shades (Iridium)", "G_Lady_Mirror", 10, "gogg"],
-    ["Ladies Shades (Sea)", "G_Lady_Dark", 10, "gogg"],
-    ["Low Profile Goggles", "G_Lowprofile", 10, "gogg"],
-    ["Shades (Black)", "G_Shades_Black", 10, "gogg"],
-    ["Shades (Blue)", "G_Shades_Blue", 10, "gogg"],
-    ["Shades (Green)", "G_Shades_Green", 10, "gogg"],
-    ["Shades (Red)", "G_Shades_Red", 10, "gogg"],
-    ["Spectacle Glasses", "G_Spectacles", 10, "gogg"],
-    ["Sport Shades (Fire)", "G_Sport_Red", 10, "gogg"],
-    ["Sport Shades (Poison)", "G_Sport_Blackyellow", 10, "gogg"],
-    ["Sport Shades (Shadow)", "G_Sport_BlackWhite", 10, "gogg"],
-    ["Sport Shades (Style)", "G_Sport_Checkered", 10, "gogg"],
-    ["Sport Shades (Vulcan)", "G_Sport_Blackred", 10, "gogg"],
-    ["Sport Shades (Yetti)", "G_Sport_Greenblack", 10, "gogg"],
-    ["Square Shades", "G_Squares_Tinted", 10, "gogg"],
-    ["Square Spectacles", "G_Squares", 10, "gogg"],
-    ["Tactical Glasses", "G_Tactical_Clear", 10, "gogg"],
-    ["Tactical Shades", "G_Tactical_Black", 10, "gogg"],
-    ["Tinted Spectacles", "G_Spectacles_Tinted", 10, "gogg"]
+    ["Chemlight (Red)", "Chemlight_red", 5, "mag"]
 ];
  
 allStoreMagazines = compileFinal str (call ammoArray + call throwputArray + call genItemArray);
