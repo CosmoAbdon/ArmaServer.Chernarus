@@ -27,8 +27,8 @@ onLoadName = "ARMABROTHERS A3Wasteland Chernarus"; // it would be great if you c
 onLoadMission = "Wasteland is a harsh survival sandbox where two teams and independent players fight for survival.";
 overviewText = "Wasteland is a harsh survival sandbox where two teams and independent players fight for survival.";
 overviewTextLocked = "Wasteland is a harsh survival sandbox where two teams and independent players fight for survival.";
-overviewPicture = "mapConfig\Loading.jpg";
-loadScreen = "mapConfig\Loading.jpg";
+overviewPicture = "Loading.jpg";
+loadScreen = "Loading.jpg";
 briefing = 0; // if 0, skip Continue button
 
 #include "debugFlag.hpp"

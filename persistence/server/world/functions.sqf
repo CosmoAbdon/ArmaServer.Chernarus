@@ -4,7 +4,7 @@
 //	@file Name: functions.sqf
 //	@file Author: AgentRev
 
-#include "defines.sqf"
+#define STICKY_CHARGE_DUMMY_OBJ "Sign_Sphere10cm_F"
 
 private ["_baseSavingOn", "_boxSavingOn", "_staticWeaponSavingOn", "_warchestSavingOn", "_warchestMoneySavingOn", "_beaconSavingOn", "_timeSavingOn", "_weatherSavingOn", "_savingMethod", "_isBox", "_isStaticWeapon", "_isWarchest", "_isBeacon", "_isSaveable", "_strToSide", "_hcProfileVarName", "_hcSaveProfileVar"];
 
@@ -38,8 +38,6 @@ _strToSide =
 		default       { sideUnknown };
 	};
 };
-
-_isHC = !isNil "A3W_hcObjSaving_isClient";
 
 _hcProfileVarName =
 {
