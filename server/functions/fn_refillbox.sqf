@@ -39,8 +39,8 @@ switch (_boxType) do
 			// Item type, Item class(es), # of items, # of magazines per weapon
 			// Item type, Item class(es), # of items, # of magazines per weapon
 			["wep", ["CUP_launch_M47", "CUP_launch_Mk153Mod0", "CUP_optic_SMAW_Scope"], RANDOM_BETWEEN(3,5), RANDOM_BETWEEN(1,2)],
-			["wep", "CUP_launch_RPG18", RANDOM_BETWEEN(1,2), RANDOM_BETWEEN(1,2)],
-			["mag", ["CUP_launch_FIM92Stinger", "CUP_PG7VL_M", "CUP_launch_M47", "CUP_launch_NLAW", "CUP_launch_Metis"], RANDOM_BETWEEN(3,8)]
+			["wep", ["CUP_launch_RPG18","CUP_srifle_CZ750"], RANDOM_BETWEEN(1,2), RANDOM_BETWEEN(1,2)],
+			["wep", ["CUP_launch_FIM92Stinger", "CUP_PG7VL_M", "CUP_launch_M47", "CUP_launch_NLAW", "CUP_launch_Metis"], RANDOM_BETWEEN(1,3)]
 		];
 	};
 	case "mission_USSpecial":
