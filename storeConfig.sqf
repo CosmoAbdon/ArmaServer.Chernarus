@@ -18,8 +18,8 @@ hiddenArray = compileFinal str
 //This allows mission vehicles to be sold for a good price without being directly purchasable. Keep all your hidden things in one place.
  
     ["CWS NV/TWS", "CUP_optic_CWS", 10000, "item"],
-    ["AN/PAS 13C1 TWS (MR)", "CUP_optic_AN_PAS_13c1", 10000, "item"],
-    ["AN/PAS 13C2 HTWS (LR)", "CUP_optic_AN_PAS_13c2", 10000, "item"],
+    //["AN/PAS 13C1 TWS (MR)", "CUP_optic_AN_PAS_13c1", 10000, "item"],
+    //["AN/PAS 13C2 HTWS (LR)", "CUP_optic_AN_PAS_13c2", 10000, "item"],
     ["GOSHAWK TWS", "GOSHAWK TWS", 10000, "item"],
    
     ["Ural Ammo Truck", "CUP_O_Ural_Reammo_RU", 8000,"vehicle"],
@@ -149,6 +149,8 @@ rifleArray = compileFinal str
     ["Lee Enfield Bolt-Action Rifle(Rail)", "CUP_srifle_LeeEnfield_rail", 150],
     ["M14 DMR", "CUP_srifle_M14_DMR", 225],
     ["M110 Sniper Rifle", "CUP_srifle_M110", 250],
+	["M24", "CUP_srifle_M24_wdl", 250],
+	["M24 Desert", "CUP_srifle_M24_des", 250],
     ["L129A1 DMR", "CUP_srifle_L129A1", 250],
     ["G22 Scout Rifle", "CUP_srifle_G22_des", 280],
     ["CZ750 Scout Rifle", "CUP_srifle_CZ750", 250],
@@ -506,15 +508,15 @@ ammoArray = compileFinal str
    
     //High-impact Homing missiles = $1k each, low-impact homing (NLAW,9K32) or wire-guided (M47) = $750, unguided = $400
     ["9K32 Strela-2 Missile", "CUP_Strela_2_M", 350],
-    ["9K38 Igla Missile", "CUP_Igla_M", 350],
-    ["FIM-92F Stinger Missile", "CUP_Stinger_M", 500],
+    //["9K38 Igla Missile", "CUP_Igla_M", 350],
+    //["FIM-92F Stinger Missile", "CUP_Stinger_M", 500],
     ["FGM-148 Javelin Missile", "CUP_Javelin_M", 1000],
     ["M136 Rocket", "CUP_M136_M", 250],
-    ["M47 Dragon Missile", "CUP_Dragon_EP1_M", 750],
+    //["M47 Dragon Missile", "CUP_Dragon_EP1_M", 750],
     ["MAAWS HEDP Rocket", "CUP_MAAWS_HEDP_M", 400],
     ["MAAWS HEAT Rocket", "CUP_MAAWS_HEAT_M", 400],
-    ["AT-13 Metis Missile", "CUP_AT13_M", 1000],
-    ["NLAW Guided Rocket", "CUP_NLAW_M", 750],
+    //["AT-13 Metis Missile", "CUP_AT13_M", 1000],
+    //["NLAW Guided Rocket", "CUP_NLAW_M", 750],
    
     ["PG7VL Rocket", "CUP_PG7VL_M", 200],
     ["PG7VR Rocket", "CUP_PG7VR_M", 200],
@@ -700,7 +702,9 @@ uniformArray = compileFinal str
     //Kept from Stratis
     ["Tropenatrn 1", "CUP_U_B_GER_Tropentarn_1", 15, "uni"],
     ["Tropenatrn 2", "CUP_U_B_GER_Tropentarn_2", 15, "uni"],
-    ["GET Ghillie", "CUP_U_B_GER_Ghillie", 30, "uni"],
+    ["GER Ghillie", "CUP_U_B_GER_Ghillie", 30, "uni"],
+	["GER Flecktarn (2)","CUP_U_B_GER_Flecktarn_2",10, "uni"],
+    ["GER Fleck Ghillie (Unrolled Sleeve)","CUP_U_B_GER_Fleck_Ghillie",10, "uni"],
     ["Light Ghillie", "CUP_U_O_TK_Officer", 25, "uni"],
     ["Light Ghillie", "CUP_U_O_TK_MixedCamo", 30, "uni"],
     ["Light Ghillie", "CUP_U_O_TK_Green", 30, "uni"],
@@ -711,7 +715,23 @@ uniformArray = compileFinal str
     ["USMC MARPAT Kneepad", "CUP_U_B_USMC_MARPAT_WDL_Kneepad", 10, "uni"],
     ["USMC Pilot", "CUP_U_B_USMC_PilotOverall", 10, "uni"],
     ["USMC MARPAT RollUp KneePad", "CUP_U_B_USMC_MARPAT_WDL_RollUpKneepad", 10, "uni"],
+	["USMC MARPAT (Sleeve)","UP_U_B_USMC_MARPAT_WDL_Sleeves",10, "uni"],
     ["USMC Ghillie", "CUP_U_B_USMC_Ghillie_WDL", 50, "uni"],
+	["USMC Navy (Blue)", "CUP_B_USMC_Navy_Blue", 5, "uni"],
+    ["USMC Navy (Brown)", "CUP_B_USMC_Navy_Brown", 5, "uni"],
+    ["USMC Navy (Green)", "CUP_B_USMC_Navy_Green", 5, "uni"],
+    ["USMC Navy (Red)", "CUP_B_USMC_Navy_Red", 5, "uni"],
+    ["USMC Navy (Violet)", "CUP_B_USMC_Navy_Violet", 5, "uni", "noDLC"],
+    ["USMC Navy (White)", "CUP_B_USMC_Navy_White", 5, "uni"],
+	["USMC Navy (Yellow)", "CUP_B_USMC_Navy_Yellow", 5, "uni"],
+	["USMC FROG Type I (Camo)","CUP_U_B_USMC_FROG1_WMARPAT",10, "uni"],
+    ["USMC FROG Type I (Desert)","CUP_U_B_USMC_FROG1_DMARPAT",10, "uni"],
+    ["USMC FROG Type II (Camo)","CUP_U_B_USMC_FROG2_WMARPAT",10, "uni"],
+    ["USMC FROG Type II (Desert)","CUP_U_B_USMC_FROG2_DMARPAT",10, "uni"],
+    ["USMC FROG Type III (Camo)","CUP_U_B_USMC_FROG3_WMARPAT",10, "uni"],
+    ["USMC FROG Type III (Desert)","CUP_U_B_USMC_FROG3_DMARPAT",10, "uni"],
+    ["USMC FROG Type IV (Camo)","CUP_U_B_USMC_FROG4_WMARPAT",10, "uni"],
+    ["USMC FROG Type IV (Desert)","CUP_U_B_USMC_FROG4_DMARPAT",10, "uni"],
     ["FR SpecOps", "CUP_U_B_FR_SpecOps", 20, "uni"],
     ["FR Scout", "CUP_U_B_FR_Scout", 20, "uni"],
     ["FR Officer", "CUP_U_B_FR_Officer", 20, "uni"],
@@ -720,16 +740,7 @@ uniformArray = compileFinal str
     ["FR Light", "CUP_U_B_FR_Light", 20, "uni"],
     ["FR Scout 1", "CUP_U_B_FR_Scout1", 20, "uni"],
     ["FR Scout 2", "CUP_U_B_FR_Scout2", 20, "uni"],
-    ["FR Scout 3", "CUP_U_B_FR_Scout3", 20, "uni"],
-    ["USMC Navy (Blue)", "CUP_B_USMC_Navy_Blue", 5, "uni"],
-    ["USMC Navy (Brown)", "CUP_B_USMC_Navy_Brown", 5, "uni"],
-    ["USMC Navy (Green)", "CUP_B_USMC_Navy_Green", 5, "uni"],
-    ["USMC Navy (Red)", "CUP_B_USMC_Navy_Red", 5, "uni"],
-    ["USMC Navy (Violet)", "CUP_B_USMC_Navy_Violet", 5, "uni", "noDLC"],
-    ["USMC Navy (White)", "CUP_B_USMC_Navy_White", 5, "uni"],
-    ["Suit 01", "CUP_U_C_Suit_01", 5, "uni"],
-    ["Suit 02", "CUP_U_C_Suit_01", 5, "uni"],
-    ["USMC Navy (Yellow)", "CUP_B_USMC_Navy_Yellow", 5, "uni"],
+    ["FR Scout 3", "CUP_U_B_FR_Scout3", 20, "uni"],    
    
 //CUP Additions
     //BLUFOR
@@ -737,14 +748,9 @@ uniformArray = compileFinal str
     ["US Army Operator (Urban)","CUP_U_B_USArmy_TwoKnee",10, "uni"],
     ["US Army (Urban)","CUP_U_B_USArmy_UBACS",10, "uni"],
     ["US Army Pilot","CUP_U_B_USArmy_PilotOverall",10, "uni"],
-    ["USMC FROG Type I (Camo)","CUP_U_B_USMC_FROG1_WMARPAT",10, "uni"],
-    ["USMC FROG Type I (Desert)","CUP_U_B_USMC_FROG1_DMARPAT",10, "uni"],
-    ["USMC FROG Type II (Camo)","CUP_U_B_USMC_FROG2_WMARPAT",10, "uni"],
-    ["USMC FROG Type II (Desert)","CUP_U_B_USMC_FROG2_DMARPAT",10, "uni"],
-    ["USMC FROG Type III (Camo)","CUP_U_B_USMC_FROG3_WMARPAT",10, "uni"],
-    ["USMC FROG Type III (Desert)","CUP_U_B_USMC_FROG3_DMARPAT",10, "uni"],
-    ["USMC FROG Type IV (Camo)","CUP_U_B_USMC_FROG4_WMARPAT",10, "uni"],
-    ["USMC FROG Type IV (Desert)","CUP_U_B_USMC_FROG4_DMARPAT",10, "uni"],
+	["US Army (Soft)","CUP_U_B_USArmy_soft",10, "uni"],
+    ["US Army (Ghillie)","CUP_U_B_USArmy_Ghillie",10, "uni"],
+
     ["German KSK (Arid)","CUP_U_B_GER_Tropentarn_1",15, "uni"],
     ["German KSK (Camo)","CUP_U_B_GER_Flecktarn_1",15, "uni"],
     ["BAF DDPM (Rolled Sleeve)","CUP_U_B_BAF_DDPM_S1_RolledUp",10, "uni"],
@@ -753,17 +759,30 @@ uniformArray = compileFinal str
     ["BAF DPM (Unrolled Sleeve)","CUP_U_B_BAF_DPM_S2_UnRolled",10, "uni"],
     ["BAF MTP (Rolled Sleeve)","CUP_U_B_BAF_MTP_S1_RolledUp",10, "uni"],
     ["BAF MTP (Unrolled Sleeve)","CUP_U_B_BAF_MTP_S2_UnRolled",10, "uni"],
-    ["Suit 01", "CUP_U_C_Suit_01", 5, "uni"],
-    ["Suit 02", "CUP_U_C_Suit_01", 5, "uni"],
+	
+    ["BAF MTP (Unrolled Sleeve)","CUP_U_B_BAF_MTP_Tshirt",10, "uni"],
+    ["BAF MTP (Unrolled Sleeve)","CUP_U_B_BAF_MTP_Ghillie",10, "uni"],
+    ["BAF DPM (Unrolled Sleeve)","CUP_U_B_BAF_DPM_Tshirt",10, "uni"],
+    ["BAF DPM (Unrolled Sleeve)","CUP_U_B_BAF_DPM_Ghillie",10, "uni"],
+    ["BAF DDPM (Unrolled Sleeve)","CUP_U_B_BAF_DDPM_Tshirt",10, "uni"],
+    ["BAF DDPM (Unrolled Sleeve)","CUP_U_B_BAF_DDPM_Ghillie",10, "uni"],
    
    
     //OPFOR
     ["Russian Army (Camo)","CUP_U_O_RUS_Flora_1",15, "uni"],
+	["Russian Army (Flora 2)","CUP_U_O_RUS_Flora_2",10, "uni"],
+	["Russian Army (Flora 1)","CUP_U_O_RUS_Flora_1_VDV",10, "uni"],
+    ["Russian Army (Flora 2)","CUP_U_O_RUS_Flora_2_VDV",10, "uni"],
+	["Russian Army (EMR 1)","CUP_U_O_RUS_EMR_1_VDV",10, "uni"],
+    ["Russian Army (EMR 2)","CUP_U_O_RUS_EMR_2_VDV",10, "uni"],
     ["Russian Army (EMR)","CUP_U_O_RUS_EMR_1",15, "uni"],
+	["Russian Army (EMR 2)","CUP_U_O_RUS_EMR_2",10, "uni"],
     ["Russian Army Officer","CUP_U_O_RUS_Commander",15, "uni"],
-    ["Russian Army Gorka (Partizan)","CUP_U_O_RUS_Gorka_Partizan",15, "uni"],
-    ["Russian Army Gorka (Green)","CUP_U_O_RUS_Gorka_Green",15, "uni"],
-   
+    ["Russian Army (Partizan)","CUP_U_O_RUS_Gorka_Partizan",15, "uni"],
+    ["Russian Army (Green)","CUP_U_O_RUS_Gorka_Green",15, "uni"],
+	["Russian Army (Gorka)","CUP_U_O_RUS_Gorka_Partizan_A",10, "uni"],
+    ["Russian Army (Ghillie)","CUP_U_O_RUS_Ghillie",10, "uni"],
+
     ["Chedaki Kamysh Uniform (Type 1)","CUP_U_O_CHDKZ_Kam_01",10, "uni"],
     ["Chedaki Kamysh Uniform (Type 2)","CUP_U_O_CHDKZ_Kam_02",10, "uni"],
     ["Chedaki Kamysh Uniform (Type 3)","CUP_U_O_CHDKZ_Kam_03",10, "uni"],
@@ -772,16 +791,25 @@ uniformArray = compileFinal str
     ["Chedaki Kamysh Uniform (Type 6)","CUP_U_O_CHDKZ_Kam_06",10, "uni"],
     ["Chedaki Kamysh Uniform (Type 7)","CUP_U_O_CHDKZ_Kam_07",10, "uni"],
     ["Chedaki Kamysh Uniform (Type 8)","CUP_U_O_CHDKZ_Kam_08",10, "uni"],
-    ["Suit 01", "CUP_U_C_Suit_01", 5, "uni"],
-    ["Suit 02", "CUP_U_C_Suit_01", 5, "uni"],
-   
+    ["Pilot (01)","CUP_U_O_Pilot_01",10, "uni"],
+    ["Worker (02)","CUP_U_O_Worker_02",10, "uni"],
+    ["Woodman (01)","CUP_U_O_Woodlander_01",10, "uni"],
+    ["Woodman (02)","CUP_U_O_Woodlander_02",10, "uni"],
+    ["Woodman (03)","CUP_U_O_Woodlander_03",10, "uni"],
+    ["Villager (01)","CUP_U_O_Villager_03",10, "uni"],
+    ["Villager (02)","CUP_U_O_Villager_04",10, "uni"],
+    ["Soldier (Mixed Camo)","CUP_U_O_SLA_MixedCamo",10, "uni"],
+    ["Soldier (Tank)","CUP_U_O_sla_overalls_Tank",10, "uni"],
+    ["Soldier (Pilot)","CUP_U_O_sla_overalls_Pilot",10, "uni"],
+    ["Soldier (Officer)","CUP_U_O_SLA_Officer_suit",10, "uni"],
+    ["Soldier (TTSKO Camo)","CUP_U_O_partisan_ttsko_Mixed",10, "uni"],	
    
    
     //INDY
     ["NAPA Guerilla Clothing (Fleck 1)","CUP_U_I_GUE_Flecktarn",10, "uni"],
     ["NAPA Guerilla Clothing (Fleck 2)","CUP_U_I_GUE_Flecktarn2",10, "uni"],
+	["NAPA Guerilla Clothing (Fleck 3)","CUP_U_I_GUE_Flecktarn3",10, "uni"],
     ["NAPA Guerilla Clothing (Woodland 1)","CUP_U_I_GUE_Woodland1",10, "uni"],
-    ["NAPA Guerilla Clothing (Woodland 1)","CUP_U_I_GUE_Flecktarn3",10, "uni"],
     ["NAPA Guerilla Half Ghillie","CUP_U_I_Ghillie_Top",20, "uni"],
     ["NAPA Guerilla Anorak (Type 1)","CUP_U_I_GUE_Anorak_01",10, "uni"],
     ["NAPA Guerilla Anorak (Type 2)","CUP_U_I_GUE_Anorak_02",10, "uni"],
@@ -795,10 +823,26 @@ uniformArray = compileFinal str
     ["RACS Combat Uniform (Woodland 2)","CUP_U_I_RACS_WDL_2",15, "uni"],
     ["RACS Combat Uniform (Mech. 1)","CUP_U_I_RACS_mech_1",15, "uni"],
     ["RACS Combat Uniform (Mech. 2)","CUP_U_I_RACS_mech_2",15, "uni"],
-    ["Suit 01", "CUP_U_C_Suit_01", 5, "uni"],
-    ["Suit 02", "CUP_U_C_Suit_01", 5, "uni"]
-   
-   
+	
+	["Pilot","CUP_U_I_Pilot_01",15, "uni"],
+	["Leader","CUP_U_I_Leader_01",15, "uni"],
+	["Villager (01)","CUP_U_I_Worker_02",15, "uni"],
+	["Villager (02)","CUP_U_I_Woodlander_01",15, "uni"],
+	["Villager (03))","CUP_U_I_Woodlander_02",15, "uni"],
+	["Villager (04))","CUP_U_I_Woodlander_03",15, "uni"],
+	["Villager (05)","CUP_U_I_Villager_03",15, "uni"],
+	["Villager (06)","CUP_U_I_Villager_04",15, "uni"],
+	["TKG Jeans (01)","CUP_I_TKG_Khet_Jeans_01",15, "uni"],
+	["TKG Jeans (02)","CUP_I_TKG_Khet_Jeans_02",15, "uni"],
+	["TKG Jeans (03)","CUP_I_TKG_Khet_Jeans_03",15, "uni"],
+	["TKG Jeans (04)","CUP_I_TKG_Khet_Jeans_04",15, "uni"],
+	["TKG Partug (01)","CUP_I_TKG_Khet_Partug_01",15, "uni"],
+	["TKG Partug (02)","CUP_I_TKG_Khet_Partug_02",15, "uni"],
+	["TKG Partug (03)","CUP_I_TKG_Khet_Partug_03",15, "uni"],
+	["TKG Partug (05)","CUP_I_TKG_Khet_Partug_05",15, "uni"],
+	["TKG Partug (06)","CUP_I_TKG_Khet_Partug_06",15, "uni"],
+	["TKG Partug (07)","CUP_I_TKG_Khet_Partug_07",15, "uni"],
+	["TKG Partug (08)","CUP_I_TKG_Khet_Partug_08",15, "uni"]
    
 ];
  
@@ -929,24 +973,15 @@ genItemArray = compileFinal str
    
     ["Mine Detector", "MineDetector", 20, "item"],
    
-    ["NV Goggles (Brown)", "NVGoggles", 20, "nvg"],
-    ["NV Goggles (Black)", "NVGoggles_OPFOR", 20, "nvg"],
-    ["NV Goggles (Green)", "NVGoggles_INDEP", 20, "nvg"],
-    ["NV Goggles (Tropic)", "NVGoggles_tna_F", 20, "nvg"],
-   
-    ["Compact NVG (Hex)", "O_NVGoggles_hex_F", 20, "nvg"],
-    ["Compact NVG (G Hex)", "O_NVGoggles_ghex_F", 20, "nvg"],
-    ["Compact NVG (Urban)", "O_NVGoggles_urb_F", 20, "nvg"],
+    ["NV PVS14", "CUP_NVG_PVS14", 20, "nvg"],
+    ["NV PVS7", "CUP_NVG_PVS7", 20, "nvg"],
+    ["NV HMNVS", "CUP_NVG_HMNVS", 20, "nvg"],
    
     ["Diving Goggles", "G_Diving", 10, "gogg"],
-   
     ["Binoculars", "Binocular", 10, "binoc"],
-   
-    ["Rangefinder", "Rangefinder", 10, "binoc"],
- 
-    ["Laser Designator (Sand)", "Laserdesignator", 30, "binoc"], // Increase price to 2500 if A3W_disableBuiltInThermal = 0
-    ["Laser Designator (Hex)", "Laserdesignator_02", 30, "binoc"],
-    ["Laser Designator (Olive)", "Laserdesignator_03", 30, "binoc"],
+    ["LRTV", "CUP_LRTV", 10, "binoc"],
+    ["SOFLAM", "CUP_SOFLAM", 10, "binoc"],
+    ["Vector 21 Nite", "CUP_Vector21Nite", 30, "binoc"], // Increase price to 2500 if A3W_disableBuiltInThermal = 0
    
     ["Chemlight (Blue)", "Chemlight_blue", 5, "mag"],
     ["Chemlight (Green)", "Chemlight_green", 5, "mag"],

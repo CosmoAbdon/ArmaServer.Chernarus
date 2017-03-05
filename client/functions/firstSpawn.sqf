@@ -8,7 +8,6 @@
 
 client_firstSpawn = true;
 
-[] execVM "client\functions\welcomeMessage.sqf";
 
 player addEventHandler ["Take",
 {

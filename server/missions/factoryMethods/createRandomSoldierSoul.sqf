@@ -241,10 +241,7 @@ _rs_headgears =
 	"CUP_H_RUS_TSH_4_Brown",
 	"CUP_H_RUS_ZSH_Shield_Down",
 	"CUP_H_RUS_Beret_Spetsnaz",
-	"CUP_H_RUS_ZSH_1",
-	"H_Shemag_olive",
-	"H_ShemagOpen_tan",
-	"H_ShemagOpen_khk"
+	"CUP_H_RUS_ZSH_1"
 
 ];
 

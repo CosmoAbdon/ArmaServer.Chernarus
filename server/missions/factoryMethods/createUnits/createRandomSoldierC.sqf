@@ -7,7 +7,7 @@ if (!isServer) exitWith {};
 
 private ["_soldierTypes", "_weaponTypes", "_group", "_position", "_soldier"];
 
-_soldierTypes = ["C_man_1_3_F","C_man_polo_1_F","C_man_polo_2_F","C_man_polo_3_F","C_man_polo_4_F","C_man_polo_5_F"];
+_soldierTypes = ["CUP_C_C_Policeman_01", "CUP_C_C_Policeman_02", "CUP_C_C_Rocker_01", "CUP_C_C_Rocker_02", "CUP_C_C_Rocker_03", "CUP_C_C_Rocker_04"];
 
 _group = _this select 0;
 _position = _this select 1;

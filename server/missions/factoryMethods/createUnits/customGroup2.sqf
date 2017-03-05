@@ -15,12 +15,12 @@ _radius = param [3, 10, [0]];
 
 _unitTypes =
 [
-	"C_man_polo_1_F", "C_man_polo_1_F_euro", "C_man_polo_1_F_afro", "C_man_polo_1_F_asia",
-	"C_man_polo_2_F", "C_man_polo_2_F_euro", "C_man_polo_2_F_afro", "C_man_polo_2_F_asia",
-	"C_man_polo_3_F", "C_man_polo_3_F_euro", "C_man_polo_3_F_afro", "C_man_polo_3_F_asia",
-	"C_man_polo_4_F", "C_man_polo_4_F_euro", "C_man_polo_4_F_afro", "C_man_polo_4_F_asia",
-	"C_man_polo_5_F", "C_man_polo_5_F_euro", "C_man_polo_5_F_afro", "C_man_polo_5_F_asia",
-	"C_man_polo_6_F", "C_man_polo_6_F_euro", "C_man_polo_6_F_afro", "C_man_polo_6_F_asia"
+	"CUP_C_C_Policeman_01", "CUP_C_C_Functionary_01", "CUP_C_C_Profiteer_01", "CUP_C_C_Worker_01",
+	"CUP_C_C_Policeman_02", "CUP_C_C_Functionary_02", "CUP_C_C_Profiteer_02", "CUP_C_C_Worker_01",
+	"CUP_C_C_Policeman_01", "CUP_C_C_Functionary_01", "CUP_C_C_Profiteer_01", "CUP_C_C_Worker_02",
+	"CUP_C_C_Policeman_02", "CUP_C_C_Functionary_02", "CUP_C_C_Profiteer_02", "CUP_C_C_Worker_01",
+	"CUP_C_C_Policeman_01", "CUP_C_C_Functionary_01", "CUP_C_C_Profiteer_01", "CUP_C_C_Worker_02",
+	"CUP_C_C_Policeman_02", "CUP_C_C_Functionary_02", "CUP_C_C_Profiteer_02", "CUP_C_C_Worker_01"
 ];
 
 for "_i" from 1 to _nbUnits do

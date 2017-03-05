@@ -1525,6 +1525,9 @@ _mines =
 
 _goggles =
 [
+
+	"G_Diving"
+	/*
 	"G_B_Diving", // Diving Goggles [NATO]
 	"G_Balaclava_blk", // Balaclava (Black)
 	"G_Balaclava_combat", // Balaclava (Combat Goggles)
@@ -1538,6 +1541,7 @@ _goggles =
 	"G_Combat_Goggles_tna_F", // Combat Goggles (Green)
 	"G_Diving", // Diving Goggles
 	"G_Lowprofile" // "Low Profile Goggles
+	*/
 ];
 
 _overallLoopAmount = floor (round (random 6) + 4); // minimum 2, maximum 10
@@ -1577,8 +1581,7 @@ _loadCrateWithWhatArray =
 	//"_uniforms",
 	"_vests",
 	"_weaponAccessories",
-	"_mines",
-	"_goggles"
+	"_mines"
 ];
 
 /*	------------------------------------------------------------------------------------------
