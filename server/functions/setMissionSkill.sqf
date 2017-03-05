@@ -14,13 +14,13 @@ _unit = _this;
 
 if (["A3W_missionsDifficulty"] call isConfigOn) then
 {
-	_skill = 0.5; // Default skill for ARMA3 is 0.5
+	_skill = 1; // Default skill for ARMA3 is 0.5
 	_accuracy = 1; // Relative multiplier; absolute default accuracy for ARMA3 is 0.25
 }
 else
 {
-	_skill = 0.33;
-	_accuracy = 0.75;
+	_skill = 1;
+	_accuracy = 1;
 };
 
 _unit allowFleeing 0;
@@ -76,12 +76,12 @@ switch (_skillSet) do
 	{
 		_unit setSkill ["aimingSpeed", 1];
 		_unit setSkill ["spotDistance", 1];
-		_unit setSkill ["aimingAccuracy", 0.9];
-		_unit setSkill ["aimingShake", 0.9];
-		_unit setSkill ["spotTime", 0.9];
+		_unit setSkill ["aimingAccuracy", 1];
+		_unit setSkill ["aimingShake", 1];
+		_unit setSkill ["spotTime", 1];
 		_unit setSkill ["spotDistance", 1];
-		_unit setSkill ["commanding", 0.9];
-		_unit setSkill ["general", 0.9];
+		_unit setSkill ["commanding", 1];
+		_unit setSkill ["general", 1];
 		_skillSet = "HIGH";
 	};
 };

@@ -25,11 +25,11 @@ if !(_unit isUniformAllowed _uniform) then
 
 		["U_B_T_Soldier_F", "U_O_T_Officer_F", "U_O_T_Soldier_F", "U_I_CombatUniform"], // jungle fatigues converts to default uniform for indies
 
-		["U_B_GhillieSuit", "U_O_GhillieSuit", "U_I_GhillieSuit"],
-		["U_B_T_Sniper_F", "U_O_T_Sniper_F", "U_I_GhillieSuit"],  // jungle light ghillie converts to normal light ghillie for indies
+		["CUP_U_B_BAF_DPM_Ghillie", "CUP_U_O_TK_Ghillie_Top", "CUP_U_I_Ghillie_Top"],
+		["CUP_U_B_GER_Ghillie", "CUP_U_O_TK_Officer", "CUP_U_B_USMC_Ghillie_WDL"],  // jungle light ghillie converts to normal light ghillie for indies
 
-		["U_B_FullGhillie_ard", "U_O_FullGhillie_ard", "U_I_FullGhillie_ard"],
-		["U_B_FullGhillie_lsh", "U_O_FullGhillie_lsh", "U_I_FullGhillie_lsh"],
+		["CUP_U_B_BAF_DDPM_S1_RolledUp", "CUP_U_O_TK_Officer", "CUP_U_I_GUE_Flecktarn"],
+		["CUP_V_B_GER_Carrier_Vest", "CUP_V_O_Ins_Carrier_Rig", "CUP_V_I_Carrier_Belt"],
 		["U_B_FullGhillie_sard", "U_O_FullGhillie_sard", "U_I_FullGhillie_sard"],
 		["U_B_T_FullGhillie_tna_F", "U_O_T_FullGhillie_tna_F"/*, "U_I_FullGhillie_lsh"*/], // (inactive) jungle full ghillie converts to lush full ghillie for indies
 
@@ -52,7 +52,24 @@ if !(_unit isUniformAllowed _uniform) then
 	];
 
 	{
+	
 		_uniArray = _x;
+
+		if ({_uniform == _x} count _uniArray > 0) exitWith
+		{
+			{
+				if (_unit isUniformAllowed _x) exitWith
+				{
+					_uniform = _x;
+				};
+			} forEach _uniArray;
+		};
+	} forEach _uniforms;
+};
+	
+	
+/*
+	_uniArray = _x;
 
 		if ({_uniform == _x} count _uniArray > 0) exitWith
 		{
@@ -69,5 +86,5 @@ if !(_unit isUniformAllowed _uniform) then
 		};
 	} forEach _uniforms;
 };
-
+*/
 _uniform

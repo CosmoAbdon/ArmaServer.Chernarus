@@ -8,8 +8,8 @@ enableItemsDropping = 0;
 forceRotorLibSimulation = 0; // if you set this to 1, you deny freedom of choice to the players, which is the very principle this mission is built upon
 weaponPool = 0;
 corpseManagerMode = 1;
-corpseRemovalMinTime = 30*60;
-corpseRemovalMaxTime = 30*60;
+corpseRemovalMinTime = 10*60;
+corpseRemovalMaxTime = 10*60;
 wreckManagerMode = 1;
 wreckRemovalMinTime = 5*60;
 wreckRemovalMaxTime = 10*60;
@@ -79,6 +79,7 @@ class RscTitles
 	#include "client\systems\scoreboard\score_gui.hpp"
 	//#include "addons\far_revive\revive_gui.hpp"
 	#include "addons\statusBar\statusBar.hpp"
+	#include "addons\logo\main.hpp"	
 };
 
 class CfgFunctions
@@ -88,6 +89,11 @@ class CfgFunctions
 		#include "client\CfgFunctions.hpp"
 		#include "server\CfgFunctions.hpp"
 	};
+	class serverLogo
+		{
+			file = "addons\logo";
+			class showWatermark { postInit = 1; };
+		};
 
 	#include "addons\CHVD\CfgFunctions.hpp"
 };

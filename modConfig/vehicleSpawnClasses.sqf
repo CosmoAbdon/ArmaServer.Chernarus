@@ -29,8 +29,7 @@ lightMilitaryVehicles =
 //Medium Military Vehicle List - Random Spawns
 mediumMilitaryVehicles =
 [
-	"CUP_B_LR_Special_Des_CZ_D",
-	"CUP_B_LR_Special_CZ_W",
+	"CUP_I_LR_Transport_AAF",
 	"CUP_B_Dingo_GL_GER_Des"
 ];
 
@@ -74,37 +73,18 @@ A3W_planeSpawnOdds = 0.25; // 0.0 to 1.0
 //Random Weapon List - Change this to what you want to spawn in cars.
 vehicleWeapons =
 [
-	["CUP_glaunch_Mk13" /*Vermin*/, "CUP_hgun_M9" /*Sting*/, "CUP_smg_MP5A5"],
-	["CUP_arifle_AK47", "CUP_arifle_AK74M", "CUP_arifle_AKS74"],
-	["CUP_arifle_RPK74", "CUP_arifle_AK107_GL_kobra", "CUP_arifle_AK107_pso"],
-	["CUP_srifle_AWM_wdl", "CUP_arifle_AK74M_kobra", "CUP_arifle_AKS74UN_kobra_snds"],
-	["CUP_arifle_CZ805_A2", "CUP_arifle_CZ805_GL", "CUP_arifle_FNFAL", "CUP_arifle_G36C_camo_holo_snds"],
-	["CUP_arifle_L85A2", "CUP_sgun_M1014"],
-	["CUP_arifle_M4A1_LeupoldMk4MRT", "CUP_srifle_M110", "CUP_arifle_M16A2_GL"]
+	["CUP_sgun_M1014", "CUP_arifle_AK47", "CUP_arifle_FNFAL"],
+	["CUP_arifle_AK74M_kobra", "CUP_sgun_M1014"]
 ];
 
 vehicleAddition =
 [
 	"muzzle_snds_L", // 9mm
-	"muzzle_snds_M", // 5.56mm
-	"muzzle_snds_H", // 6.5mm
-	"muzzle_snds_H_MG", // 6.5mm LMG
-	"muzzle_snds_B", // 7.62mm
-	"muzzle_snds_acp", // .45 ACP
-	"optic_Arco",
-	"optic_SOS",
 	"optic_Hamr",
 	"optic_Aco",
 	"optic_ACO_grn",
 	"optic_aco_smg",
-	"optic_Holosight",
-	"optic_Holosight_smg",
-	"acc_flashlight",
-	"acc_pointer_IR",
-	"Medikit",
-	"Medikit",
-	"FirstAidKit",
-	"ToolKit"
+	"optic_Holosight"
 ];
 
 vehicleAddition2 =

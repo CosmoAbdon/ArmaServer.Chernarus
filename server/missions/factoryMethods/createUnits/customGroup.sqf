@@ -52,17 +52,30 @@ for "_i" from 1 to _nbUnits do
 			_unit addWeapon "CUP_arifle_Mk17_CQC_FG";
 			_unit addMagazine "CUP_1Rnd_HE_M203";
 			_unit addMagazine "CUP_1Rnd_HE_M203";
+			
+		};
+		// AA every 5 units
+		case (_i % 45== 0):
+		{
+			_unit addUniform "CUP_U_B_BAF_MTP_S2_UnRolled";
+			_unit addWeapon "CUP_arifle_Mk17_CQC_FG";
+			_unit addWeapon "CUP_launch_Igla";
+			_unit addMagazine "CUP_Igla_M";
+			_unit addMagazine "CUP_Igla_M";
+			_unit addMagazine "CUP_Igla_M";
+
+			
 		};
 		// RPG every 7 units, starting from second one
-		case ((_i + 5) % 7 == 0):
+		case ((_i + 5) % 5 == 0):
 		{
 			_unit addUniform "CUP_U_B_BAF_MTP_S2_UnRolled";
 			_unit addBackpack "CUP_B_USPack_Coyote";
 			_unit addWeapon "CUP_arifle_Mk17_CQC_FG";
-			_unit addMagazine "CUP_SMAW_HEDP_M";
-			_unit addWeapon "CUP_launch_Mk153Mod0_SMAWOptics";
-			_unit addMagazine "CUP_SMAW_HEDP_M";
-			_unit addMagazine "CUP_SMAW_HEDP_M";
+			_unit addMagazine "CUP_NLAW_M";
+			_unit addWeapon "CUP_launch_NLAW";
+			_unit addMagazine "CUP_NLAW_M";
+			_unit addMagazine "CUP_NLAW_M";
 		};
 		// Rifleman
 		default

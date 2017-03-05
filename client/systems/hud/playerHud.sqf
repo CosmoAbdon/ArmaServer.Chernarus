@@ -175,7 +175,7 @@ while {true} do
 
 	if (isStreamFriendlyUIEnabled) then
 	{
-		_tempString = format ["<t color='#CCCCCCCC'>A3Wasteland %1<br/>a3wasteland.com</t>", getText (configFile >> "CfgWorlds" >> worldName >> "description")];
+		_tempString = format ["<t color='#CCCCCCCC'>ArmaBrothers %1<br/>armabrothers.com</t>", getText (configFile >> "CfgWorlds" >> worldName >> "description")];
 		_yOffset = _yOffset + 0.08;
 	}
 	else
