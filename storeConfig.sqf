@@ -191,7 +191,7 @@ launcherArray = compileFinal str
     ["RPG-18", "CUP_launch_RPG18", 600],  
     ["9K32 Strela", "CUP_launch_9K32Strela", 800],
     //["9K38 Igla", "CUP_launch_Igla", 800],
-    ["RPG-7V", "CUP_launch_RPG7V", 300],
+    ["RPG-7V", "CUP_launch_RPG7V", 300]
     //["NLAW", "CUP_launch_NLAW", 2000]
 ];
  

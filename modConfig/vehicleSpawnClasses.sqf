@@ -29,8 +29,7 @@ lightMilitaryVehicles =
 //Medium Military Vehicle List - Random Spawns
 mediumMilitaryVehicles =
 [
-	"CUP_I_LR_Transport_AAF",
-	"CUP_B_Dingo_GL_GER_Des"
+	"CUP_I_LR_Transport_AAF"
 ];
 
 //Water Vehicles - Random Spawns

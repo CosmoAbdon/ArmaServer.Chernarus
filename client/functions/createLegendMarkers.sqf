@@ -6,6 +6,9 @@
 
 _markers =
 [
+	["Arma Brothers", "EmptyIcon", "ColorWhite", [1,1]],
+	["wwww.armabrothers.com", "EmptyIcon", "ColorWhite", [1,1]],
+	["", "EmptyIcon", "ColorWhite", [1,1]],
 	["Legend:", "EmptyIcon", "ColorWhite", [1,1]],
 
 	["GS - General Store", "mil_dot", "ColorBlue", [1,1]],
