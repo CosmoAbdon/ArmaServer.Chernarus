@@ -20,7 +20,7 @@ class Header
 {
 	gameType=Sandbox;
 	minPlayers=1;
-	maxPlayers=145; // 144 players, 1 headless clients
+	maxPlayers=289; // 144 players, 1 headless clients
 };
 author="ArmaBrothers.com - A3Wasteland.com"; // it would be great if you could keep "A3Wasteland.com" in the name, like "YourName and A3Wasteland.com" :)
 onLoadName = "ARMABROTHERS A3Wasteland Chernarus"; // it would be great if you could keep "A3" in the name, like "ABC A3Wasteland" instead of "ABC Wasteland" :)
@@ -65,14 +65,13 @@ briefing = 0; // if 0, skip Continue button
 #include "client\systems\playerMenu\dialog\respawn_dialog.hpp"
 #include "client\systems\playerMenu\dialog\teamkill_dialog.hpp"
 #include "addons\proving_ground\PG_config.hpp"
-//#include "addons\outlw_magrepack\config.hpp"
+#include "addons\outlw_magrepack\config.hpp"
 #include "addons\gui\gui.hpp"
 #include "addons\parking\list_simple_menu.hpp"
 #include "addons\CHVD\dialog.hpp"
 #include "addons\TOParmaInfo\dialog\TOParmaInfo_dialog.hpp"
 #include "addons\UniformPainter\dialog\UniformPainter_mainMenu.hpp"
 #include "addons\VehiclePainter\dialog\VehiclePainter_mainMenu.hpp"
-#include "scarCODE\SimpleAmmoRepacker\hpp\RscDisplaySimpleAmmoRepacker.hpp" // Simples Ammo reembalador
 
 class RscTitles
 {

@@ -15,12 +15,12 @@ _radius = param [3, 10, [0]];
 
 _unitTypes =
 [
-	"CUP_C_C_Policeman_01", "CUP_C_C_Functionary_01", "CUP_C_C_Profiteer_01", "CUP_C_C_Worker_01",
-	"CUP_C_C_Policeman_02", "CUP_C_C_Functionary_02", "CUP_C_C_Profiteer_02", "CUP_C_C_Worker_01",
-	"CUP_C_C_Policeman_01", "CUP_C_C_Functionary_01", "CUP_C_C_Profiteer_01", "CUP_C_C_Worker_02",
-	"CUP_C_C_Policeman_02", "CUP_C_C_Functionary_02", "CUP_C_C_Profiteer_02", "CUP_C_C_Worker_01",
-	"CUP_C_C_Policeman_01", "CUP_C_C_Functionary_01", "CUP_C_C_Profiteer_01", "CUP_C_C_Worker_02",
-	"CUP_C_C_Policeman_02", "CUP_C_C_Functionary_02", "CUP_C_C_Profiteer_02", "CUP_C_C_Worker_01"
+	"C_man_polo_1_F", "C_man_polo_1_F_euro", "C_man_polo_1_F_afro", "C_man_polo_1_F_asia",
+	"C_man_polo_2_F", "C_man_polo_2_F_euro", "C_man_polo_2_F_afro", "C_man_polo_2_F_asia",
+	"C_man_polo_3_F", "C_man_polo_3_F_euro", "C_man_polo_3_F_afro", "C_man_polo_3_F_asia",
+	"C_man_polo_4_F", "C_man_polo_4_F_euro", "C_man_polo_4_F_afro", "C_man_polo_4_F_asia",
+	"C_man_polo_5_F", "C_man_polo_5_F_euro", "C_man_polo_5_F_afro", "C_man_polo_5_F_asia",
+	"C_man_polo_6_F", "C_man_polo_6_F_euro", "C_man_polo_6_F_afro", "C_man_polo_6_F_asia"
 ];
 
 for "_i" from 1 to _nbUnits do
@@ -61,8 +61,6 @@ for "_i" from 1 to _nbUnits do
 			_unit addWeapon "CUP_arifle_Mk17_CQC_FG";
 			_unit addWeapon "CUP_launch_Igla";
 			_unit addMagazine "CUP_Igla_M";
-			_unit addMagazine "CUP_Igla_M";
-			_unit addMagazine "CUP_Igla_M";
 
 			
 		};
@@ -74,7 +72,6 @@ for "_i" from 1 to _nbUnits do
 			_unit addWeapon "CUP_arifle_Mk17_CQC_FG";
 			_unit addMagazine "CUP_NLAW_M";
 			_unit addWeapon "CUP_launch_NLAW";
-			_unit addMagazine "CUP_NLAW_M";
 			_unit addMagazine "CUP_NLAW_M";
 		};
 		// Rifleman

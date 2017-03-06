@@ -43,13 +43,13 @@ _soldier = _this select 0;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // NUMBERS ARE IN PERCENTAGES
 _rs_headGearProbability = 65;
-_rs_vestProbability = 100;
-_rs_backpackProbability = 25;
+_rs_vestProbability = 80;
+_rs_backpackProbability = 15;
 _rs_muzzleProbability = 35;
 _rs_pointerProbability = 25;
-_rs_opticProbability = 45; 
+_rs_opticProbability = 25; 
 _rs_healthProbability = 25;
-_rs_grenadeProbability = 35;
+_rs_grenadeProbability = 15;
 _rs_launcherProbability = 15;
 _rs_intelProbability = 1;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,12 +123,6 @@ _rs_launchers =
 
 _rs_uniforms =
 [
-	"U_B_GhillieSuit",
-	"U_O_GhillieSuit",
-	"U_I_GhillieSuit",
-	"U_B_FullGhillie_ard",
-	"U_O_FullGhillie_ard",
-	"U_I_FullGhillie_ard",
 	"CUP_U_B_USArmy_Base",
 	"CUP_U_B_USArmy_TwoKnee",
 	"CUP_U_B_USArmy_UBACS",
@@ -299,7 +293,6 @@ _rs_opticsDisallow =
 	"CUP_optic_AN_PAS_13c2",
 	"CUP_optic_PechenegScope",
 	"CUP_optic_NSPU",
-	"GOSHAWK TWS",
 	"CUP_optic_NSPU_RPG",
 	"optic_SOS",
 	"optic_SOS_khk_F", // apex

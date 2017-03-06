@@ -1536,25 +1536,25 @@ _goggles =
 	*/
 ];
 
-_overallLoopAmount = floor (round (random 6) + 4); // minimum 2, maximum 10
+_overallLoopAmount = floor (round (random 6) + 1); // minimum 2, maximum 8
 
-_backPackAmount = floor (round (random 3) + 3); // minimum 3, maximum 6
-_binocularAmount = floor (round (random 5) + 2); // minimum 3, maximum 7
-_bipodAmount = floor (round (random 3) + 2); // minimum 2, maximum 5
-_headGearAmount = floor (round (random 3) + 5); // minimum 5, maximum 8
-_itemAmount = floor (round (random 3) + 5); // minimum 5, maximum 8
-_launcherAmount = floor (round (random 3) + 2); // minimum 2, maximum 5
-_magazineAmount = floor (round (random 5) + 5); // minimum 5, maximum 10
-_throwableAmount = floor (round (random 3) + 3); // minimum 3, maximum 6
-_muzzleAmount = floor (round (random 2) + 2); // minimum 2, maximum 4
-_opticAmount = floor (round (random 4) + 5); // minimum 5, maximum 9
-_primaryWeaponAmount = floor (round (random 5) + 5); // minimum 5, maximum 10
-_secondaryWeaponAmount = floor (round (random 3) + 2); // minimum 2, maximum 5
-_uniformAmount = floor (round (random 4) + 3); // minimum 3, maximum 7
-_vestAmount = floor (round (random 4) + 3); // minimum 3, maximum 7
-_weaponAccessoryAmount = floor (round (random 3) + 2); // minimum 2, maximum 5
-_minesAmount = floor (round (random 2) + 2); // minimum 2, maximum 4
-_goggleAmount = floor (round (random 2) + 2); // minimum 2, maximum 4
+_backPackAmount = floor (round (random 3) + 1); // minimum 1, maximum 4
+_binocularAmount = floor (round (random 3) + 1); // minimum 1, maximum 4
+_bipodAmount = floor (round (random 3) + 1); // minimum 1, maximum 4
+_headGearAmount = floor (round (random 3) + 1); // minimum 1, maximum 4
+_itemAmount = floor (round (random 3) + 1); // minimum 1, maximum 4
+_launcherAmount = floor (round (random 3) + 1); // minimum 1, maximum 4
+_magazineAmount = floor (round (random 5) + 1); // minimum 1, maximum 6
+_throwableAmount = floor (round (random 3) + 1); // minimum 1, maximum 4
+_muzzleAmount = floor (round (random 2) + 1); // minimum 1, maximum 3
+_opticAmount = floor (round (random 4) + 1); // minimum 1, maximum 5
+_primaryWeaponAmount = floor (round (random 5) + 1); // minimum 1, maximum 6
+_secondaryWeaponAmount = floor (round (random 3) + 1); // minimum 1, maximum 4
+_uniformAmount = floor (round (random 4) + 1); // minimum 1, maximum 5
+_vestAmount = floor (round (random 4) + 1); // minimum 1, maximum 5
+_weaponAccessoryAmount = floor (round (random 3) + 1); // minimum 1, maximum 4
+_minesAmount = floor (round (random 2) + 1); // minimum 1, maximum 3
+_goggleAmount = floor (round (random 2) + 1); // minimum 1, maximum 3
 
 _loadCrateWithWhatArray =
 [

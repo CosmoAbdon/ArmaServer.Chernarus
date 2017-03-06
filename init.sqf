@@ -99,13 +99,11 @@ if (hasInterface || isServer) then
 	[] execVM "addons\R3F_ARTY_AND_LOG\init.sqf";
 	[] execVM "addons\proving_ground\init.sqf";
 	[] execVM "addons\JumpMF\init.sqf";
-	//[] execVM "addons\outlw_magrepack\MagRepack_init.sqf";
+	[] execVM "addons\outlw_magrepack\MagRepack_init.sqf";
 	[] execVM "addons\lsd_nvg\init.sqf";
 	[] execVM "addons\stickyCharges\init.sqf";
 	[] execVM "addons\scripts\HvT.sqf";                       // High Value Target
 	[] execVM "addons\logo\logo.sqf";
-	[] ExecVM "scarCODE\ServerInfoMenu\sqf\initLocal.sqf"; // scarCODE ServerInfoMenu
-	[] ExecVM "scarCODE\SimpleAmmoRepacker\sqf\initLocal.sqf"; // Simples Ammo reembalador script
 	if (isNil "drn_DynamicWeather_MainThread") then { drn_DynamicWeather_MainThread = [] execVM "addons\scripts\DynamicWeatherEffects.sqf" };
 };
 

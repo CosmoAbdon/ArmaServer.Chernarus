@@ -89,13 +89,7 @@ _backPacks =
 	"CUP_B_AlicePack_Bedroll", // Field Pack (Black) BACKPACK"
 	"CUP_B_USMC_AssaultPack", // Field Pack (Coyote) BACKPACK"
 	"CUP_B_USMC_MOLLE", // Field Pack (Green Hex) BACKPACK"
-	"CUP_B_USMC_MOLLE_WDL", // Field Pack (Khaki) BACKPACK"
-	"B_Carryall_khk", // Field Pack (Coyote) BACKPACK"
-	"B_Carryall_mcamo", // Field Pack (Green Hex) BACKPACK"
-	"B_Carryall_oucamo", // Field Pack (Khaki) BACKPACK"
-	"B_Bergen_blk", // Field Pack (Hex) BACKPACK"
-	"B_Bergen_rgr", // Field Pack (Olive) BACKPACK"
-	"B_Bergen_mcamo" // Field Pack (Urban) BACKPACK"
+	"CUP_B_USMC_MOLLE_WDL" // Field Pack (Khaki) BACKPACK"
 	
 	/*
 	// "B_GMG_01_A_weapon_F", // Dismantled Autonomous GMG [NATO] BACKPACK"
@@ -162,22 +156,22 @@ _backPacks =
 
 _binoculars =
 [
-	"Laserdesignator", // Laser Designator (Sand) BINOCULAR"
-	"Laserdesignator_01_khk_F", // Laser Designator (Khaki) BINOCULAR"
-	"Laserdesignator_02", // Laser Designator (Hex) BINOCULAR"
-	"Laserdesignator_02_ghex_F", // Laser Designator (Green Hex) BINOCULAR"
-	"Laserdesignator_03", // Laser Designator (Olive) BINOCULAR"
+	//"Laserdesignator", // Laser Designator (Sand) BINOCULAR"
+	//"Laserdesignator_01_khk_F", // Laser Designator (Khaki) BINOCULAR"
+	//"Laserdesignator_02", // Laser Designator (Hex) BINOCULAR"
+	//"Laserdesignator_02_ghex_F", // Laser Designator (Green Hex) BINOCULAR"
+	//"Laserdesignator_03", // Laser Designator (Olive) BINOCULAR"
 	// "NVGoggles", // NV Goggles (Brown) BINOCULAR"
 	// "NVGogglesB_blk_F", // ENVG-II (Black) BINOCULAR"
 	// "NVGogglesB_grn_F", // ENVG-II (Green) BINOCULAR"
 	// "NVGogglesB_gry_F", // ENVG-II (Grey) BINOCULAR"
-	// "NVGoggles_INDEP", // NV Goggles (Green) BINOCULAR"
+	"CUP_NVG_PVS14", // NV Goggles (Green) BINOCULAR"
 	// "NVGoggles_OPFOR", // NV Goggles (Black) BINOCULAR"
 	// "NVGoggles_tna_F", // NV Goggles (Tropic) BINOCULAR"
-	"O_NVGoggles_ghex_F", // Compact NVG (Green Hex) BINOCULAR"
-	"O_NVGoggles_hex_F", // Compact NVG (Hex) BINOCULAR"
-	"O_NVGoggles_urb_F", // Compact NVG (Urban) BINOCULAR"
-	"Rangefinder" // Rangefinder BINOCULAR"
+	//"O_NVGoggles_ghex_F", // Compact NVG (Green Hex) BINOCULAR"
+	//"O_NVGoggles_hex_F", // Compact NVG (Hex) BINOCULAR"
+	//"O_NVGoggles_urb_F", // Compact NVG (Urban) BINOCULAR"
+	"CUP_Vector21Nite" // Rangefinder BINOCULAR"
 ];
 
 _bipods =
@@ -372,7 +366,6 @@ _headGear =
 
 _items =
 [
-	"B_UavTerminal", // UAV Terminal [NATO] ITEM"
 	"FirstAidKit", // First Aid Kit ITEM"
 	"FirstAidKit", // First Aid Kit ITEM"
 	"FirstAidKit", // First Aid Kit ITEM"
@@ -388,13 +381,11 @@ _items =
 	// "ItemMap", // Map ITEM"
 	// "ItemRadio", // Radio ITEM"
 	// "ItemWatch", // Watch ITEM"
-	"I_UavTerminal", // UAV Terminal [AAF] ITEM"
 	"Medikit", // Medikit ITEM"
 	"Medikit", // Medikit ITEM"
 	"Medikit", // Medikit ITEM"
 	"Medikit", // Medikit ITEM"
 	"Medikit", // Medikit ITEM"
-	"O_UavTerminal", // UAV Terminal [CSAT] ITEM"
 	"ToolKit",// Toolkit ITEM"
 	"ToolKit",// Toolkit ITEM"
 	"ToolKit",// Toolkit ITEM"
@@ -753,7 +744,6 @@ _muzzles =
 	"CUP_muzzle_snds_SCAR_L", 
 	"CUP_muzzle_snds_SCAR_H", 
 	"CUP_muzzle_Bizon", 
-	"CUP_muzzle_snds_AWM",
 	"CUP_muzzle_PBS4"
 	
 /*
@@ -806,6 +796,8 @@ _optics =
 	"CUP_optic_SB_3_12x50_PMII", // Mk17 Holosight (Khaki) OPTIC"
 	"CUP_optic_MAAWS_Scope", // Mk17 Holosight SMG OPTIC"
 	"CUP_optic_SMAW_Scope", // Mk17 Holosight SMG (Black) OPTIC"
+	//"CUP_optic_AN_PAS_13c1",
+	//"CUP_optic_AN_PAS_13c2",
 	
 	"CUP_optic_Kobra", // Kahlia (Black) OPTIC"
 	"CUP_optic_PSO_1", // Kahlia (Hex) OPTIC"
@@ -1544,25 +1536,25 @@ _goggles =
 	*/
 ];
 
-_overallLoopAmount = floor (round (random 6) + 4); // minimum 2, maximum 10
+_overallLoopAmount = floor (round (random 6) + 1); // minimum 2, maximum 8
 
-_backPackAmount = floor (round (random 3) + 3); // minimum 3, maximum 6
-_binocularAmount = floor (round (random 5) + 2); // minimum 3, maximum 7
-_bipodAmount = floor (round (random 3) + 2); // minimum 2, maximum 5
-_headGearAmount = floor (round (random 3) + 5); // minimum 5, maximum 8
-_itemAmount = floor (round (random 3) + 5); // minimum 5, maximum 8
-_launcherAmount = floor (round (random 3) + 2); // minimum 2, maximum 5
-_magazineAmount = floor (round (random 5) + 5); // minimum 5, maximum 10
-_throwableAmount = floor (round (random 3) + 3); // minimum 3, maximum 6
-_muzzleAmount = floor (round (random 2) + 2); // minimum 2, maximum 4
-_opticAmount = floor (round (random 4) + 5); // minimum 5, maximum 9
-_primaryWeaponAmount = floor (round (random 5) + 5); // minimum 5, maximum 10
-_secondaryWeaponAmount = floor (round (random 3) + 2); // minimum 2, maximum 5
-_uniformAmount = floor (round (random 4) + 3); // minimum 3, maximum 7
-_vestAmount = floor (round (random 4) + 3); // minimum 3, maximum 7
-_weaponAccessoryAmount = floor (round (random 3) + 2); // minimum 2, maximum 5
-_minesAmount = floor (round (random 2) + 2); // minimum 2, maximum 4
-_goggleAmount = floor (round (random 2) + 2); // minimum 2, maximum 4
+_backPackAmount = floor (round (random 3) + 1); // minimum 1, maximum 4
+_binocularAmount = floor (round (random 3) + 1); // minimum 1, maximum 4
+_bipodAmount = floor (round (random 3) + 1); // minimum 1, maximum 4
+_headGearAmount = floor (round (random 3) + 1); // minimum 1, maximum 4
+_itemAmount = floor (round (random 3) + 1); // minimum 1, maximum 4
+_launcherAmount = floor (round (random 3) + 1); // minimum 1, maximum 4
+_magazineAmount = floor (round (random 5) + 1); // minimum 1, maximum 6
+_throwableAmount = floor (round (random 3) + 1); // minimum 1, maximum 4
+_muzzleAmount = floor (round (random 2) + 1); // minimum 1, maximum 3
+_opticAmount = floor (round (random 4) + 1); // minimum 1, maximum 5
+_primaryWeaponAmount = floor (round (random 5) + 1); // minimum 1, maximum 6
+_secondaryWeaponAmount = floor (round (random 3) + 1); // minimum 1, maximum 4
+_uniformAmount = floor (round (random 4) + 1); // minimum 1, maximum 5
+_vestAmount = floor (round (random 4) + 1); // minimum 1, maximum 5
+_weaponAccessoryAmount = floor (round (random 3) + 1); // minimum 1, maximum 4
+_minesAmount = floor (round (random 2) + 1); // minimum 1, maximum 3
+_goggleAmount = floor (round (random 2) + 1); // minimum 1, maximum 3
 
 _loadCrateWithWhatArray =
 [

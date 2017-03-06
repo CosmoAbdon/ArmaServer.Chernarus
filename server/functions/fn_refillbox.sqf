@@ -83,7 +83,7 @@ switch (_boxType) do
 			// Item type, Item class(es), # of items, # of magazines per weapon
 			["wep", ["CUP_srifle_M40A3", "CUP_srifle_M24_des_LeupoldMk4LRT", "CUP_srifle_M24_ghillie_bipod", "CUP_srifle_M40A3_bipod", "CUP_srifle_CZ550"], RANDOM_BETWEEN(1,2), RANDOM_BETWEEN(4,6)],
 			["wep", ["CUP_srifle_CZ750", "CUP_srifle_CZ750_SOS_bipod", "CUP_srifle_SVD_pso", "CUP_srifle_VSSVintorez_pso", "CUP_srifle_SVD_wdl_ghillie"], RANDOM_BETWEEN(1,2), RANDOM_BETWEEN(4,6)],
-			["itm", ["Rangefinder", "Laserdesignator"], RANDOM_BETWEEN(1,2)],
+			["itm", ["CUP_Vector21Nite", "CUP_LRTV"], RANDOM_BETWEEN(1,2)],
 			["itm", ["CUP_optic_PSO_1", "CUP_Mxx_camo", "CUP_optic_LeupoldMk4_10x40_LRT_Woodland", "CUP_optic_PSO_3", "CUP_optic_Kobra", "CUP_muzzle_PBS4", "CUP_optic_SB_3_12x50_PMII"], RANDOM_BETWEEN(1,2)],
 			["itm", ["acc_pointer_IR", "acc_flashlight"], RANDOM_BETWEEN(1,3)],
 			["itm", ["CUP_optic_LeupoldMk4_MRT_tan", "CUP_optic_Leupold_VX3", "CUP_optic_ACOG"], RANDOM_BETWEEN(1,2)]
