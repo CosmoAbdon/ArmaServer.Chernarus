@@ -743,7 +743,8 @@ _muzzles =
 	"CUP_muzzle_snds_M16_camo", 
 	"CUP_muzzle_snds_SCAR_L", 
 	"CUP_muzzle_snds_SCAR_H", 
-	"CUP_muzzle_Bizon", 
+	"CUP_muzzle_Bizon",
+	"CUP_muzzle_snds_AWM",
 	"CUP_muzzle_PBS4"
 	
 /*

@@ -74,14 +74,14 @@ switch (_skillSet) do
 	};
 	case "HIGH":
 	{
-		_unit setSkill ["aimingSpeed", 1];
-		_unit setSkill ["spotDistance", 1];
-		_unit setSkill ["aimingAccuracy", 1];
-		_unit setSkill ["aimingShake", 1];
-		_unit setSkill ["spotTime", 1];
-		_unit setSkill ["spotDistance", 1];
-		_unit setSkill ["commanding", 1];
-		_unit setSkill ["general", 1];
+		_unit setSkill ["aimingSpeed", 0.8];
+		_unit setSkill ["spotDistance", 0.7];
+		_unit setSkill ["aimingAccuracy", 0.9];
+		_unit setSkill ["aimingShake", 0.8];
+		_unit setSkill ["spotTime", 0.8];
+		_unit setSkill ["spotDistance", 0.8];
+		_unit setSkill ["commanding", 0.8];
+		_unit setSkill ["general", 0.9];
 		_skillSet = "HIGH";
 	};
 };

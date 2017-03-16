@@ -41,7 +41,7 @@ _setupObjects =
 		_cashObjects pushBack _cash;
 	};
 
-	_vehicleClass = ["CUP_B_Frigate_ANZAC", "O_Boat_Armed_01_hmg_F", "CUP_I_RHIB2Turret_RACS"] call BIS_fnc_selectRandom;
+	_vehicleClass = ["CUP_I_RHIB2Turret_RACS", "O_Boat_Armed_01_hmg_F", "CUP_I_RHIB2Turret_RACS"] call BIS_fnc_selectRandom;
 
 	// Vehicle Class, Position, Fuel, Ammo, Damage, Special
 	_vehicle = [_vehicleClass, _missionPos] call createMissionVehicle2;
@@ -54,7 +54,7 @@ _setupObjects =
 	[_vehicle, _aiGroup] spawn checkMissionVehicleLock;
 
 	_missionPicture = getText (configFile >> "CfgVehicles" >> _vehicleClass >> "picture");
-	_missionHintText = format ["A treasure containing <t color='%1'>$25,000</t> and weapons is being recovered.<br/>If you want to capture it, you will need diving gear and an underwater weapon.", moneyMissionColor];
+	_missionHintText = format ["A treasure containing <t color='%1'>$15,000</t> and weapons is being recovered.<br/>If you want to capture it, you will need diving gear and an underwater weapon.", moneyMissionColor];
 };
 
 _waitUntilMarkerPos = nil;
@@ -78,7 +78,7 @@ _successExec =
 
 	// Give the rewards
 	{
-		_x setVariable ["cmoney", 2500, true];
+		_x setVariable ["cmoney", 1500, true];
 		_x setVariable ["owner", "world", true];
 	} forEach _cashObjects;
 
