@@ -16,7 +16,7 @@ if (_maxLifetime > 0) then
 // DB column name, oLoad variable name
 _vars =
 [
-	["QUOTE(ID)", "_mineID"],
+	["ID", "_mineID"],
 	["Class", "_class"],
 	["Position", "_pos"],
 	["Direction", "_dir"],

@@ -29,11 +29,9 @@ if (isServer) then {
     ARGVX3(1,_class,"");
     ARGVX3(2,_position,[]);
 
-    def(_classes);
-    _classes = ["Helicopter", "Plane", "Ship_F", "Car", "Motorcycle", "Tank"];
+    private _classes = ["Helicopter", "Plane", "Ship_F", "Car", "Motorcycle", "Tank"];
 
-    def(_size);
-    _size = sizeof _class;
+    private _size = sizeof _class;
 
     ((_position distance _player) < 50 && {
      (count(nearestObjects [_position, _classes , _size]) == 0)})
@@ -90,10 +88,9 @@ if (isServer) then {
     ARGVX3(0,_player,objNull);
     ARGVX3(1,_vehicle,objNull);
 
-    if (not(alive _vehicle)) exitWith {};
+    if (!(alive _vehicle)) exitWith {};
 
-    def(_uid);
-    _uid = getPlayerUID _player;
+    private _uid = getPlayerUID _player;
 
     private _vehOwner = _vehicle getVariable ["ownerUID",""];
 
@@ -103,8 +100,7 @@ if (isServer) then {
 
     diag_log format["Parking vehicle %1(%2) for player %3(%4)", typeOf _vehicle, netId _vehicle,  (name _player), _uid];
 
-    def(_parked_vehicles);
-    _parked_vehicles = _player getVariable "parked_vehicles";
+    private _parked_vehicles = _player getVariable "parked_vehicles";
     _parked_vehicles = OR(_parked_vehicles,[]);
 
     if (_vehOwner isEqualTo "") then {
@@ -121,8 +117,7 @@ if (isServer) then {
     {
       params ["_this", "_player", "_vehicle", "_uid", "_vehOwner", "_parked_vehicles", "_saveFlag"];
 
-      def(_added);
-      _added = [_parked_vehicles, _vehicle, false] call v_addSaveVehicle;
+      private _added = [_parked_vehicles, _vehicle, false] call v_addSaveVehicle;
 
       if (isNil "_added") exitWith {
         if (_vehOwner isEqualTo "") then {
@@ -155,17 +150,20 @@ if (isServer) then {
     ARGVX3(0,_player,objNull);
     ARGVX3(1,_vehicle_id, "");
 
-    def(_uid);
-    _uid = getPlayerUID _player;
+    private _uid = getPlayerUID _player;
 
     diag_log format["Retrieving parked vehicle %1 for player %2(%3)", _vehicle_id,  (name _player), _uid];
 
-    def(_parked_vehicles);
-    _parked_vehicles = _player getVariable "parked_vehicles";
+    private _parked_vehicles = _player getVariable "parked_vehicles";
     _parked_vehicles = OR(_parked_vehicles,[]);
 
-    def(_vehicle_data);
-    _vehicle_data = [_parked_vehicles, _vehicle_id] call fn_getFromPairs;
+    private ["_vehicle_data"];
+		if ((call A3W_savingMethod) in ["extDB"]) then
+		{
+			_vehicle_data = [_parked_vehicles, (parseNumber _vehicle_id)] call fn_getFromPairs;
+		} else {
+			_vehicle_data = [_parked_vehicles, _vehicle_id] call fn_getFromPairs;
+		};
 
     if (!isARRAY(_vehicle_data)) exitWith {
       diag_log format["ERROR: Could not retrieve vehicle %1 for player %2(%3)", _vehicle_id,  (name _player), _uid];
@@ -187,27 +185,38 @@ if (isServer) then {
       _dirAngle = markerDir (_nearbySpawns select 0);
     };
 
-    def(_create_array);
     //if (not([_player,_class,_position] call pp_is_safe_position)) then {
       //we don't have an exact safe position, let the game figure one out
-      _create_array = [_class, if (isNil "_pos") then { getPos _player } else { _pos }, [], [0,50] select (isNil "_pos"), ""];
+    private _create_array = [_class, if (isNil "_pos") then { getPos _player } else { _pos }, [], [0,50] select (isNil "_pos"), ""];
     //};
 
-    def(_vehicle);
-    _vehicle = [[_vehicle_id, _vehicle_data], true,OR(_create_array,nil)] call v_restoreVehicle;
+    private ["_vehicle"];
+		if ((call A3W_savingMethod) in ["extDB"]) then
+		{
+			_vehicle = [[(parseNumber _vehicle_id), _vehicle_data], true,OR(_create_array,nil)] call v_restoreVehicle;
+		} else {
+			_vehicle = [[_vehicle_id, _vehicle_data], true,OR(_create_array,nil)] call v_restoreVehicle;
+		};
+    
 
     if (isNil "_vehicle") exitWith {
       diag_log format["ERROR: Could not restore vehicle %1 for player %2(%3)", _vehicle_id,  (name _player), _uid];
       [_player, format["An error occurred, your vehicle (%1) could not be restored. Please report this error to A3Armory.com.", _vehicle_id], "Restoring Error"] call pp_notify;
     };
 
-    [_parked_vehicles, _vehicle_id] call fn_removeFromPairs;
+		if ((call A3W_savingMethod) in ["extDB"]) then
+		{
+			[_parked_vehicles, (parseNumber _vehicle_id)] call fn_removeFromPairs;
+		} else {
+			[_parked_vehicles, _vehicle_id] call fn_removeFromPairs;
+		};
+		
+    
     _player setVariable ["parked_vehicles", _parked_vehicles]; //, true];
     ["parked_vehicles", _parked_vehicles] remoteExecCall ["A3W_fnc_setVarPlayer", _player];
     //[_player] call fn_saveAccount;
 
-    def(_display_name);
-    _display_name = [typeOf _vehicle] call generic_display_name;
+    private _display_name = [typeOf _vehicle] call generic_display_name;
     [_player, _vehicle] call pp_mark_vehicle;
     [_player, format["%1, your %2 has been retrieved (marked on map)", (name _player), _display_name]] call pp_notify;
   };
@@ -239,17 +248,13 @@ if (isClient) then {
     ARGVX3(0,_vehicle,objNull);
 
     sleep 1; //give enough time for the vehicle to be move to the correct location (before marking)
-    def(_class);
-    _class = typeOf _vehicle;
+    private _class = typeOf _vehicle;
 
-    def(_name);
-    _name = [_class] call generic_display_name;
+    private _name = [_class] call generic_display_name;
 
-    def(_pos);
-    _pos = getPos _vehicle;
+    private _pos = getPos _vehicle;
 
-    def(_marker);
-    _marker = format["pp_vehicle_marker_%1", ceil(random 1000)];
+    private _marker = format["pp_vehicle_marker_%1", ceil(random 1000)];
     _marker = createMarkerLocal [_marker, _pos];
     _marker setMarkerTypeLocal "waypoint";
     _marker setMarkerPosLocal _pos;

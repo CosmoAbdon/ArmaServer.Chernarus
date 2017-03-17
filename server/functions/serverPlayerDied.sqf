@@ -7,8 +7,14 @@
 //	@file Created: 20/11/2012 05:19
 
 if (!isServer) exitWith {};
-
-params [["_unit",objNull,[objNull]], "", "", ["_deathCause",[],[[]]]]; // _unit, _killer, _presumedKiller, _deathCause
+diag_log format["DEBUG _this: %1", _this];
+params [
+["_unit",objNull,[objNull]],
+"",
+"",
+"",
+["_deathCause",[],[[]]]
+]; // _unit, _killer, _instigator, _useEffects
 
 _unit call A3W_fnc_setItemCleanup;
 _unit setVariable ["A3W_deathCause_local", _deathCause];
