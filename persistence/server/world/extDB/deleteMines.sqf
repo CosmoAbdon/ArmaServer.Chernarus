@@ -29,7 +29,7 @@ _hcObjSavingOn = (isServer && ["A3W_hcObjSaving"] call isConfigOn);
 
 	if (!isNil "_id") then
 	{
-		_values pushBack _id;
+		_values pushBack str _id;
 	};
 } forEach _mines;
 

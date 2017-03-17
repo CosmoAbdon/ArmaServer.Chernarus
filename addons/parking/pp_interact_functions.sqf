@@ -67,8 +67,6 @@ pp_interact_park_vehicle_wait = {
     _name = [_class] call generic_display_name;
     _picture = [_class] call generic_picture_path;
 
-		if (_vehicle_id isEqualType 0) then {_vehicle_id = str(_vehicle_id)};
-		
     def(_index);
     _index = _list lbAdd format["%1 (%2)",_name, _vehicle_id];
     _list lbSetData [_index, _vehicle_id];

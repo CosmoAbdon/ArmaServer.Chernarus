@@ -7,7 +7,7 @@
 // DB column name, vLoad variable name
 
 [
-	["ID", "_vehicleID"],
+	["QUOTE(ID)", "_vehicleID"],
 	["Class", "_class"],
 	["Position", "_pos"],
 	["Direction", "_dir"],

@@ -37,7 +37,7 @@ if (_killer == _player) then
 	_killer = objNull;
 };
 
-[_player, _killer, _presumedKiller, true, _deathCause] remoteExecCall ["A3W_fnc_serverPlayerDied", 2];
+[_player, _killer, _presumedKiller, _deathCause] remoteExecCall ["A3W_fnc_serverPlayerDied", 2];
 [0, _player, _killer, [_killer, _player] call A3W_fnc_isFriendly] call A3W_fnc_deathMessage;
 
 if (_player == player) then

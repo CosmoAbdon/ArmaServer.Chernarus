@@ -15,7 +15,7 @@ _mineID = _dummy getVariable "A3W_mineID";
 
 if (isNil "_mineID") then
 {
-	_mineID = ([format ["newServerMine:%1:%2", call A3W_extDB_ServerID, call A3W_extDB_MapID], 2] call extDB_Database_async);
+	_mineID = ([format ["newServerMine:%1:%2", call A3W_extDB_ServerID, call A3W_extDB_MapID], 2] call extDB_Database_async) select 0;
 	[_dummy, ["A3W_mineID", _mineID, true]] call fn_secureSetVar;
 	[_dummy, ["A3W_mineSaved", true, true]] call fn_secureSetVar;
 

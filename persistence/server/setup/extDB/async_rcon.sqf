@@ -21,7 +21,7 @@ _queryStmt = param [0,"",[""]];
 _mode = param [1,1,[0]];
 _multiarr = param [2,false,[false]];
 
-_key = "extDB2" callExtension format["%1:%2:%3",_mode, (call A3W_extDB_miscID), _queryStmt];
+_key = "extDB2" callExtension format["%1:%2:%3",_mode, (call A3W_extDB_rconID), _queryStmt];
 
 if(_mode == 1) exitWith {true};
 
@@ -48,7 +48,7 @@ while{_loop} do
 	{
 		if (_queryResult == "[3]") then
 		{
-			diag_log format ["[extDB2] Sleep [4]: %1", diag_tickTime]; // Helps highlight if someone SQL Queries are running slow
+			diag_log format ["[extDB2] Sleep [4]: %1", diag_tickTime]; // Helps highlight if someone Queries are running slow
 			sleep 0.1;
 		} else {
 			_loop = false;

@@ -8,7 +8,7 @@ else
   waitUntil {!isNil "A3W_serverSetupComplete"};
 };
 
-if !((["A3W_privateParking"] call isConfigOn) && (["A3W_vehicleSaving"] call isConfigOn)) exitWith
+if !(["A3W_privateParking"] call isConfigOn && ["A3W_vehicleSaving"] call isConfigOn) exitWith
 {
   parking_functions_defined = false;
 };

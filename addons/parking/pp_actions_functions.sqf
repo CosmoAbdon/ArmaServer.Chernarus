@@ -307,15 +307,9 @@ pp_retrieve_vehicle_action = {
   if (!isSTRING(_vehicle_id)) exitWith {
     //_player groupChat format["%1, you did not select any vehicle to retreive", (name _player)];
   };
-	
-  def(_vehicle_data);
-	if ((call A3W_savingMethod) in ["extDB"]) then
-	{
-		_vehicle_data = [_parked_vehicles, (parseNumber _vehicle_id)] call fn_getFromPairs;
-	} else {
-		_vehicle_data = [_parked_vehicles, _vehicle_id] call fn_getFromPairs;
-	};
 
+  def(_vehicle_data);
+  _vehicle_data = [_parked_vehicles, _vehicle_id] call fn_getFromPairs;
 
   if (!isARRAY(_vehicle_data)) exitWith {
     player groupChat format["ERROR: The selected vehicle (%1) was not found", _vehicle_id];

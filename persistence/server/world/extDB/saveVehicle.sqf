@@ -13,7 +13,7 @@ if (!alive _veh) exitWith {nil};
 
 if (isNil "_vehicleID") then
 {
-	_vehicleID = ([format ["newServerVehicle:%1:%2", call A3W_extDB_ServerID, call A3W_extDB_MapID], 2] call extDB_Database_async);
+	_vehicleID = ([format ["newServerVehicle:%1:%2", call A3W_extDB_ServerID, call A3W_extDB_MapID], 2] call extDB_Database_async) select 0;
 	[_veh, ["A3W_vehicleID", _vehicleID, true]] call fn_secureSetVar;
 	[_veh, ["A3W_vehicleSaved", true, true]] call fn_secureSetVar;
 
