@@ -15,7 +15,25 @@ waitUntil {!isNull player};
 
 player createDiarySubject ["infos", "Infos and Help"];
 player createDiarySubject ["changelog", "Changelog"];
+player createDiarySubject ["changelof", "Changelog Server"];
 player createDiarySubject ["credits", "Credits"];
+
+player createDiaryRecord ["changelof",
+[
+"18/03",
+"
+<br/>[Changed] Beacon Updates
+<br/>[Changed] Beacon Deploy/Steal time
+<br/>[Changed] Beacon object changed
+<br/>[Added] A lot of new weapons
+<br/>[Added] New Hats
+<br/>[Added] Arma 3 Vanilla Uniforms
+<br/>[Fixed] Vehicles on respawn got price fixed
+<br/>[Fixed] High Value Target alerts with 20K
+<br/>[Fixed] Many of another changes and fixes side-server
+"
+]];
+
 
 player createDiaryRecord ["changelog",
 [
