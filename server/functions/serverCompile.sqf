@@ -86,8 +86,8 @@ randomCrateLoadOutNoThermal = [_path, "randomCrateLoadOutNoThermal.sqf"] call mf
 randomCrateLoadOut = [_path, "randomCrateLoadOut.sqf"] call mf_compile;
 
 //Player Management
-server_playerDied = [_path, "serverPlayerDied.sqf"] call mf_compile;
-A3W_fnc_serverPlayerDied = server_playerDied;
+server_playerDied = [_path, "serverAiDied.sqf"] call mf_compile;
+A3W_fnc_serverPlayerDied = [_path, "serverPlayerDied.sqf"] call mf_compile;
 
 //Spawning Compiles
 _path = "server\spawning";

@@ -10,8 +10,8 @@
 
 #define ANIM "AinvPknlMstpSlayWrflDnon_medic"
 #define ERR_IN_VEHICLE "Stealing Spawn Beacon Failed! You can't do this in a vehicle"
-#define ERR_NOT_OPP_SIDE "Stealing Spawn Beacon Failed! Someone else finished stealing it first."
-#define ERR_TOO_FAR_AWAY "Stealing Spawn Beacon Failed! You are too far away to do that."
+#define ERR_NOT_OPP_SIDE "Stealing Spawn Beacon Failed! You can't steal team beacons"
+#define ERR_TOO_FAR_AWAY "Stealing Spawn Beacon Failed! You are too far away to do that"
 #define ERR_CANCELLED "Stealing Spawn Beacon Cancelled"
 #define ERR_SOMEONE_ELSE_TAKEN "Packing Spawn Beacon Failed! Someone else finished packing it up before you"
 private ["_beacon", "_error", "_isIndie", "_ownerSide", "_ownerUID", "_hasFailed", "_success"];
@@ -50,5 +50,5 @@ if (_success) then {
 	publicVariable "pvar_spawn_beacons";
 	deleteVehicle _beacon;
 	[MF_ITEMS_SPAWN_BEACON, 1] call mf_inventory_add;
-	["You have successfully stolen the Spawn Beacon",5] call mf_notify_client;
+	["You have successfully stolen a Spawn Beacon",5] call mf_notify_client;
 };

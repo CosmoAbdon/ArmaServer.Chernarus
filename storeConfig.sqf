@@ -22,6 +22,15 @@ hiddenArray = compileFinal str
     //["AN/PAS 13C2 HTWS (LR)", "CUP_optic_AN_PAS_13c2", 10000, "item"],
     ["GOSHAWK TWS", "GOSHAWK TWS", 10000, "item"],
    
+	//Spawn
+    ["UAZ", "CUP_C_UAZ_Unarmed_TK_CIV", 400,"vehicle"],
+    ["Skoda Octavia", "CUP_C_Octavia_CIV", 400,"vehicle"],
+    ["Land Rover (Transport)", "CUP_C_LR_Transport_CTK", 400,"vehicle"],
+    ["Ural (Blue) (Open)", "CUP_C_Ural_Open_Civ_01", 400,"vehicle"],
+    ["Land Rover (Transport I) ", "CUP_I_LR_Transport_AAF", 400,"vehicle"],
+    ["Golf Red ", "CUP_C_Golf4_red_Civ", 400,"vehicle"],
+	
+	
     ["Ural Ammo Truck", "CUP_O_Ural_Reammo_RU", 8000,"vehicle"],
     ["Ural Fuel Truck", "CUP_O_Ural_Refuel_CHDKZ", 8000, "vehicle"],
     ["Ural Repair Truck", "CUP_O_Ural_Repair_CHDKZ", 8000, "vehicle"],
@@ -110,7 +119,13 @@ rifleArray = compileFinal str
     ["AKS-74U", "CUP_arifle_AKS74U", 150],
     ["AKM", "CUP_arifle_AKM", 130],
     ["AKS", "CUP_arifle_AKS", 130],
+    ["AKS GOLD", "CUP_arifle_AKS_Gold", 130],
 //US
+    ["XM8 Carbine", "CUP_arifle_XM8_Carbine", 140],
+    ["XM8 Carbine + M320", "CUP_arifle_XM8_Carbine_GL", 140],
+    ["XM8 Sharpshooter", "CUP_arifle_xm8_sharpshooter", 140],
+    ["XM8 Compact", "CUP_arifle_XM8_Compact", 140],
+    ["XM8 CQC", "CUP_arifle_XM8_Carbine_FG", 140],
     ["M16A2", "CUP_arifle_M16A2", 140],
     ["M16A4", "CUP_arifle_M16A4_Base", 140],
     ["M16A4 M203", "CUP_arifle_M16A4_GL", 150],
@@ -132,8 +147,15 @@ rifleArray = compileFinal str
     ["Mk.17 EGLM", "CUP_arifle_Mk17_STD_EGLM", 250],
     ["Mk.17 Sniper", "CUP_arifle_Mk20", 230],
 //Other
+    ["G36 A", "CUP_arifle_G36A", 200],
+    ["G36A (Camo)", "CUP_arifle_G36A_camo", 200],
+    ["G36 K", "CUP_arifle_G36K", 200],
+    ["G36K (Camo)", "CUP_arifle_G36K_camo", 200],
     ["G36C", "CUP_arifle_G36C", 200],
-    ["G36C (Camo)", "CUP_arifle_G36C_camo", 500],
+    ["G36C (Camo)", "CUP_arifle_G36C_camo", 200],
+    ["MG36", "CUP_arifle_MG36", 250],
+    ["MG36 (Camo)", "CUP_arifle_MG36_camo", 250],
+	
     ["FN FAL", "CUP_arifle_FNFAL_railed", 190],
     ["L85A2", "CUP_arifle_L85A2", 190],
     ["L85A2 GL", "CUP_arifle_L85A2_GL", 220],  
@@ -142,6 +164,16 @@ rifleArray = compileFinal str
     ["Sa-58 RIS2", "CUP_arifle_Sa58RIS2", 150],
     ["Sa-58 RIS2 (Camo)", "CUP_arifle_Sa58RIS2_camo", 150],
     ["Sa-58 RIS2 GL", "CUP_arifle_Sa58RIS2_gl", 180],
+	
+//CZ
+	["CZ 805 BREN A1", "CUP_arifle_CZ805_GL", 180],
+	["CZ 805 BREN A1 GL", "CUP_arifle_CZ805_A1", 180],
+    ["CZ 805 BREN A2", "CUP_arifle_CZ805_A2", 180],
+    ["CZ 805 BREN A2 HOLO", "CUP_arifle_CZ805_A2_Holo_Laser", 180],
+    ["CZ 805 BREN B1", "CUP_arifle_CZ805_B", 180],
+    ["CZ SCORPION EVO 3", "CUP_smg_EVO", 180],
+    
+	
 // Sniper Rifles
  
     ["CZ550 Hunting Rifle", "CUP_srifle_CZ550", 250],
@@ -653,6 +685,8 @@ accessoriesArray = compileFinal str
 headArray = compileFinal str
 [
     // Stratis Original
+	
+	
    
 //CUP Additions
     ["USMC ACVC Helmet (Camo)", "CUP_H_USMC_ACVC_WDL", 25, "hat"],
@@ -688,6 +722,22 @@ headArray = compileFinal str
     ["Mk.7 Crew Helmet (Desert)", "CUP_H_BAF_Crew_Helmet_DDPM", 25, "hat"],
     ["Mk.7 Crew Helmet (Camo)", "CUP_H_BAF_Crew_Helmet_DPM", 25, "hat"],
     ["Mk.7 Crew Helmet (MTP)", "CUP_H_BAF_Crew_Helmet_MTP", 25, "hat"],
+	
+	
+    ["Beret 1", "CUP_H_C_Beret_01", 25, "hat"],
+    ["Beret 2", "CUP_H_C_Beret_02", 25, "hat"],
+    ["Beret 3", "CUP_H_C_Beret_03", 25, "hat"],
+    ["Police 1", "CUP_H_C_Policecap_01", 25, "hat"],
+    ["Fireman 1", "CUP_H_C_Fireman_Helmet_01", 25, "hat"],
+    ["Ushanka 1", "CUP_H_C_Ushanka_01", 25, "hat"],
+    ["Ushanka 2", "CUP_H_C_Ushanka_02", 25, "hat"],
+    ["Ushanka 3", "CUP_H_C_Ushanka_03", 25, "hat"],
+    ["Ushanka 4", "CUP_H_C_Ushanka_04", 25, "hat"],
+    ["Beanie 1", "CUP_H_C_Beanie_01", 25, "hat"],
+    ["Beanie 2", "CUP_H_C_Beanie_02", 25, "hat"],
+    ["Beanie 3", "CUP_H_C_Beanie_03", 25, "hat"],
+    ["Beanie 4", "CUP_H_C_Beanie_04", 25, "hat"],
+    ["CAP TAN", "CUP_H_PMC_Cap_Tan", 25, "hat"],
  
     ["6B27 Helmet (Light Green)", "CUP_H_RUS_6B27", 25, "hat"],
     ["6B27 Helmet (Olive)", "CUP_H_RUS_6B27_olive", 25, "hat"],
@@ -699,6 +749,47 @@ headArray = compileFinal str
  
 uniformArray = compileFinal str
 [
+	//BASE
+	["Default Uniform (NATO)", "U_B_CombatUniform_mcam", 15, "uni"],
+	["Default Uniform (CSAT)", "U_O_OfficerUniform_ocamo", 15, "uni"],
+	["Default Uniform (AAF)", "U_I_CombatUniform", 15, "uni"],
+	["Recon Fatigues (MTP)", "U_B_CombatUniform_mcam_vest", 15, "uni"],
+	["Combat Fatigues (Tropic)", "U_B_T_Soldier_F", 15, "uni", "noDLC"],
+	["Combat Fatigues (Tee)", "U_B_CombatUniform_mcam_tshirt", 15, "uni"],
+	["Combat Fatigues (Gangsta)", "U_I_G_resistanceLeader_F", 15, "uni"],
+	["Combat Fatigues (Rolled-up)", "U_I_CombatUniform_shortsleeve", 15, "uni"],
+	["Paramilitary 1", "U_I_C_Soldier_Para_1_F", 50, "uni"],
+	["Paramilitary 2", "U_I_C_Soldier_Para_2_F", 50, "uni"],
+	["Paramilitary 3", "U_I_C_Soldier_Para_3_F", 50, "uni"],
+	["Paramilitary 4", "U_I_C_Soldier_Para_4_F", 50, "uni"],
+	["Paramilitary 4", "U_I_C_Soldier_Para_5_F", 50, "uni"],
+	["Pilot Coveralls", "U_B_PilotCoveralls", 15, "uni"],
+	["Pilot Coveralls", "U_O_PilotCoveralls", 15, "uni"],
+	["Pilot Coveralls", "U_I_pilotCoveralls", 15, "uni"],
+	["Heli Pilot Coveralls", "U_B_HeliPilotCoveralls", 15, "uni"],
+	["Heli Pilot Coveralls", "U_I_HeliPilotCoveralls", 15, "uni"],
+	["Guerilla Garment", "U_BG_Guerilla1_1", 15, "uni"],  // BLUFOR
+	["Guerilla Outfit (Plain, Dark)", "U_BG_Guerilla2_1", 15, "uni"],
+	["Guerilla Outfit (Pattern)", "U_BG_Guerilla2_2", 15, "uni"],
+	["Guerilla Outfit (Plain, Light)", "U_BG_Guerilla2_3", 15, "uni"],
+	["Guerilla Smocks", "U_BG_Guerilla3_1", 15, "uni"],
+	["Guerilla Apparel", "U_BG_Guerrilla_6_1", 15, "uni"],
+	["Guerilla Uniform", "U_BG_leader", 15, "uni"],
+	["Guerilla Garment", "U_OG_Guerilla1_1", 15, "uni"], // OPFOR
+	["Guerilla Outfit (Plain, Dark)", "U_OG_Guerilla2_1", 15, "uni"],
+	["Guerilla Outfit (Pattern)", "U_OG_Guerilla2_2", 15, "uni"],
+	["Guerilla Outfit (Plain, Light)", "U_OG_Guerilla2_3", 15, "uni"],
+	["Guerilla Smocks", "U_OG_Guerilla3_1", 15, "uni"],
+	["Guerilla Apparel", "U_OG_Guerrilla_6_1", 15, "uni"],
+	["Guerilla Uniform", "U_OG_leader", 15, "uni"],
+	["Guerilla Garment", "U_IG_Guerilla1_1", 15, "uni"], // Independent
+	["Guerilla Outfit (Plain, Dark)", "U_IG_Guerilla2_1", 15, "uni"],
+	["Guerilla Outfit (Pattern)", "U_IG_Guerilla2_2", 15, "uni"],
+	["Guerilla Outfit (Plain, Light)", "U_IG_Guerilla2_3", 15, "uni"],
+	["Guerilla Smocks", "U_IG_Guerilla3_1", 15, "uni"],
+	["Guerilla Apparel", "U_IG_Guerrilla_6_1", 15, "uni"],
+	["Guerilla Uniform", "U_IG_leader", 15, "uni"],
+
     //Kept from Stratis
     ["Tropenatrn 1", "CUP_U_B_GER_Tropentarn_1", 15, "uni"],
     ["Tropenatrn 2", "CUP_U_B_GER_Tropentarn_2", 15, "uni"],
@@ -1235,10 +1326,10 @@ helicoptersArray = compileFinal str
     ["Ka-60 AT Support (Whale)", "CUP_O_Ka60_Whale_CSAT", 6000, "vehicle"],
  
     ["MH-6J (Black)", "CUP_B_MH6J_USA", 2000, "vehicle"], //Bench seater
-    ["AH-6J Escort (Black)", "CUP_B_AH6J_Escort_USA", 7500, "vehicle"], //Standard AH6
-    ["AH-6J Escort Mk.II (Large Pods)", "CUP_B_AH6J_Escort19_USA", 10000, "vehicle"], //Large Pods = more rockets
-    ["AH-6J Anti-tank", "CUP_B_AH6J_AT_USA", 12000, "vehicle"], //M134 & AGMs - no rockets
-    ["AH-6J Multirole", "CUP_B_AH6J_MP_USA", 11000, "vehicle"], // A little bit of everything
+    ["AH-6J Escort (Black)", "CUP_B_AH6J_Escort_USA", 11000, "vehicle"], //Standard AH6
+    ["AH-6J Escort Mk.II (Large Pods)", "CUP_B_AH6J_Escort19_USA", 13500, "vehicle"], //Large Pods = more rockets
+    ["AH-6J Anti-tank", "CUP_B_AH6J_AT_USA", 15000, "vehicle"], //M134 & AGMs - no rockets
+    ["AH-6J Multirole", "CUP_B_AH6J_MP_USA", 16000, "vehicle"], // A little bit of everything
    
        
     ["AH-1Z Viper", "CUP_B_AH1Z_USMC", 35000, "vehicle"],

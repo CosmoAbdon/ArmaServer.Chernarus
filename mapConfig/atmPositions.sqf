@@ -4,7 +4,7 @@
 //	@file Name: atmPositions.sqf
 //	@file Author: AgentRev
 
-// ATM positions for Altis map
+// ATM positions for Chernarus map
 [
 	[10655.9, 12201.3, 1.49722],
 	[11008.4, 13474.7, 1.28064],

@@ -2,9 +2,9 @@
 //	@file Name: HvT.sqf
 //	@file Author: Cael817, CRE4MPIE, LouD, AgentRev
 
-#define HVT_AMOUNT 35000  // how much a player needs to be carrying to become a HvT
-#define HINT_DELAY 30  // number of seconds between each HvT reminder hint
-#define MARKER_REFRESH 60  // number of seconds between each HvT marker refresh
+#define HVT_AMOUNT 20000  // how much a player needs to be carrying to become a HvT
+#define HINT_DELAY 15  // number of seconds between each HvT reminder hint
+#define MARKER_REFRESH 30  // number of seconds between each HvT marker refresh
 
 if (isServer) then
 {

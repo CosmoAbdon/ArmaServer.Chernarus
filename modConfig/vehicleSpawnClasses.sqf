@@ -17,6 +17,7 @@ civilianVehicles =
 	"CUP_C_Octavia_CIV",
 	"CUP_C_Octavia_CIV",
 	"CUP_C_LR_Transport_CTK",
+	"CUP_C_Golf4_red_Civ",
 	["CUP_C_Ural_Open_Civ_01", "CUP_C_Ural_Open_Civ_01"]
 ];
 
@@ -72,8 +73,10 @@ A3W_planeSpawnOdds = 0.25; // 0.0 to 1.0
 //Random Weapon List - Change this to what you want to spawn in cars.
 vehicleWeapons =
 [
-	["CUP_sgun_M1014", "CUP_arifle_AK47", "CUP_arifle_FNFAL"],
-	["CUP_arifle_AK74M_kobra", "CUP_sgun_M1014"]
+	["CUP_sgun_M1014", "CUP_hgun_BallisticShield_Armed", "CUP_smg_bizon"],
+	["CUP_sgun_M1014", "CUP_arifle_G36A", "CUP_lmg_L110A1"],
+	["CUP_arifle_L85A2_Holo_laser", "CUP_arifle_M16A2", "CUP_arifle_M16A4_Base"],
+	["CUP_arifle_CZ805_A1", "CUP_sgun_M1014", "CUP_arifle_FNFAL_OSW"]
 ];
 
 vehicleAddition =
